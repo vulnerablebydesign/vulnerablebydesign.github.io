@@ -9,7 +9,7 @@ body {
 
 h1, h2, h3 {
     color: #66d9ef;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced spacing below headers */
 }
 
 .terminal {
@@ -17,8 +17,8 @@ h1, h2, h3 {
     border: 1px solid #444;
     border-radius: 5px;
     padding: 20px;
-    margin: 20px auto;
-    max-width: 1000px; /* Increased width */
+    margin: 10px auto; /* Reduced margin between terminal container and other elements */
+    max-width: 1100px; /* Increased width to reduce word wrapping */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -30,6 +30,8 @@ pre {
     overflow-x: auto;
     white-space: pre-wrap; /* Allows wrapping for long lines */
     word-wrap: break-word; /* Breaks long words */
+    margin: 10px 0; /* Reduced spacing above and below pre blocks */
+    text-indent: 20px; /* Align wrapped lines with the first line */
 }
 
 code {
@@ -41,11 +43,11 @@ code {
 }
 
 section {
-    margin-bottom: 20px; /* Reduced spacing between sections */
+    margin-bottom: 15px; /* Reduced spacing between sections */
 }
 
 header {
-    margin-bottom: 10px; /* Reduced spacing below headers */
+    margin-bottom: 5px; /* Reduced spacing below headers */
 }
 
 .comment {
