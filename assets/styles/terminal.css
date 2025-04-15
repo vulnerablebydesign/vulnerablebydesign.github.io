@@ -18,7 +18,7 @@ h1, h2, h3 {
     border-radius: 5px;
     padding: 20px;
     margin: 20px auto;
-    max-width: 800px;
+    max-width: 1000px; /* Increased width */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -41,11 +41,11 @@ code {
 }
 
 section {
-    margin-bottom: 40px;
+    margin-bottom: 20px; /* Reduced spacing between sections */
 }
 
 header {
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced spacing below headers */
 }
 
 .comment {
