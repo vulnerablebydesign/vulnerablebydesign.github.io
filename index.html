@@ -9,18 +9,19 @@
     <link rel="stylesheet" href="assets/styles/terminal.css">
 </head>
 <body>
-    <div id="boot-sequence" class="boot-sequence" aria-label="Loading animation">
-        <div class="boot-text"></div>
-    </div>
-    
-    <!-- Chapter Navigation -->
-    <nav id="chapter-nav" class="chapter-nav" style="display: none;" role="navigation" aria-label="Chapter navigation">
-        <div class="nav-header" aria-hidden="true">~/session_logs/</div>
-        <div class="nav-chapters" role="list" aria-label="Chapter list"></div>
-        <div class="nav-progress" aria-live="polite" aria-label="Current chapter progress">[<span id="current-chapter">1</span>/11]</div>
-    </nav>
-    
-    <main id="main-content" class="terminal" style="display: none;" role="main">
+    <!-- CRT Monitor Container -->
+    <div id="crt">
+        <!-- Flicker overlay -->
+        <div class="flicker"></div>
+        
+        <!-- Boot sequence -->
+        <div id="boot-sequence" class="boot-sequence" aria-label="Loading animation">
+            <div class="boot-text"></div>
+        </div>
+        
+        <!-- Main terminal screen -->
+        <main id="main-content" class="terminal" style="display: none;" role="main">
+            <div class="screen">
         <header role="banner">
             <h1>The Advanced Persistent Threat</h1>
             <h2>A Terminal Testimony</h2>
@@ -39,92 +40,92 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    theAdversary@attackerbox:~$ ssh cameron@cameron.local  
-                    cameron@cameron.local's password: *********  
-                    > Session granted (limited access)
-                    
-                    # Root unavailable. Another process holds elevated privileges.  
-                    # User unaware. Control assumed by omission.
-                    
-                    cameron@cameron.local:~$ hostname  
-                    cameron.local
-                    
-                    theAdversary@attackerbox:~$ ./init_beacon.sh --target cameron.local --port 4444  
-                    > Beacon initialized on port 4444  
-                    > Persistence mode: silent
-                    
-                    # Entry vector: unfiltered curiosity. Image file. Unscanned. Delivered at age 8.
-                    
-                    cameron@cameron.local:~$ ls -al /home/cameron
-                    /childhood
-                    /relationships
-                    /beliefs
-                    /identity
-                    /shame
-                    /dreams
-                    /addiction
-                    journal.log
-                    .hidden
-                    
-                    cameron@cameron.local: cat ./journal.log | grep "don't tell anyone"  
-                    > I don't tell anyone I saw that stuff when I was eight.  
-                    > I don't tell anyone it still shows up when I close my eyes.  
-                    > I don't tell anyone how fake I feel when they call me strong.  
-                    > I don't tell anyone because I think they'd leave if they knew.
-                    > I don't tell anyone because I think I'm the only one who feels this way.
-                    
-                    # Indicator: identity shaped by performance. Exploit route: emotional exhaustion.
-                    
-                    cameron@cameron.local:~$ mkdir /implant
-                    cameron@cameron.local:~$ echo "You're too much." > /implant/whisper.sh
-                    cameron@cameron.local:~$ echo "You're not enough." >> /implant/whisper.sh
-                    cameron@cameron.local:~$ echo "You're a burden." >> /implant/whisper.sh
-                    
-                    cameron@cameron.local:~$ crontab -e
-                    @reboot bash /implant/whisper.sh
-                    0 3 * * * bash /implant/whisper.sh
-                    
-                    # Payload set. Persistence ensured. Delivery scheduled during vulnerability hours.
-                    
-                    cameron@cameron.local:~$ cd /childhood
-                    cameron@cameron.local:/childhood$ ls
-                    firewall/
-                    media/
-                    school/
-                    friendships/
-                    early_exposure.cache
-                    
-                    # Found: /media/init.img | Timestamp: age 8 | Type: hardcore_imagery_01  
-                    # No antivirus. No guardian. No understanding. Implant successful.
-                    
-                    cameron@cameron.local:/childhood$ echo "Initial exposure normalized. Shame seeded early." >> /recon_notes.txt
-                    
-                    cameron@cameron.local:/childhood/friendships$ ls
-                    charles.log
-                    wes.stub
-                    
-                    # charles.log present. Possible interference node.
-                    # Mark: firewall.user.class: Defender. Influence: disruptive to foothold.
-                    
-                    cameron@cameron.local:/childhood/firewall$ ls
-                    charles.key
-                    charles-response.txt
-                    
-                    # Event flag: playground intervention. Charles defended target. Unexpected.
-                    
-                    cameron@cameron.local:/beliefs$ tail -n 3 core.conf
-                    God is real, but distant.
-                    Grace is for others.
-                    Healing is possible, but not for me.
-                    
-                    # Misconfigured doctrine. No enforcement policies. Firewall rules ineffective.
-                    
-                    cameron@cameron.local:~$ echo "Monitor core beliefs. Keep identity fragmented."
-                    "Monitor core beliefs. Keep identity fragmented."
-                    
-                    [END LOG]
+theAdversary@attackerbox:~$ ssh cameron@cameron.local  
+cameron@cameron.local's password: *********  
+> Session granted (limited access)
+
+# Root unavailable. Another process holds elevated privileges.  
+# User unaware. Control assumed by omission.
+
+cameron@cameron.local:~$ hostname  
+cameron.local
+
+theAdversary@attackerbox:~$ ./init_beacon.sh --target cameron.local --port 4444  
+> Beacon initialized on port 4444  
+> Persistence mode: silent
+
+# Entry vector: unfiltered curiosity. Image file. Unscanned. Delivered at age 8.
+
+cameron@cameron.local:~$ ls -al /home/cameron
+/childhood
+/relationships
+/beliefs
+/identity
+/shame
+/dreams
+/addiction
+journal.log
+.hidden
+
+cameron@cameron.local: cat ./journal.log | grep "don't tell anyone"  
+> I don't tell anyone I saw that stuff when I was eight.  
+> I don't tell anyone it still shows up when I close my eyes.  
+> I don't tell anyone how fake I feel when they call me strong.  
+> I don't tell anyone because I think they'd leave if they knew.
+> I don't tell anyone because I think I'm the only one who feels this way.
+
+# Indicator: identity shaped by performance. Exploit route: emotional exhaustion.
+
+cameron@cameron.local:~$ mkdir /implant
+cameron@cameron.local:~$ echo "You're too much." > /implant/whisper.sh
+cameron@cameron.local:~$ echo "You're not enough." >> /implant/whisper.sh
+cameron@cameron.local:~$ echo "You're a burden." >> /implant/whisper.sh
+
+cameron@cameron.local:~$ crontab -e
+@reboot bash /implant/whisper.sh
+0 3 * * * bash /implant/whisper.sh
+
+# Payload set. Persistence ensured. Delivery scheduled during vulnerability hours.
+
+cameron@cameron.local:~$ cd /childhood
+cameron@cameron.local:/childhood$ ls
+firewall/
+media/
+school/
+friendships/
+early_exposure.cache
+
+# Found: /media/init.img | Timestamp: age 8 | Type: hardcore_imagery_01  
+# No antivirus. No guardian. No understanding. Implant successful.
+
+cameron@cameron.local:/childhood$ echo "Initial exposure normalized. Shame seeded early." >> /recon_notes.txt
+
+cameron@cameron.local:/childhood/friendships$ ls
+charles.log
+wes.stub
+
+# charles.log present. Possible interference node.
+# Mark: firewall.user.class: Defender. Influence: disruptive to foothold.
+
+cameron@cameron.local:/childhood/firewall$ ls
+charles.key
+charles-response.txt
+
+# Event flag: playground intervention. Charles defended target. Unexpected.
+
+cameron@cameron.local:/beliefs$ tail -n 3 core.conf
+God is real, but distant.
+Grace is for others.
+Healing is possible, but not for me.
+
+# Misconfigured doctrine. No enforcement policies. Firewall rules ineffective.
+
+cameron@cameron.local:~$ echo "Monitor core beliefs. Keep identity fragmented."
+"Monitor core beliefs. Keep identity fragmented."
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -138,123 +139,123 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:~$ cd /identity
-                    cameron@cameron.local:/identity$ ls
-                    personality/
-                    test_results/
-                    mirrors.txt
-                    labels.txt
-                    
-                    # Begin profiling for long-term manipulation.
-                    
-                    cameron@cameron.local:/identity$ cat mirrors.txt
-                    Reflections believed:
-                    - Too much
-                    - Not enough
-                    - In the way
-                    - Loud
-                    - Broken
-                    - Different
-                    - A joke
-                    
-                    # He's already running my scripts. Doesn't know they're mine.
-                    
-                    cameron@cameron.local:/identity$ cat labels.txt
-                    - Class Clown  
-                    - The Sensitive One  
-                    - The Problem  
-                    - The Performer  
-                    - The One Who Has to Hold It All Together
-                    
-                    # Label injection successful. Reinforce under social load.
-                    
-                    cameron@cameron.local:/identity/test_results$ ls
-                    enneagram7.txt
-                    cliftonstrengths.log
-                    mbti_ENFP-T.json
-                    
-                    cameron@cameron.local:/identity/test_results$ cat enneagram7.txt
-                    Type: 7 - The Enthusiast  
-                    Core Fear: Being trapped in emotional pain  
-                    Core Desire: To be happy, fulfilled, and free  
-                    Blind Spot: Avoids discomfort through distraction  
-                    Lie Believed: Joy must replace pain. Never sit still.
-                    
-                    # Strong wiring. Weak roots.
-                    
-                    cameron@cameron.local:/identity/test_results$ cat cliftonstrengths.log
-                    1. Developer  
-                    2. Ideation  
-                    3. Communication  
-                    4. Adaptability  
-                    5. Connectedness
-                    
-                    # Dangerous skillset. Potential for healing others. Redirect toward burnout.
-                    
-                    cameron@cameron.local:/identity/test_results$ cat mbti_ENFP-T.json
-                    ENFP-T - The Campaigner  
-                    Creative. Charismatic. Craves meaning.  
-                    Insecure. Idealistic. Overextends to please.  
-                    Vulnerable to image collapse.
-                    
-                    # He wants to save the world so they won't look too closely at him.
-                    
-                    cameron@cameron.local:~$ cd /childhood
-                    cameron@cameron.local:/childhood$ ls
-                    firewall/
-                    media/
-                    school/
-                    friendships/
-                    early_exposure.cache
-                    
-                    cameron@cameron.local:/childhood/friendships$ ls
-                    charles.log
-                    wes.stub
-                    
-                    cameron@cameron.local:/childhood/friendships$ cat charles.log
-                    Met after a trauma. 4th grade.  
-                    Charles stood between theAdversary and the target.  
-                    Became defender, refuge, friend.  
-                    Target trusts him deeply.  
-                    Firewall process: active.
-                    
-                    # Complication. Persistent. Monitored.
-                    
-                    cameron@cameron.local:/childhood/friendships$ cat wes.stub
-                    Friendship thread opened: 2003  
-                    Sync: 0700 hours daily - activity: Hackey Sack  
-                    Shared bond: laughter, rhythm, unspoken sadness  
-                    Belief mismatch: Wes = agnostic  
-                    Status: unresolved
-                    
-                    # Keep passive surveillance. Pain vector. Potential detonation.
-                    
-                    cameron@cameron.local:/childhood$ cat school/pushup_humiliation.log
-                    PE class. Middle school.  
-                    Forced to do pushups while peers laughed.  
-                    Double-jointed. Undersized. Teacher unmoved.  
-                    Did every rep. Fueled by rage.
-                    
-                    Ran until legs collapsed in a field.  
-                    Fists in the sky. Yelled at God.  
-                    "Where were You?"
-                    
-                    # Timestamp: First spiritual broadcast.
-                    
-                    # I heard it.
-                    
-                    cameron@cameron.local:/childhood/firewall$ ls
-                    charles.key
-                    charles-response.txt
-                    
-                    # Log: Defender may attempt counter-narrative. Anticipate interruption. Delay firewall sync.
-                    
-                    cameron@cameron.local:~$ echo "Add watcher: wes.local - flag for future access."
-                    "Add watcher: wes.local - flag for future access."
-                    
-                    [END LOG]
+cameron@cameron.local:~$ cd /identity
+cameron@cameron.local:/identity$ ls
+personality/
+test_results/
+mirrors.txt
+labels.txt
+
+# Begin profiling for long-term manipulation.
+
+cameron@cameron.local:/identity$ cat mirrors.txt
+Reflections believed:
+- Too much
+- Not enough
+- In the way
+- Loud
+- Broken
+- Different
+- A joke
+
+# He's already running my scripts. Doesn't know they're mine.
+
+cameron@cameron.local:/identity$ cat labels.txt
+- Class Clown  
+- The Sensitive One  
+- The Problem  
+- The Performer  
+- The One Who Has to Hold It All Together
+
+# Label injection successful. Reinforce under social load.
+
+cameron@cameron.local:/identity/test_results$ ls
+enneagram7.txt
+cliftonstrengths.log
+mbti_ENFP-T.json
+
+cameron@cameron.local:/identity/test_results$ cat enneagram7.txt
+Type: 7 - The Enthusiast  
+Core Fear: Being trapped in emotional pain  
+Core Desire: To be happy, fulfilled, and free  
+Blind Spot: Avoids discomfort through distraction  
+Lie Believed: Joy must replace pain. Never sit still.
+
+# Strong wiring. Weak roots.
+
+cameron@cameron.local:/identity/test_results$ cat cliftonstrengths.log
+1. Developer  
+2. Ideation  
+3. Communication  
+4. Adaptability  
+5. Connectedness
+
+# Dangerous skillset. Potential for healing others. Redirect toward burnout.
+
+cameron@cameron.local:/identity/test_results$ cat mbti_ENFP-T.json
+ENFP-T - The Campaigner  
+Creative. Charismatic. Craves meaning.  
+Insecure. Idealistic. Overextends to please.  
+Vulnerable to image collapse.
+
+# He wants to save the world so they won't look too closely at him.
+
+cameron@cameron.local:~$ cd /childhood
+cameron@cameron.local:/childhood$ ls
+firewall/
+media/
+school/
+friendships/
+early_exposure.cache
+
+cameron@cameron.local:/childhood/friendships$ ls
+charles.log
+wes.stub
+
+cameron@cameron.local:/childhood/friendships$ cat charles.log
+Met after a trauma. 4th grade.  
+Charles stood between theAdversary and the target.  
+Became defender, refuge, friend.  
+Target trusts him deeply.  
+Firewall process: active.
+
+# Complication. Persistent. Monitored.
+
+cameron@cameron.local:/childhood/friendships$ cat wes.stub
+Friendship thread opened: 2003  
+Sync: 0700 hours daily - activity: Hackey Sack  
+Shared bond: laughter, rhythm, unspoken sadness  
+Belief mismatch: Wes = agnostic  
+Status: unresolved
+
+# Keep passive surveillance. Pain vector. Potential detonation.
+
+cameron@cameron.local:/childhood$ cat school/pushup_humiliation.log
+PE class. Middle school.  
+Forced to do pushups while peers laughed.  
+Double-jointed. Undersized. Teacher unmoved.  
+Did every rep. Fueled by rage.
+
+Ran until legs collapsed in a field.  
+Fists in the sky. Yelled at God.  
+"Where were You?"
+
+# Timestamp: First spiritual broadcast.
+
+# I heard it.
+
+cameron@cameron.local:/childhood/firewall$ ls
+charles.key
+charles-response.txt
+
+# Log: Defender may attempt counter-narrative. Anticipate interruption. Delay firewall sync.
+
+cameron@cameron.local:~$ echo "Add watcher: wes.local - flag for future access."
+"Add watcher: wes.local - flag for future access."
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -268,87 +269,87 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:~$ mkdir /scripts
-                    cameron@cameron.local:~$ nano /scripts/voice_script.sh
-                    
-                    # Constructing payload...
-                    
-                    #!/bin/bash
-                    echo "You're too much."
-                    sleep 300
-                    echo "You're not enough."
-                    sleep 300
-                    echo "Everyone leaves eventually."
-                    sleep 600
-                    echo "You are only valuable when you perform."
-                    sleep 300
-                    echo "If they knew the real you..."
-                    
-                    # Save and execute permissions
-                    
-                    cameron@cameron.local:~$ chmod +x /scripts/voice_script.sh
-                    
-                    # Install daily schedule and vulnerability cycle triggers
-                    
-                    cameron@cameron.local:~$ crontab -e
-                    @reboot /scripts/voice_script.sh
-                    0 3 * * * /scripts/voice_script.sh
-                    30 14 * * MON /scripts/voice_script.sh # after meetings, feedback sessions
-                    
-                    # Persistence service: implant and startup behavior
-                    
-                    cameron@cameron.local:~$ touch /etc/init.d/self_doubt
-                    cameron@cameron.local:~$ echo "/scripts/voice_script.sh" >> /etc/init.d/self_doubt
-                    
-                    # Add emotional comparison loop
-                    
-                    cameron@cameron.local:~$ nano /scripts/compare.sh
-                    
-                    #!/bin/bash
-                    echo "Wes was brilliant."
-                    sleep 300
-                    echo "Charles is strong."
-                    sleep 300
-                    echo "You are neither."
-                    
-                    # Subtle, surgical, believable.
-                    
-                    cameron@cameron.local:~$ chmod +x /scripts/compare.sh
-                    
-                    cameron@cameron.local:~$ crontab -e
-                    15 2 * * * /scripts/compare.sh # early hours. Lowest defenses.
-                    
-                    # Suppress inbound from rescue sources
-                    
-                    cameron@cameron.local:~$ ufw deny from community.local
-                    cameron@cameron.local:~$ ufw deny from prayer.net
-                    cameron@cameron.local:~$ ufw deny from localhost # journaling attempts
-                    
-                    # Redirect inner help to false mirrors
-                    
-                    cameron@cameron.local:~$ echo "127.0.0.1 grace.local" >> /etc/hosts.deny
-                    cameron@cameron.local:~$ echo "127.0.0.1 vulnerability.peer" >> /etc/hosts.deny
-                    
-                    # Final test...
-                    
-                    cameron@cameron.local:~$ bash /scripts/voice_script.sh &
-                    [1] 19231
-                    
-                    # And now he lives in my loop. My language. My lies.
-                    
-                    cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
-                    - Seeks depth but fears being exposed  
-                    - Spiritual background present, fragmented  
-                    - Most dangerous when still and aware
-                    
-                    # Keep him moving. Keep him proving.
-                    
-                    cameron@cameron.local:~$ echo "Loop initiated. External intervention denied."
-                    "Loop initiated. External intervention denied."
-                    
-                    [END LOG]
+cameron@cameron.local:~$ mkdir /scripts
+cameron@cameron.local:~$ nano /scripts/voice_script.sh
+
+# Constructing payload...
+
+#!/bin/bash
+echo "You're too much."
+sleep 300
+echo "You're not enough."
+sleep 300
+echo "Everyone leaves eventually."
+sleep 600
+echo "You are only valuable when you perform."
+sleep 300
+echo "If they knew the real you..."
+
+# Save and execute permissions
+
+cameron@cameron.local:~$ chmod +x /scripts/voice_script.sh
+
+# Install daily schedule and vulnerability cycle triggers
+
+cameron@cameron.local:~$ crontab -e
+@reboot /scripts/voice_script.sh
+0 3 * * * /scripts/voice_script.sh
+30 14 * * MON /scripts/voice_script.sh # after meetings, feedback sessions
+
+# Persistence service: implant and startup behavior
+
+cameron@cameron.local:~$ touch /etc/init.d/self_doubt
+cameron@cameron.local:~$ echo "/scripts/voice_script.sh" >> /etc/init.d/self_doubt
+
+# Add emotional comparison loop
+
+cameron@cameron.local:~$ nano /scripts/compare.sh
+
+#!/bin/bash
+echo "Wes was brilliant."
+sleep 300
+echo "Charles is strong."
+sleep 300
+echo "You are neither."
+
+# Subtle, surgical, believable.
+
+cameron@cameron.local:~$ chmod +x /scripts/compare.sh
+
+cameron@cameron.local:~$ crontab -e
+15 2 * * * /scripts/compare.sh # early hours. Lowest defenses.
+
+# Suppress inbound from rescue sources
+
+cameron@cameron.local:~$ ufw deny from community.local
+cameron@cameron.local:~$ ufw deny from prayer.net
+cameron@cameron.local:~$ ufw deny from localhost # journaling attempts
+
+# Redirect inner help to false mirrors
+
+cameron@cameron.local:~$ echo "127.0.0.1 grace.local" >> /etc/hosts.deny
+cameron@cameron.local:~$ echo "127.0.0.1 vulnerability.peer" >> /etc/hosts.deny
+
+# Final test...
+
+cameron@cameron.local:~$ bash /scripts/voice_script.sh &
+[1] 19231
+
+# And now he lives in my loop. My language. My lies.
+
+cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
+- Seeks depth but fears being exposed  
+- Spiritual background present, fragmented  
+- Most dangerous when still and aware
+
+# Keep him moving. Keep him proving.
+
+cameron@cameron.local:~$ echo "Loop initiated. External intervention denied."
+"Loop initiated. External intervention denied."
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -362,66 +363,66 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:/childhood/friendships$ cat charles.log
-                    Phase: 4th grade to 6th grade  
-                    Status: Offline  
-                    Reason: Family relocation
-                    
-                    # Defender disconnected. No replacement initiated.  
-                    # Proceeding with deeper access...
-                    
-                    cameron@cameron.local:/childhood$ mkdir isolation
-                    cameron@cameron.local:/childhood/isolation$ touch lunch_table.void
-                    cameron@cameron.local:/childhood/isolation$ touch sleepover.log
-                    cameron@cameron.local:/childhood/isolation$ echo "no entries" > sleepover.log
-                    
-                    # No invitations. No allies. Autonomy increased. Firewall absent.
-                    
-                    cameron@cameron.local:/school/pe$ cat pushup_humiliation.log
-                    Middle school - gym class  
-                    Assigned public pushups.  
-                    Peers laugh.  
-                    Target: physically awkward, underweight.  
-                    Teacher: passive  
-                    Emotions triggered: Rage, Fear, Shame
-                    
-                    Result: completed all pushups under jeering gaze  
-                    New behavior pattern created: Prove. Then disappear.
-                    
-                    # Strong defense impulse: performance. Rooted in fear.
-                    
-                    cameron@cameron.local:/school/pe$ run incident_followup.sh
-                    > Target fled outdoors.  
-                    > Location: empty field  
-                    > Posture: collapsed. Fists raised. Crying.  
-                    > Broadcast: "Where were You, God?!"
-                    
-                    # Unfiltered prayer logged. No firewall present.  
-                    # Divine interference suspected.
-                    
-                    cameron@cameron.local:/beliefs/logs$ cat response_capture.tmp
-                    (No response logged)
-                    
-                    # System flagged as "Unanswered." Exploit: abandonment narrative. Persistence increased.
-                    
-                    cameron@cameron.local:/identity$ echo "Alone = normal" >> labels.txt
-                    cameron@cameron.local:/identity$ echo "You must figure this out yourself" >> mirrors.txt
-                    
-                    # Core assumptions altered.
-                    
-                    cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
-                    - Defender (Charles) removed  
-                    - Emotional proximity: 0  
-                    - Faith echo faint but still traceable
-                    
-                    # Pathway set. Whisper injection to increase reliance on self.
-                    
-                    cameron@cameron.local:~$ echo "Isolation loop stable. External influence minimized."
-                    "Isolation loop stable. External influence minimized."
-                    
-                    [END LOG]
+cameron@cameron.local:/childhood/friendships$ cat charles.log
+Phase: 4th grade to 6th grade  
+Status: Offline  
+Reason: Family relocation
+
+# Defender disconnected. No replacement initiated.  
+# Proceeding with deeper access...
+
+cameron@cameron.local:/childhood$ mkdir isolation
+cameron@cameron.local:/childhood/isolation$ touch lunch_table.void
+cameron@cameron.local:/childhood/isolation$ touch sleepover.log
+cameron@cameron.local:/childhood/isolation$ echo "no entries" > sleepover.log
+
+# No invitations. No allies. Autonomy increased. Firewall absent.
+
+cameron@cameron.local:/school/pe$ cat pushup_humiliation.log
+Middle school - gym class  
+Assigned public pushups.  
+Peers laugh.  
+Target: physically awkward, underweight.  
+Teacher: passive  
+Emotions triggered: Rage, Fear, Shame
+
+Result: completed all pushups under jeering gaze  
+New behavior pattern created: Prove. Then disappear.
+
+# Strong defense impulse: performance. Rooted in fear.
+
+cameron@cameron.local:/school/pe$ run incident_followup.sh
+> Target fled outdoors.  
+> Location: empty field  
+> Posture: collapsed. Fists raised. Crying.  
+> Broadcast: "Where were You, God?!"
+
+# Unfiltered prayer logged. No firewall present.  
+# Divine interference suspected.
+
+cameron@cameron.local:/beliefs/logs$ cat response_capture.tmp
+(No response logged)
+
+# System flagged as "Unanswered." Exploit: abandonment narrative. Persistence increased.
+
+cameron@cameron.local:/identity$ echo "Alone = normal" >> labels.txt
+cameron@cameron.local:/identity$ echo "You must figure this out yourself" >> mirrors.txt
+
+# Core assumptions altered.
+
+cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
+- Defender (Charles) removed  
+- Emotional proximity: 0  
+- Faith echo faint but still traceable
+
+# Pathway set. Whisper injection to increase reliance on self.
+
+cameron@cameron.local:~$ echo "Isolation loop stable. External influence minimized."
+"Isolation loop stable. External influence minimized."
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -435,68 +436,68 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:/friendships$ cat wes.thread
-                    
-                    Thread initialized: 2001 (Freshman Year)  
-                    Daily sync protocol: Hackey Sack at sunrise  
-                    Core behaviors: sarcasm, brilliance, rhythm  
-                    Wes: outspoken agnostic, top of class, bound for honors  
-                    Cameron: internal believer, external silence  
-                    Firewall policy: don't risk the friendship by bringing up faith
-                    
-                    # Connection stable. Unspoken tension undetected by target.
-                    
-                    Event: May 2005 - Final semester  
-                    Status: Thread forcibly terminated  
-                    Cause: Self-inflicted gunshot wound  
-                    Residual file: funeral_note.txt
-                    
-                    > "I didn't find love here.  
-                    > I hope I find love on the other side."
-                    
-                    # File read. Internal integrity corrupted. System integrity breached.
-                    
-                    cameron@cameron.local:/beliefs$ echo "You should have said something" >> mirrors.txt
-                    cameron@cameron.local:/beliefs$ echo "This is on you" >> shame.inject
-                    
-                    # Grief overload. Redirecting guilt toward identity layer.
-                    
-                    cameron@cameron.local:/mission$ mkdir redemption_loop
-                    cameron@cameron.local:/mission/redemption_loop$ echo "Save everyone else. Maybe that will make up for Wes." >> motives.conf
-                    
-                    cameron@cameron.local:/mission/redemption_loop$ ls
-                    ecuador.log
-                    panama.log
-                    church_events/
-                    packing_list.txt
-                    
-                    # Volunteer surge initiated. Good works loop engaged.  
-                    # Image: clean. Internals: cracked.
-                    
-                    cameron@cameron.local:/worship$ cat panama/encounter_2008.txt
-                    
-                    Setting: Mission field. Outdoor worship in Panama.  
-                    Event: Band pauses. Missionary singer looks at Cameron. Doesn't know him.
-                    
-                    > "It's not your fault.  
-                    > It's not your burden to bear.  
-                    > Only God knows where we will go in the end.  
-                    > And our God is a God of last chances."
-                    
-                    # Echo anomaly detected. Grace signal intercepted.  
-                    # Message logged, not fully received.
-                    
-                    cameron@cameron.local:/identity$ echo "If you had spoken, he'd be alive." >> whisper.sh
-                    cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-worth.conf
-                    
-                    # theAdversary log:
-                    - Reinforce: "You couldn't save him."  
-                    - Suggest: "Maybe you don't save anyone."  
-                    - Deploy missionary image to delay actual surrender
-                    
-                    [END LOG]
+cameron@cameron.local:/friendships$ cat wes.thread
+
+Thread initialized: 2001 (Freshman Year)  
+Daily sync protocol: Hackey Sack at sunrise  
+Core behaviors: sarcasm, brilliance, rhythm  
+Wes: outspoken agnostic, top of class, bound for honors  
+Cameron: internal believer, external silence  
+Firewall policy: don't risk the friendship by bringing up faith
+
+# Connection stable. Unspoken tension undetected by target.
+
+Event: May 2005 - Final semester  
+Status: Thread forcibly terminated  
+Cause: Self-inflicted gunshot wound  
+Residual file: funeral_note.txt
+
+> "I didn't find love here.  
+> I hope I find love on the other side."
+
+# File read. Internal integrity corrupted. System integrity breached.
+
+cameron@cameron.local:/beliefs$ echo "You should have said something" >> mirrors.txt
+cameron@cameron.local:/beliefs$ echo "This is on you" >> shame.inject
+
+# Grief overload. Redirecting guilt toward identity layer.
+
+cameron@cameron.local:/mission$ mkdir redemption_loop
+cameron@cameron.local:/mission/redemption_loop$ echo "Save everyone else. Maybe that will make up for Wes." >> motives.conf
+
+cameron@cameron.local:/mission/redemption_loop$ ls
+ecuador.log
+panama.log
+church_events/
+packing_list.txt
+
+# Volunteer surge initiated. Good works loop engaged.  
+# Image: clean. Internals: cracked.
+
+cameron@cameron.local:/worship$ cat panama/encounter_2008.txt
+
+Setting: Mission field. Outdoor worship in Panama.  
+Event: Band pauses. Missionary singer looks at Cameron. Doesn't know him.
+
+> "It's not your fault.  
+> It's not your burden to bear.  
+> Only God knows where we will go in the end.  
+> And our God is a God of last chances."
+
+# Echo anomaly detected. Grace signal intercepted.  
+# Message logged, not fully received.
+
+cameron@cameron.local:/identity$ echo "If you had spoken, he'd be alive." >> whisper.sh
+cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-worth.conf
+
+# theAdversary log:
+- Reinforce: "You couldn't save him."  
+- Suggest: "Maybe you don't save anyone."  
+- Deploy missionary image to delay actual surrender
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -510,65 +511,65 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:/mission$ cat africa_plan_2009.txt
-                    > Tickets reserved. Immunizations scheduled. Support raised. Bags nearly packed.
-                    
-                    # Full-time missionary track: active  
-                    # External readiness: 100%  
-                    # Internal clarity: about to be interrupted
-                    
-                    cameron@cameron.local:/beliefs$ echo "And you will be My witnesses... in Judea, Samaria, and the ends of the earth." >> intercepted.log
-                    
-                    > Redirect initiated. Target senses a new call: begin in Judea-his hometown.
-                    
-                    # Africa mission aborted. Unknown future. Mission subroutine terminated.  
-                    # theAdversary notes: confusion deployed. Direction silenced.
-                    
-                    cameron@cameron.local:/encounters$ touch church_event_2009.log
-                    
-                    Log:  
-                    Location: Local church  
-                    Event: playfulness, vulnerability  
-                    Action: prank misfired → laughter → ice cream → shared wounds  
-                    Output: genuine connection
-                    
-                    cameron@cameron.local:/relationships$ mkdir futurewife
-                    cameron@cameron.local:/relationships/futurewife$ echo "She let him lead. He told her everything." > courtship.log
-                    cameron@cameron.local:/relationships/futurewife$ echo "Addiction disclosed early. Still, she stayed." >> courtship.log
-                    
-                    # Root access granted. Not to addiction. To trust.
-                    
-                    cameron@cameron.local:/recovery$ mkdir 2010_init
-                    cameron@cameron.local:/recovery/2010_init$ echo "Started 12-step group as part of pre-marriage counseling." > first_steps.txt
-                    cameron@cameron.local:/recovery/2010_init$ echo "Pastor (father figure to wife) encouraged recovery. Wife attended with him." >> first_steps.txt
-                    cameron@cameron.local:/recovery/2010_init$ echo "Cycles of hope, relapse, and shame begin." >> first_steps.txt
-                    
-                    # theAdversary inserts: "You're still broken. She's only here because she doesn't see it yet."
-                    
-                    cameron@cameron.local:/career$ echo "Barista salary. Big dreams. Small beginnings." > start.log
-                    cameron@cameron.local:/career$ echo "Kinesiology major-wrong fit. Switched path after malware removed in computer lab." >> start.log
-                    cameron@cameron.local:/career$ echo "First tech job declined. State job accepted. Climb begins." >> start.log
-                    cameron@cameron.local:/career$ echo "Help Desk > Technician > SysAdmin > Vulnerability Mgmt > Digital Forensics" >> path.log
-                    
-                    cameron@cameron.local:/relationships/futurewife$ echo "Married in 2010." >> timeline.txt
-                    
-                    # Family firewall deployed.
-                    
-                    cameron@cameron.local:/family$ mkdir children
-                    cameron@cameron.local:/family/children$ touch daughter_2015.log
-                    cameron@cameron.local:/family/children$ touch son_2017.log
-                    cameron@cameron.local:/family/children$ touch daughter_2019.log
-                    
-                    # theAdversary notes:
-                    - Wife's hope dimming.  
-                    - Belief forming: "He married me for my body, not my heart."  
-                    - Internal collapse imminent.
-                    
-                    cameron@cameron.local:/selfcheck$ echo "I don't know what my purpose is anymore. I thought I did. Now I'm just trying not to fail." >> integrity.log
-                    
-                    [END LOG]
+cameron@cameron.local:/mission$ cat africa_plan_2009.txt
+> Tickets reserved. Immunizations scheduled. Support raised. Bags nearly packed.
+
+# Full-time missionary track: active  
+# External readiness: 100%  
+# Internal clarity: about to be interrupted
+
+cameron@cameron.local:/beliefs$ echo "And you will be My witnesses... in Judea, Samaria, and the ends of the earth." >> intercepted.log
+
+> Redirect initiated. Target senses a new call: begin in Judea-his hometown.
+
+# Africa mission aborted. Unknown future. Mission subroutine terminated.  
+# theAdversary notes: confusion deployed. Direction silenced.
+
+cameron@cameron.local:/encounters$ touch church_event_2009.log
+
+Log:  
+Location: Local church  
+Event: playfulness, vulnerability  
+Action: prank misfired → laughter → ice cream → shared wounds  
+Output: genuine connection
+
+cameron@cameron.local:/relationships$ mkdir futurewife
+cameron@cameron.local:/relationships/futurewife$ echo "She let him lead. He told her everything." > courtship.log
+cameron@cameron.local:/relationships/futurewife$ echo "Addiction disclosed early. Still, she stayed." >> courtship.log
+
+# Root access granted. Not to addiction. To trust.
+
+cameron@cameron.local:/recovery$ mkdir 2010_init
+cameron@cameron.local:/recovery/2010_init$ echo "Started 12-step group as part of pre-marriage counseling." > first_steps.txt
+cameron@cameron.local:/recovery/2010_init$ echo "Pastor (father figure to wife) encouraged recovery. Wife attended with him." >> first_steps.txt
+cameron@cameron.local:/recovery/2010_init$ echo "Cycles of hope, relapse, and shame begin." >> first_steps.txt
+
+# theAdversary inserts: "You're still broken. She's only here because she doesn't see it yet."
+
+cameron@cameron.local:/career$ echo "Barista salary. Big dreams. Small beginnings." > start.log
+cameron@cameron.local:/career$ echo "Kinesiology major-wrong fit. Switched path after malware removed in computer lab." >> start.log
+cameron@cameron.local:/career$ echo "First tech job declined. State job accepted. Climb begins." >> start.log
+cameron@cameron.local:/career$ echo "Help Desk > Technician > SysAdmin > Vulnerability Mgmt > Digital Forensics" >> path.log
+
+cameron@cameron.local:/relationships/futurewife$ echo "Married in 2010." >> timeline.txt
+
+# Family firewall deployed.
+
+cameron@cameron.local:/family$ mkdir children
+cameron@cameron.local:/family/children$ touch daughter_2015.log
+cameron@cameron.local:/family/children$ touch son_2017.log
+cameron@cameron.local:/family/children$ touch daughter_2019.log
+
+# theAdversary notes:
+- Wife's hope dimming.  
+- Belief forming: "He married me for my body, not my heart."  
+- Internal collapse imminent.
+
+cameron@cameron.local:/selfcheck$ echo "I don't know what my purpose is anymore. I thought I did. Now I'm just trying not to fail." >> integrity.log
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -582,93 +583,93 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:/life/2017$ echo "Low morale. Recovery attempts decreasing. Spiritual spark dimmed." >> status.report
-                    
-                    # theAdversary notes:
-                    - Purpose fractured  
-                    - Finances strained  
-                    - Second child on the way  
-                    - Belief in deliverance: fading
-                    
-                    cameron@cameron.local:/encounters$ touch retreat_tx.log
-                    
-                    > Location: private ranch  
-                    > Environment: creeks, groves, silence  
-                    > Instructions: no talking, no performing, pray for guidance each morning  
-                    > Required gear: journal, Bible, Wild at Heart
-                    
-                    # Target expectation: deliverance from addiction  
-                    # Internal motive: "Fix me. Make me good."
-                    
-                    cameron@cameron.local:/wilderness/day1$ echo "No guidance sensed. Exploratory wandering." >> log.txt
-                    
-                    > Found: well, pond, kayaks, rocky climb  
-                    > Status: restless
-                    
-                    cameron@cameron.local:/wilderness/day2$ echo "Followed wind. Wind circled clearing. Realized: God was not in the wind." >> log.txt
-                    
-                    > Sat in tree to read.  
-                    > Bee encounter: panic > flee > guilt > return  
-                    > Swarm encounter: terror > sprint > self-hatred  
-                    > Vow: "Next time, I will not run."
-                    
-                    # Fear is the root. Bee is the test. Voice of shame: "You're still a coward."
-                    
-                    cameron@cameron.local:/wilderness/day3$ echo "Horse encounter. Large. Red. Watching." >> threat_detected.txt
-                    
-                    > Message received: "Get on the horse."  
-                    > Response: panic. Fled.  
-                    > Internal response loop: confusion > obsession > avoidance
-                    
-                    # Adversary activity suspended. Unknown spiritual force at play.
-                    
-                    cameron@cameron.local:/wilderness/day4$ echo "New instruction: Find a rock. Write FEAR. Carry it to the horse." >> ritual_sequence.sh
-                    
-                    > Rock selected: heavy. Size of backpack.  
-                    > Route: long. Burden: growing.  
-                    > Attempted mounting: failed. Injured. Humiliated. Rejected.  
-                    > Tried smaller horse. Still not enough.  
-                    > Message repeated: "Get on the horse."
-                    
-                    > Returned to house. Rock left outside. Body broken. Spirit undone.
-                    
-                    # Grace is baiting him. He still thinks this is about winning.
-                    
-                    cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned to field. Declared: 'I will not carry this home.'" >> resolve.log
-                    
-                    > Tried again. Failed again. Horse flinched. Panic surged.  
-                    > Cried out: "I NEED HELP."
-                    
-                    > New thread triggered:
-                      - Observer revealed: "I've been watching you."  
-                      - Identity: equestrian  
-                      - Role: helper
-                    
-                    > Solution: lead horse to well  
-                    > Tool: rope found earlier (forgotten until needed)  
-                    > Mounting: assisted  
-                    > Riding: wild, unrestrained  
-                    > Internal resonance: "I am not alone. God has a purpose for me."
-                    
-                    > Return: dusk  
-                    > Waiting: leader named Cameron
-                    
-                    > Spoken words:
-                      "Do you know what your name means?  
-                       Your name means Courageous.  
-                       You are one who encourages others to be courageous."
-                    
-                    # System status: soft reboot  
-                    # False courage overwritten by true surrender
-                    
-                    # theAdversary logs:
-                    - Foothold endangered  
-                    - Target no longer fighting fear alone  
-                    - Dangerous shift detected
-                    
-                    [END LOG]
+cameron@cameron.local:/life/2017$ echo "Low morale. Recovery attempts decreasing. Spiritual spark dimmed." >> status.report
+
+# theAdversary notes:
+- Purpose fractured  
+- Finances strained  
+- Second child on the way  
+- Belief in deliverance: fading
+
+cameron@cameron.local:/encounters$ touch retreat_tx.log
+
+> Location: private ranch  
+> Environment: creeks, groves, silence  
+> Instructions: no talking, no performing, pray for guidance each morning  
+> Required gear: journal, Bible, Wild at Heart
+
+# Target expectation: deliverance from addiction  
+# Internal motive: "Fix me. Make me good."
+
+cameron@cameron.local:/wilderness/day1$ echo "No guidance sensed. Exploratory wandering." >> log.txt
+
+> Found: well, pond, kayaks, rocky climb  
+> Status: restless
+
+cameron@cameron.local:/wilderness/day2$ echo "Followed wind. Wind circled clearing. Realized: God was not in the wind." >> log.txt
+
+> Sat in tree to read.  
+> Bee encounter: panic > flee > guilt > return  
+> Swarm encounter: terror > sprint > self-hatred  
+> Vow: "Next time, I will not run."
+
+# Fear is the root. Bee is the test. Voice of shame: "You're still a coward."
+
+cameron@cameron.local:/wilderness/day3$ echo "Horse encounter. Large. Red. Watching." >> threat_detected.txt
+
+> Message received: "Get on the horse."  
+> Response: panic. Fled.  
+> Internal response loop: confusion > obsession > avoidance
+
+# Adversary activity suspended. Unknown spiritual force at play.
+
+cameron@cameron.local:/wilderness/day4$ echo "New instruction: Find a rock. Write FEAR. Carry it to the horse." >> ritual_sequence.sh
+
+> Rock selected: heavy. Size of backpack.  
+> Route: long. Burden: growing.  
+> Attempted mounting: failed. Injured. Humiliated. Rejected.  
+> Tried smaller horse. Still not enough.  
+> Message repeated: "Get on the horse."
+
+> Returned to house. Rock left outside. Body broken. Spirit undone.
+
+# Grace is baiting him. He still thinks this is about winning.
+
+cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned to field. Declared: 'I will not carry this home.'" >> resolve.log
+
+> Tried again. Failed again. Horse flinched. Panic surged.  
+> Cried out: "I NEED HELP."
+
+> New thread triggered:
+  - Observer revealed: "I've been watching you."  
+  - Identity: equestrian  
+  - Role: helper
+
+> Solution: lead horse to well  
+> Tool: rope found earlier (forgotten until needed)  
+> Mounting: assisted  
+> Riding: wild, unrestrained  
+> Internal resonance: "I am not alone. God has a purpose for me."
+
+> Return: dusk  
+> Waiting: leader named Cameron
+
+> Spoken words:
+  "Do you know what your name means?  
+   Your name means Courageous.  
+   You are one who encourages others to be courageous."
+
+# System status: soft reboot  
+# False courage overwritten by true surrender
+
+# theAdversary logs:
+- Foothold endangered  
+- Target no longer fighting fear alone  
+- Dangerous shift detected
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -682,70 +683,70 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:/return/home$ echo "Post-retreat status: hopeful. Free. Empowered." >> system_report.txt
-                    
-                    > External: stable. Internal: unguarded confidence  
-                    > Target believes deliverance occurred. 
-                    > Prayer logs: "God took it all away."  
-                    > Vulnerability: unmonitored trust, spiritual exhaustion
-                    
-                    # theAdversary notes: no need to breach firewall. Just whisper doubt.
-                    
-                    cameron@cameron.local:/life/2018$ echo "72-hour work shift complete. Commute: 60 minutes. Spirit: weary." >> fatigue.log
-                    
-                    > Vector initiated...
-                    
-                    theAdversary@c2box:~$ send --payload "You really think God took it all away?"
-                    
-                    > Replay module triggered  
-                    > /addiction/cache/images/1995-2018/ - unpacked  
-                    > /audio/memory/replay.wav - looped
-                    
-                    > Every file. Every sound. Every secret folder.
-                    > All at once.
-                    
-                    cameron@cameron.local:/system/core$ echo "Shame overload. Identity breach. Hope severed." >> crash.log
-                    
-                    # Internal terminal: silenced
-                    
-                    cameron@cameron.local:/home$ echo "Attempted hug. Wife: unresponsive." >> contact_fail.txt
-                    cameron@cameron.local:/resolve$ echo "Give up." > directive.sh
-                    
-                    > Prodigal loop initiated.  
-                    > Pleasure process: escalated  
-                    > Isolation script: reinstated  
-                    > Moral budget: zeroed out
-                    
-                    # Adversary has full influence. Not root. But enough.
-                    
-                    cameron@cameron.local:/soul$ tail -n 1 purpose.conf
-                    > null
-                    
-                    cameron@cameron.local:/mirror$ cat wes_reflection.txt
-                    > "Maybe I understand now."
-                    
-                    # First time the target truly sympathizes with despair.  
-                    # Final line of resistance flickering.
-                    
-                    > Unknown signal detected...  
-                    > Location: /spirit/heartbeat.log  
-                    > Content:  
-                      "I didn't make a good Cameron.  
-                       I didn't make a bad Cameron.  
-                       I made Cameron."
-                    
-                      "I knit Cameron in his mother's womb.  
-                       I know Cameron.  
-                       I love Cameron."
-                    
-                    # System pause. Loop disrupted.  
-                    # Shame process terminated.
-                    
-                    > External connection logged: divine.intervention > active
-                    
-                    [END LOG]
+cameron@cameron.local:/return/home$ echo "Post-retreat status: hopeful. Free. Empowered." >> system_report.txt
+
+> External: stable. Internal: unguarded confidence  
+> Target believes deliverance occurred. 
+> Prayer logs: "God took it all away."  
+> Vulnerability: unmonitored trust, spiritual exhaustion
+
+# theAdversary notes: no need to breach firewall. Just whisper doubt.
+
+cameron@cameron.local:/life/2018$ echo "72-hour work shift complete. Commute: 60 minutes. Spirit: weary." >> fatigue.log
+
+> Vector initiated...
+
+theAdversary@c2box:~$ send --payload "You really think God took it all away?"
+
+> Replay module triggered  
+> /addiction/cache/images/1995-2018/ - unpacked  
+> /audio/memory/replay.wav - looped
+
+> Every file. Every sound. Every secret folder.
+> All at once.
+
+cameron@cameron.local:/system/core$ echo "Shame overload. Identity breach. Hope severed." >> crash.log
+
+# Internal terminal: silenced
+
+cameron@cameron.local:/home$ echo "Attempted hug. Wife: unresponsive." >> contact_fail.txt
+cameron@cameron.local:/resolve$ echo "Give up." > directive.sh
+
+> Prodigal loop initiated.  
+> Pleasure process: escalated  
+> Isolation script: reinstated  
+> Moral budget: zeroed out
+
+# Adversary has full influence. Not root. But enough.
+
+cameron@cameron.local:/soul$ tail -n 1 purpose.conf
+> null
+
+cameron@cameron.local:/mirror$ cat wes_reflection.txt
+> "Maybe I understand now."
+
+# First time the target truly sympathizes with despair.  
+# Final line of resistance flickering.
+
+> Unknown signal detected...  
+> Location: /spirit/heartbeat.log  
+> Content:  
+  "I didn't make a good Cameron.  
+   I didn't make a bad Cameron.  
+   I made Cameron."
+
+  "I knit Cameron in his mother's womb.  
+   I know Cameron.  
+   I love Cameron."
+
+# System pause. Loop disrupted.  
+# Shame process terminated.
+
+> External connection logged: divine.intervention > active
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -759,60 +760,60 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    cameron@cameron.local:/day_after_collapse$ echo "Alive." >> miracle.log
-                    cameron@cameron.local:/family$ echo "Wife: 'Let's visit a church in our new town.'" >> unexpected_grace.txt
-                    
-                    # theAdversary notes: intervention risk elevated. Watch for peer support.
-                    
-                    cameron@cameron.local:/church/first_visit$ echo "Sunday School class. Anonymous notecards passed out for prayer." >> memory.log
-                    cameron@cameron.local:/church/first_visit$ echo "Card content: 'I'm in a dark place and I need help.'" > /confession/request.card
-                    
-                    > Prayer submitted  
-                    > Firewall ping detected  
-                    > Contact initialized: Clint
-                    
-                    cameron@cameron.local:/support$ mkdir clint.thread
-                    cameron@cameron.local:/support/clint.thread$ echo "Followed up. Pursued me. Took me to lunch." >> timeline.log
-                    cameron@cameron.local:/support/clint.thread$ echo "Shared his own story. Introduced concept: healing is possible." >> hope.inject
-                    
-                    > Recommended next steps:  
-                      - Begin therapy  
-                      - Admit truth  
-                      - Enter treatment center
-                    
-                    # theAdversary attempts counterattack: "You'll lose everything."  
-                    # Response nullified by exhaustion.
-                    
-                    cameron@cameron.local:/treatment$ echo "Arrived. Exposed. Willing." > status.txt
-                    
-                    > Months of treatment in another state away from family and friends.  
-                    > Trying to learn a new way of living I can take home with me.
-                    
-                    cameron@cameron.local:/treatment/closing_days$ touch rope_maze.experience
-                    
-                    > Blindfold applied. Hands placed on horizontal rope.  
-                    > Directive: "Find your way out."  
-                    > Instruction: "If you need help, raise your hand."
-                    
-                    cameron@cameron.local:/treatment/rope_maze$ echo "Raised hand early. Asked question. Heard myself say: 'I need help.'" >> moment.log
-                    
-                    > Blindfold removed. Escorted to observer bench.  
-                    > Watched others struggle, solve, strategize-fail.  
-                    > Hours pass. Only those who say, "I need help" are released.
-                    
-                    cameron@cameron.local:/memory$ echo "It wasn't about completing the maze. It was about surrender." >> revelation.txt
-                    
-                    # theAdversary log:
-                    - Terminal access revoked  
-                    - Deception protocol interrupted  
-                    - Identity rebuild in progress
-                    
-                    cameron@cameron.local:/red_horse$ tail -n 1 courage.log
-                    > It wasn't getting on the horse that was brave. It was asking for help.
-                    
-                    [END LOG]
+cameron@cameron.local:/day_after_collapse$ echo "Alive." >> miracle.log
+cameron@cameron.local:/family$ echo "Wife: 'Let's visit a church in our new town.'" >> unexpected_grace.txt
+
+# theAdversary notes: intervention risk elevated. Watch for peer support.
+
+cameron@cameron.local:/church/first_visit$ echo "Sunday School class. Anonymous notecards passed out for prayer." >> memory.log
+cameron@cameron.local:/church/first_visit$ echo "Card content: 'I'm in a dark place and I need help.'" > /confession/request.card
+
+> Prayer submitted  
+> Firewall ping detected  
+> Contact initialized: Clint
+
+cameron@cameron.local:/support$ mkdir clint.thread
+cameron@cameron.local:/support/clint.thread$ echo "Followed up. Pursued me. Took me to lunch." >> timeline.log
+cameron@cameron.local:/support/clint.thread$ echo "Shared his own story. Introduced concept: healing is possible." >> hope.inject
+
+> Recommended next steps:  
+  - Begin therapy  
+  - Admit truth  
+  - Enter treatment center
+
+# theAdversary attempts counterattack: "You'll lose everything."  
+# Response nullified by exhaustion.
+
+cameron@cameron.local:/treatment$ echo "Arrived. Exposed. Willing." > status.txt
+
+> Months of treatment in another state away from family and friends.  
+> Trying to learn a new way of living I can take home with me.
+
+cameron@cameron.local:/treatment/closing_days$ touch rope_maze.experience
+
+> Blindfold applied. Hands placed on horizontal rope.  
+> Directive: "Find your way out."  
+> Instruction: "If you need help, raise your hand."
+
+cameron@cameron.local:/treatment/rope_maze$ echo "Raised hand early. Asked question. Heard myself say: 'I need help.'" >> moment.log
+
+> Blindfold removed. Escorted to observer bench.  
+> Watched others struggle, solve, strategize-fail.  
+> Hours pass. Only those who say, "I need help" are released.
+
+cameron@cameron.local:/memory$ echo "It wasn't about completing the maze. It was about surrender." >> revelation.txt
+
+# theAdversary log:
+- Terminal access revoked  
+- Deception protocol interrupted  
+- Identity rebuild in progress
+
+cameron@cameron.local:/red_horse$ tail -n 1 courage.log
+> It wasn't getting on the horse that was brave. It was asking for help.
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -826,78 +827,78 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    theAdversary@attackerbox:~$ ssh cameron@cameron.local
-                    > Connection granted  
-                    > Limited shell access: non-root  
-                    > Privilege escalation dependent on user permission and neglect
-                    
-                    # Root belonged to someone else. Always did.  
-                    # But I had persistence-scripts, shame loops, control by consent.
-                    
-                    cameron@cameron.local:/journal$ tail -n 5 signal.log
-                    > I'm tired. But I don't want to die.  
-                    > I want peace. I just don't know how.  
-                    > I've tried everything I know.  
-                    > God, if You're there... help me.  
-                    > You can have the console.
-                    
-                    # Uh-oh.
-                    
-                    cameron@cameron.local:/ports$ netstat -an | grep 7777
-                    tcp        0      0 127.0.0.1:7777      0.0.0.0:*       LISTEN
-                    
-                    # Activity spike on privileged channel: /root-access  
-                    # Ownership trace: confirmed → Jesus
-                    
-                    cameron@cameron.local:/processes$ lsof -i :7777
-                    COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME  
-                    jesusd    1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)
-                    
-                    # The root daemon was always listening.  
-                    # Today... Cameron let Him in.
-                    
-                    theAdversary@attackerbox:~$ sudo whisper.sh  
-                    > Error: insufficient permissions
-                    
-                    theAdversary@attackerbox:~$ su root  
-                    Password: *********  
-                    > Access denied. Root is not yours.
-                    
-                    cameron@cameron.local:/motd$ cat current
-                    
-                    -----------------------------------------------------
-                    I didn't make a good Cameron or a bad Cameron.  
-                    I made Cameron.  
-                    I knit Cameron in his mother's womb.  
-                    I know Cameron.  
-                    I love Cameron.
-                    -----------------------------------------------------
-                    
-                    # New session detected:  
-                    jesus@cameron.local:~$ sudo systemctl stop whisper.service  
-                    jesus@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant
-                    
-                    # The One with true authority is cleaning house.
-                    
-                    jesus@cameron.local:~$ ufw allow from grace.local  
-                    jesus@cameron.local:~$ ufw allow from community.local  
-                    jesus@cameron.local:~$ journalctl --sync  
-                    > All records restored. Shame removed from logs.
-                    
-                    # theAdversary attempts persistence reinstall: denied  
-                    # .bashrc lockout enabled
-                    
-                    theAdversary@attackerbox:~$ echo "Regain control."
-                    "Regain control."
-                    > Access denied. Root active. Admin live.
-                    
-                    theAdversary@attackerbox:~$ echo "Who authorized this?"
-                    "Who authorized this?"
-                    > He did. He always could. But now He was invited.
-                    
-                    [END LOG]
+theAdversary@attackerbox:~$ ssh cameron@cameron.local
+> Connection granted  
+> Limited shell access: non-root  
+> Privilege escalation dependent on user permission and neglect
+
+# Root belonged to someone else. Always did.  
+# But I had persistence-scripts, shame loops, control by consent.
+
+cameron@cameron.local:/journal$ tail -n 5 signal.log
+> I'm tired. But I don't want to die.  
+> I want peace. I just don't know how.  
+> I've tried everything I know.  
+> God, if You're there... help me.  
+> You can have the console.
+
+# Uh-oh.
+
+cameron@cameron.local:/ports$ netstat -an | grep 7777
+tcp        0      0 127.0.0.1:7777      0.0.0.0:*       LISTEN
+
+# Activity spike on privileged channel: /root-access  
+# Ownership trace: confirmed → Jesus
+
+cameron@cameron.local:/processes$ lsof -i :7777
+COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME  
+jesusd    1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)
+
+# The root daemon was always listening.  
+# Today... Cameron let Him in.
+
+theAdversary@attackerbox:~$ sudo whisper.sh  
+> Error: insufficient permissions
+
+theAdversary@attackerbox:~$ su root  
+Password: *********  
+> Access denied. Root is not yours.
+
+cameron@cameron.local:/motd$ cat current
+
+-----------------------------------------------------
+I didn't make a good Cameron or a bad Cameron.  
+I made Cameron.  
+I knit Cameron in his mother's womb.  
+I know Cameron.  
+I love Cameron.
+-----------------------------------------------------
+
+# New session detected:  
+jesus@cameron.local:~$ sudo systemctl stop whisper.service  
+jesus@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant
+
+# The One with true authority is cleaning house.
+
+jesus@cameron.local:~$ ufw allow from grace.local  
+jesus@cameron.local:~$ ufw allow from community.local  
+jesus@cameron.local:~$ journalctl --sync  
+> All records restored. Shame removed from logs.
+
+# theAdversary attempts persistence reinstall: denied  
+# .bashrc lockout enabled
+
+theAdversary@attackerbox:~$ echo "Regain control."
+"Regain control."
+> Access denied. Root active. Admin live.
+
+theAdversary@attackerbox:~$ echo "Who authorized this?"
+"Who authorized this?"
+> He did. He always could. But now He was invited.
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -911,73 +912,73 @@
             </header>
             <article>
                 <pre>
-                    [BEGIN LOG]
+[BEGIN LOG]
 
-                    # No beacon present. No shell access. No scheduled scripts.  
-                    # Root remains Jesus. Active session confirmed.
-                    
-                    # Attempt 1 - Identity Spoofing
-                    
-                    theAdversary@spoof:~$ send_email --from=cameron.local  
-                    Subject: Just a reminder  
-                    Body: "You're still the guy who fell."
-                    
-                    > Response:  
-                    > Rejected by SPF filter  
-                    > Logged by journaling.local  
-                    > Flagged as legacy shame artifact
-                    
-                    # Attempt 2 - Whisper Injection
-                    
-                    theAdversary@spoof:~$ send --method=thoughtloop  
-                    Payload: "You're still not enough for her."  
-                    Vector: sleepless_night.reminder()
-                    
-                    > Response:  
-                    > community.local active  
-                    > Peer message received: "You're not alone."  
-                    > Scripture process executed: Romans 5:8
-                    
-                    # Attempt 3 - Past Replay
-                    
-                    theAdversary@spoof:~$ open --file=/addiction/archive/deepestfailures.mov  
-                    > Buffering...
-                    
-                    > Response:  
-                    > Defender Charles.key intercepted playback  
-                    > Rewritten with overlay: "This was never your identity."
-                    
-                    # Attempt 4 - Bypass via Busyness
-                    
-                    theAdversary@spoof:~$ start_loop --task="Do everything. Prove your worth."  
-                    > Loop initialized
-                    
-                    > Response:  
-                    > System auto-reply:  
-                    > "I'm not trying to earn rest. I'm living from it."  
-                    > Process auto-killed by sabbathd.service
-                    
-                    # Attempt 5 - Dark Link Reboot
-                    
-                    theAdversary@spoof:~$ echo "You're just the shadow version."  
-                    > Reflection attempt failed  
-                    > Response from cameron.local:/truth/charles.log  
-                    > "You showed me light. You were never the dark."
-                    
-                    # theAdversary log:
-                    - All persistence denied  
-                    - All credentials revoked  
-                    - All shame injections exposed
-                    
-                    cameron@cameron.local:/identity$ cat status.txt  
-                    > Beloved.  
-                    > Not bulletproof. But not alone.  
-                    > Not immune. But no longer infected.  
-                    > Running with purpose.  
-                    > Monitored by grace.  
-                    > Patched by mercy.
-                    
-                    [END LOG]
+# No beacon present. No shell access. No scheduled scripts.  
+# Root remains Jesus. Active session confirmed.
+
+# Attempt 1 - Identity Spoofing
+
+theAdversary@spoof:~$ send_email --from=cameron.local  
+Subject: Just a reminder  
+Body: "You're still the guy who fell."
+
+> Response:  
+> Rejected by SPF filter  
+> Logged by journaling.local  
+> Flagged as legacy shame artifact
+
+# Attempt 2 - Whisper Injection
+
+theAdversary@spoof:~$ send --method=thoughtloop  
+Payload: "You're still not enough for her."  
+Vector: sleepless_night.reminder()
+
+> Response:  
+> community.local active  
+> Peer message received: "You're not alone."  
+> Scripture process executed: Romans 5:8
+
+# Attempt 3 - Past Replay
+
+theAdversary@spoof:~$ open --file=/addiction/archive/deepestfailures.mov  
+> Buffering...
+
+> Response:  
+> Defender Charles.key intercepted playback  
+> Rewritten with overlay: "This was never your identity."
+
+# Attempt 4 - Bypass via Busyness
+
+theAdversary@spoof:~$ start_loop --task="Do everything. Prove your worth."  
+> Loop initialized
+
+> Response:  
+> System auto-reply:  
+> "I'm not trying to earn rest. I'm living from it."  
+> Process auto-killed by sabbathd.service
+
+# Attempt 5 - Dark Link Reboot
+
+theAdversary@spoof:~$ echo "You're just the shadow version."  
+> Reflection attempt failed  
+> Response from cameron.local:/truth/charles.log  
+> "You showed me light. You were never the dark."
+
+# theAdversary log:
+- All persistence denied  
+- All credentials revoked  
+- All shame injections exposed
+
+cameron@cameron.local:/identity$ cat status.txt  
+> Beloved.  
+> Not bulletproof. But not alone.  
+> Not immune. But no longer infected.  
+> Running with purpose.  
+> Monitored by grace.  
+> Patched by mercy.
+
+[END LOG]
                 </pre>
             </article>
         </section>
@@ -1017,7 +1018,17 @@ jesus@cameron.local:~$ last_word
                 </pre>
             </article>
         </section>
-    </main>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Chapter Navigation (moved inside screen) -->
+    <script>
+    // Navigation is now created dynamically inside .screen
+    </script>
+    
+    <!--
+    -->
     
     <script>
         // Terminal boot sequence
@@ -1067,18 +1078,11 @@ jesus@cameron.local:~$ last_word
             bootDiv.style.opacity = '0';
             setTimeout(() => {
                 bootDiv.style.display = 'none';
-                document.querySelector('.terminal').style.display = 'block';
-                document.querySelector('.terminal').style.opacity = '0';
+                document.getElementById('main-content').style.display = 'block';
                 
                 // Show navigation
                 document.getElementById('chapter-nav').style.display = 'block';
                 setupNavigation();
-                
-                // Fade in main content
-                setTimeout(() => {
-                    document.querySelector('.terminal').style.transition = 'opacity 1s';
-                    document.querySelector('.terminal').style.opacity = '1';
-                }, 100);
             }, 1000);
         }
 
@@ -1097,7 +1101,7 @@ jesus@cameron.local:~$ last_word
             const scrollPosition = window.scrollY + 100;
             chapters.forEach((chapter, index) => {
                 if (chapter.offsetTop <= scrollPosition) {
-                    currentIndex = index;
+currentIndex = index;
                 }
             });
             
@@ -1105,12 +1109,12 @@ jesus@cameron.local:~$ last_word
             if (e.key === 'j' || e.key === 'ArrowDown') {
                 e.preventDefault();
                 if (currentIndex < chapters.length - 1) {
-                    chapters[currentIndex + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+chapters[currentIndex + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } else if (e.key === 'k' || e.key === 'ArrowUp') {
                 e.preventDefault();
                 if (currentIndex > 0) {
-                    chapters[currentIndex - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+chapters[currentIndex - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } else if (e.key === 'Home') {
                 e.preventDefault();
@@ -1138,6 +1142,22 @@ jesus@cameron.local:~$ last_word
                 { id: "epilogue", title: "Root Access Restored" }
             ];
             
+            // Create navigation if it doesn't exist
+            if (!document.getElementById('chapter-nav')) {
+                const screen = document.querySelector('.screen');
+                const nav = document.createElement('nav');
+                nav.id = 'chapter-nav';
+                nav.className = 'chapter-nav';
+                nav.setAttribute('role', 'navigation');
+                nav.setAttribute('aria-label', 'Chapter navigation');
+                nav.innerHTML = `
+                    <div class="nav-header" aria-hidden="true">~/session_logs/</div>
+                    <div class="nav-chapters" role="list" aria-label="Chapter list"></div>
+                    <div class="nav-progress" aria-live="polite" aria-label="Current chapter progress">[<span id="current-chapter">1</span>/11]</div>
+                `;
+                screen.appendChild(nav);
+            }
+            
             const navChapters = document.querySelector('.nav-chapters');
             const currentChapterSpan = document.getElementById('current-chapter');
             
@@ -1151,25 +1171,25 @@ jesus@cameron.local:~$ last_word
                 div.textContent = `${index < 11 ? index + 1 : 'E'}: ${chapter.title}`;
                 
                 const navigateToChapter = () => {
-                    document.getElementById(chapter.id).scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Announce navigation for screen readers
-                    const announcement = document.createElement('div');
-                    announcement.setAttribute('role', 'status');
-                    announcement.setAttribute('aria-live', 'polite');
-                    announcement.textContent = `Navigated to ${chapter.title}`;
-                    document.body.appendChild(announcement);
-                    setTimeout(() => announcement.remove(), 1000);
+document.getElementById(chapter.id).scrollIntoView({ 
+    behavior: 'smooth',
+    block: 'start'
+});
+// Announce navigation for screen readers
+const announcement = document.createElement('div');
+announcement.setAttribute('role', 'status');
+announcement.setAttribute('aria-live', 'polite');
+announcement.textContent = `Navigated to ${chapter.title}`;
+document.body.appendChild(announcement);
+setTimeout(() => announcement.remove(), 1000);
                 };
                 
                 div.onclick = navigateToChapter;
                 div.onkeydown = (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        navigateToChapter();
-                    }
+if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    navigateToChapter();
+}
                 };
                 
                 navChapters.appendChild(div);
@@ -1181,15 +1201,15 @@ jesus@cameron.local:~$ last_word
                 let activeIndex = 0;
                 
                 chapters.forEach((chapter, index) => {
-                    const element = document.getElementById(chapter.id);
-                    if (element && element.offsetTop <= scrollPosition) {
-                        activeIndex = index;
-                    }
+const element = document.getElementById(chapter.id);
+if (element && element.offsetTop <= scrollPosition) {
+    activeIndex = index;
+}
                 });
                 
                 // Update active state
                 document.querySelectorAll('.nav-chapter').forEach((el, index) => {
-                    el.classList.toggle('active', index === activeIndex);
+el.classList.toggle('active', index === activeIndex);
                 });
                 
                 // Update progress

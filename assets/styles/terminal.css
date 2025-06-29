@@ -1,125 +1,287 @@
+/* Import retro terminal font */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #000000; /* Pure black background */
-    color: #00ff00; /* Neon green text */
-    font-family: 'Courier New', Courier, monospace;
-    line-height: 1.6;
-    padding: 20px;
     margin: 0;
+    padding: 0;
+    background: #121010;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    overflow: hidden;
+    height: 100vh;
+    color: #33ff33;
 }
 
-/* Focus indicators for better keyboard navigation */
-*:focus {
-    outline: 2px solid #00ff00;
-    outline-offset: 2px;
+/* CRT container */
+#crt {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #1a1a1a;
+    overflow: hidden;
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    body {
-        background-color: #000000;
-        color: #ffffff;
+/* Scanlines effect */
+#crt::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 8px;
+    z-index: 2;
+    pointer-events: none;
+    animation: scanlines 8s linear infinite;
+}
+
+/* Moving scanlines animation */
+@keyframes scanlines {
+    0% {
+        background-position: 0 0;
     }
-    
-    .terminal, .boot-sequence, .chapter-nav {
-        border-color: #ffffff;
+    100% {
+        background-position: 0 10px;
     }
 }
 
-h1, h2, h3 {
-    color: #00ff00; /* Neon green headers */
-    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; /* Glowing effect */
-    margin-bottom: 10px;
+/* Terminal screen */
+.terminal {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    width: 94%;
+    height: 94%;
+    background: #000000;
+    border-radius: 20px;
+    padding: 40px;
+    overflow: hidden;
+    box-shadow: 
+        inset 0 0 100px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(51, 255, 51, 0.5);
+}
+
+/* Screen content container */
+.screen {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    z-index: 5;
+    padding-right: 20px;
+}
+
+/* Vignette effect */
+.terminal::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 65%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* Flicker effect */
+.flicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(18, 16, 16, 0.2);
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.18; }
+    10% { opacity: 0.15; }
+    20% { opacity: 0.19; }
+    30% { opacity: 0.16; }
+    40% { opacity: 0.18; }
+    50% { opacity: 0.15; }
+    60% { opacity: 0.17; }
+    70% { opacity: 0.16; }
+    80% { opacity: 0.18; }
+    90% { opacity: 0.15; }
+    100% { opacity: 0.18; }
+}
+
+/* RGB color separation effect */
+@keyframes textShadow {
+    0% {
+        text-shadow: 
+            0.4389924193300864px 0 1px rgba(0,30,255,0.5), 
+            -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 
+            0 0 3px #33ff33;
+    }
+    5% {
+        text-shadow: 
+            2.7928974010788217px 0 1px rgba(0,30,255,0.5), 
+            -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 
+            0 0 3px #33ff33;
+    }
+    10% {
+        text-shadow: 
+            0.02956275843481219px 0 1px rgba(0,30,255,0.5), 
+            -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 
+            0 0 3px #33ff33;
+    }
+    15% {
+        text-shadow: 
+            0.6438908203932499px 0 1px rgba(0,30,255,0.5), 
+            -0.6438908203932499px 0 1px rgba(255,0,80,0.3), 
+            0 0 3px #33ff33;
+    }
+    20% {
+        text-shadow: 
+            1.4112204642719997px 0 1px rgba(0,30,255,0.5), 
+            -1.4112204642719997px 0 1px rgba(255,0,80,0.3), 
+            0 0 3px #33ff33;
+    }
+    /* ... continue for smooth animation ... */
+    100% {
+        text-shadow: 
+            0.4389924193300864px 0 1px rgba(0,30,255,0.5), 
+            -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 
+            0 0 3px #33ff33;
+    }
+}
+
+/* Power on effect */
+@keyframes turn-on {
+    0% {
+        transform: scale(1, 0.8) translate(0, 0);
+        filter: brightness(30);
+        opacity: 1;
+    }
+    5% {
+        transform: scale(1, 0.6) translate(0, 0);
+        filter: brightness(30);
+        opacity: 1;
+    }
+    10% {
+        transform: scale(1.3, 0.6) translate(0, 0);
+        filter: brightness(30);
+        opacity: 1;
+    }
+    15% {
+        transform: scale(1, 1) translate(0, 0);
+        filter: brightness(1);
+        opacity: 1;
+    }
 }
 
 .terminal {
-    background-color: #0a0a0a; /* Slightly lighter black for terminal container */
-    border: 1px solid #00ff00; /* Neon green border */
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 1200px; /* Wider terminal for less word wrapping */
-    box-shadow: 0 0 15px #00ff00; /* Glowing terminal effect */
+    animation: turn-on 0.5s linear;
+}
+
+/* Typography with CRT effects */
+h1, h2, h3 {
+    color: #33ff33;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    animation: textShadow 1.6s infinite;
+}
+
+h1 {
+    font-size: 48px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 36px;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+p, pre, li {
+    color: #33ff33;
+    text-shadow: 0 0 5px #33ff33;
+    line-height: 1.6;
 }
 
 pre {
-    background-color: #000000; /* Pure black background for logs */
-    color: #00ff00; /* Neon green text */
-    padding: 15px;
-    border-radius: 5px;
+    font-size: 18px;
+    line-height: 1.4;
+    white-space: pre;
     overflow-x: auto;
-    white-space: pre-wrap; /* Allows wrapping for long lines */
-    word-wrap: break-word; /* Breaks long words */
-    margin: 10px 0;
-    text-shadow: 0 0 5px #00ff00; /* Glowing text effect */
+    animation: textShadow 1.6s infinite;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 15px 0;
 }
 
 code {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #0a0a0a; /* Slightly lighter black for inline code */
-    color: #00ff00; /* Neon green text */
-    padding: 2px 4px;
+    color: #66ff66;
+    background: rgba(0, 255, 0, 0.1);
+    padding: 2px 6px;
     border-radius: 3px;
-    text-shadow: 0 0 5px #00ff00; /* Glowing text effect */
-}
-
-section {
-    margin-bottom: 20px; /* Reduced spacing between sections */
-}
-
-header {
-    margin-bottom: 10px; /* Reduced spacing below headers */
+    font-family: 'VT323', monospace;
 }
 
 a {
-    color: #00ff00; /* Neon green links */
+    color: #66ff66;
     text-decoration: none;
-    text-shadow: 0 0 5px #00ff00; /* Glowing effect for links */
+    animation: textShadow 1.6s infinite;
 }
 
 a:hover {
+    color: #99ff99;
     text-decoration: underline;
-    color: #00ff88; /* Slightly lighter green on hover */
+}
+
+/* Terminal prompt styling */
+.command {
+    color: #33ff33;
+}
+
+.output {
+    color: #66ff66;
 }
 
 .comment {
-    color: #008000; /* Darker green for comments */
+    color: #228822;
     font-style: italic;
 }
 
-.keyword {
-    color: #00ff88; /* Slightly lighter green for keywords */
-    font-weight: bold;
-}
-
-.string {
-    color: #00ffaa; /* Aqua green for strings */
-}
-
-.number {
-    color: #00cccc; /* Cyan for numbers */
-}
-
-.function {
-    color: #00ffcc; /* Bright cyan for functions */
-}
-
-.operator {
-    color: #00ff88; /* Slightly lighter green for operators */
-}
-
 .error {
-    color: #ff5555; /* Red for errors */
-    text-shadow: 0 0 5px #ff5555; /* Glowing red effect for errors */
+    color: #ff3333;
+    animation: textShadow 1.6s infinite;
 }
 
+/* Cursor blink */
 .cursor {
     display: inline-block;
     width: 10px;
-    height: 1.2em;
-    background-color: #00ff00; /* Neon green cursor */
+    height: 20px;
+    background-color: #33ff33;
     animation: blink 1s step-start infinite;
-    vertical-align: text-bottom;
-    margin-left: 2px;
 }
 
 @keyframes blink {
@@ -128,7 +290,7 @@ a:hover {
     }
 }
 
-/* Boot sequence styles */
+/* Boot sequence */
 .boot-sequence {
     position: fixed;
     top: 0;
@@ -136,92 +298,58 @@ a:hover {
     width: 100%;
     height: 100%;
     background-color: #000000;
-    color: #00ff00;
-    font-family: 'Courier New', Courier, monospace;
+    color: #33ff33;
+    font-family: 'VT323', monospace;
     padding: 20px;
     overflow-y: auto;
     z-index: 1000;
-    transition: opacity 1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .boot-text {
     max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .boot-line {
     margin-bottom: 5px;
-    font-size: 14px;
-    text-shadow: 0 0 5px #00ff00;
-    min-height: 1.2em;
-    line-height: 1.2em;
+    font-size: 20px;
+    opacity: 0;
+    animation: typeIn 0.1s ease-out forwards;
 }
 
-/* Terminal scan lines effect */
-.terminal::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        transparent 50%,
-        rgba(0, 255, 0, 0.03) 50%
-    );
-    background-size: 100% 4px;
-    pointer-events: none;
-    animation: scan 10s linear infinite;
-}
-
-@keyframes scan {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(10px);
-    }
-}
-
-/* Subtle flicker effect */
-.terminal {
-    position: relative;
-    animation: flicker 0.15s infinite alternate;
-}
-
-@keyframes flicker {
-    0% {
+@keyframes typeIn {
+    to {
         opacity: 1;
     }
-    100% {
-        opacity: 0.98;
-    }
 }
 
-/* Chapter Navigation */
+/* Chapter navigation */
 .chapter-nav {
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: #0a0a0a;
-    border: 1px solid #00ff00;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 2px solid #33ff33;
     border-radius: 5px;
     padding: 15px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 12px;
-    color: #00ff00;
-    text-shadow: 0 0 5px #00ff00;
-    box-shadow: 0 0 10px #00ff00;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: #33ff33;
+    box-shadow: 0 0 20px rgba(51, 255, 51, 0.5);
     z-index: 100;
     max-width: 200px;
-    opacity: 0.9;
+    animation: textShadow 1.6s infinite;
 }
 
 .nav-header {
     margin-bottom: 10px;
     padding-bottom: 5px;
-    border-bottom: 1px solid #00ff00;
+    border-bottom: 1px solid #33ff33;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .nav-chapters {
@@ -240,12 +368,12 @@ a:hover {
 }
 
 .nav-chapter:hover {
-    color: #00ff88;
+    color: #66ff66;
     padding-left: 5px;
 }
 
 .nav-chapter.active {
-    color: #00ffaa;
+    color: #99ff99;
     font-weight: bold;
 }
 
@@ -258,16 +386,87 @@ a:hover {
     font-weight: bold;
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid #00ff00;
+    border-top: 1px solid #33ff33;
+}
+
+/* Scrollbar styling */
+.screen::-webkit-scrollbar {
+    width: 12px;
+}
+
+.screen::-webkit-scrollbar-track {
+    background: #0a0a0a;
+    border-radius: 10px;
+}
+
+.screen::-webkit-scrollbar-thumb {
+    background: #33ff33;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #33ff33;
+}
+
+.screen::-webkit-scrollbar-thumb:hover {
+    background: #66ff66;
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+    
+    .terminal {
+        padding: 20px;
+        top: 2%;
+        left: 2%;
+        width: 96%;
+        height: 96%;
+    }
+    
+    h1 {
+        font-size: 32px;
+    }
+    
+    h2 {
+        font-size: 24px;
+    }
+    
+    h3 {
+        font-size: 20px;
+    }
+    
+    pre {
+        font-size: 14px;
+    }
+    
     .chapter-nav {
         right: 10px;
         top: 10px;
-        font-size: 11px;
+        font-size: 14px;
         padding: 10px;
         max-width: 150px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    body {
+        background: #000000;
+    }
+    
+    .terminal {
+        border: 2px solid #ffffff;
+    }
+    
+    h1, h2, h3, p, pre, a {
+        color: #ffffff;
+        text-shadow: none;
     }
 }
