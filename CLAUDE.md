@@ -50,6 +50,17 @@ The narrative uses cybersecurity terminology metaphorically:
 - Root access = spiritual authority
 - Firewall = protective relationships
 
+## Repository Management
+
+### Git Configuration
+- **Author**: vulnerablebydesign <her0x0ftime@gmail.com>
+- **Remote URL**: https://github.com/vulnerablebydesign/vulnerablebydesign.github.io.git
+
+### File Organization
+- **Backup Files**: Use `/backups/` directory for local-only files (ignored by Git)
+- **Naming Convention**: `*_original.*`, `*.backup`, `*_backup.*` are automatically ignored
+- **Development Files**: Keep backup/comparison files local only, never commit to repo
+
 ## Important Considerations
 
 1. **Static Site**: No JavaScript or build process - pure HTML/CSS
@@ -57,3 +68,4 @@ The narrative uses cybersecurity terminology metaphorically:
 3. **Sensitive Content**: The narrative contains personal stories about addiction, trauma, and recovery - handle with care
 4. **Terminal Aesthetic**: Maintain the monospace font and green-on-black color scheme for consistency
 5. **Mobile Responsiveness**: The terminal container has max-width constraints for readability
+6. **CRT Effects**: Site now includes authentic terminal effects (scanlines, flicker, VT323 font)
