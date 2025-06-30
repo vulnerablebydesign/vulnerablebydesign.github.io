@@ -74,12 +74,73 @@ body {
 
 /* Screen content container */
 .screen {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: calc(100% - 50px); /* Leave space for progress bar */
+    overflow: hidden; /* Disable scrolling */
     position: relative;
     z-index: 5;
-    padding-right: 20px;
+}
+
+/* Terminal content container */
+.terminal-content {
+    display: none; /* Initially hidden during boot */
+    height: 100%; /* Full height of screen */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* No horizontal scrolling */
+    padding: 20px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #33ff33;
+    text-shadow: 0 0 1px #33ff33;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Show content after boot */
+.booted .terminal-content {
+    display: block;
+}
+
+/* Progress bar container at bottom */
+.progress-bar-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: #000000;
+    border-top: 2px solid #33ff33;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 10;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(51, 255, 51, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #33ff33;
+    width: 0%;
+    transition: width 0.2s ease-out;
+    box-shadow: 0 0 10px #33ff33;
+}
+
+.progress-text {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: #33ff33;
+    text-shadow: 0 0 5px #33ff33;
+    min-width: 40px;
+    text-align: right;
 }
 
 /* Vignette effect */
@@ -128,44 +189,10 @@ body {
     100% { opacity: 0.18; }
 }
 
-/* RGB color separation effect */
+/* Subtle glow effect without blur */
 @keyframes textShadow {
-    0% {
-        text-shadow: 
-            0.4389924193300864px 0 1px rgba(0,30,255,0.5), 
-            -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 
-            0 0 3px #33ff33;
-    }
-    5% {
-        text-shadow: 
-            2.7928974010788217px 0 1px rgba(0,30,255,0.5), 
-            -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 
-            0 0 3px #33ff33;
-    }
-    10% {
-        text-shadow: 
-            0.02956275843481219px 0 1px rgba(0,30,255,0.5), 
-            -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 
-            0 0 3px #33ff33;
-    }
-    15% {
-        text-shadow: 
-            0.6438908203932499px 0 1px rgba(0,30,255,0.5), 
-            -0.6438908203932499px 0 1px rgba(255,0,80,0.3), 
-            0 0 3px #33ff33;
-    }
-    20% {
-        text-shadow: 
-            1.4112204642719997px 0 1px rgba(0,30,255,0.5), 
-            -1.4112204642719997px 0 1px rgba(255,0,80,0.3), 
-            0 0 3px #33ff33;
-    }
-    /* ... continue for smooth animation ... */
-    100% {
-        text-shadow: 
-            0.4389924193300864px 0 1px rgba(0,30,255,0.5), 
-            -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 
-            0 0 3px #33ff33;
+    0%, 100% {
+        text-shadow: 0 0 2px #33ff33;
     }
 }
 
@@ -221,20 +248,23 @@ h3 {
 
 p, pre, li {
     color: #33ff33;
-    text-shadow: 0 0 5px #33ff33;
+    text-shadow: 0 0 1px #33ff33; /* Minimal shadow for clarity */
     line-height: 1.6;
 }
 
 pre {
     font-size: 18px;
     line-height: 1.4;
-    white-space: pre;
-    overflow-x: auto;
+    white-space: pre-wrap; /* Enable word wrapping */
+    word-wrap: break-word; /* Break long words */
+    overflow-wrap: break-word; /* Modern word breaking */
+    overflow-x: hidden; /* No horizontal scroll */
     animation: textShadow 1.6s infinite;
     background: transparent;
     border: none;
     padding: 0;
     margin: 15px 0;
+    max-width: 100%;
 }
 
 code {
@@ -292,17 +322,17 @@ a:hover {
 
 /* Boot sequence */
 .boot-sequence {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-color: #000000;
+    height: 100%; /* Full height */
+    background-color: transparent;
     color: #33ff33;
     font-family: 'VT323', monospace;
-    padding: 20px;
+    padding: 40px;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 50;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -326,86 +356,56 @@ a:hover {
     }
 }
 
-/* Chapter navigation */
-.chapter-nav {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: rgba(0, 0, 0, 0.9);
-    border: 2px solid #33ff33;
-    border-radius: 5px;
-    padding: 15px;
-    font-family: 'VT323', monospace;
-    font-size: 18px;
-    color: #33ff33;
-    box-shadow: 0 0 20px rgba(51, 255, 51, 0.5);
-    z-index: 100;
-    max-width: 200px;
-    animation: textShadow 1.6s infinite;
-}
-
-.nav-header {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #33ff33;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.nav-chapters {
-    margin-bottom: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.nav-chapter {
-    padding: 3px 0;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
+/* Typewriter effect styles */
+.typewriter {
     overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-right: 2px solid #33ff33;
+    animation: typing 0.5s steps(40, end), blink-caret 1s step-end infinite;
 }
 
-.nav-chapter:hover {
-    color: #66ff66;
-    padding-left: 5px;
+.typewriter.line-complete {
+    border-right: none;
+    white-space: pre-wrap;
 }
 
-.nav-chapter.active {
-    color: #99ff99;
-    font-weight: bold;
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
 }
 
-.nav-chapter.active::before {
-    content: "> ";
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #33ff33; }
 }
 
-.nav-progress {
-    text-align: center;
-    font-weight: bold;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #33ff33;
+/* Chapter sections */
+.chapter {
+    margin-bottom: 60px;
+    padding-bottom: 20px;
 }
 
-/* Scrollbar styling */
-.screen::-webkit-scrollbar {
+.chapter:last-child {
+    margin-bottom: 100px; /* Extra space at the end for comfortable reading */
+}
+
+/* Scrollbar styling for terminal content */
+.terminal-content::-webkit-scrollbar {
     width: 12px;
 }
 
-.screen::-webkit-scrollbar-track {
+.terminal-content::-webkit-scrollbar-track {
     background: #0a0a0a;
     border-radius: 10px;
 }
 
-.screen::-webkit-scrollbar-thumb {
+.terminal-content::-webkit-scrollbar-thumb {
     background: #33ff33;
     border-radius: 10px;
     box-shadow: 0 0 10px #33ff33;
 }
 
-.screen::-webkit-scrollbar-thumb:hover {
+.terminal-content::-webkit-scrollbar-thumb:hover {
     background: #66ff66;
 }
 

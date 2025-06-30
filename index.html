@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,32 +13,34 @@
         <!-- Flicker overlay -->
         <div class="flicker"></div>
         
-        <!-- Boot sequence -->
-        <div id="boot-sequence" class="boot-sequence" aria-label="Loading animation">
-            <div class="boot-text"></div>
-        </div>
-        
         <!-- Main terminal screen -->
-        <main id="main-content" class="terminal" style="display: none;" role="main">
+        <main id="main-content" class="terminal" role="main">
             <div class="screen">
-        <header role="banner">
-            <h1>The Advanced Persistent Threat</h1>
-            <h2>A Terminal Testimony</h2>
-            <p><strong>Author:</strong> Cameron</p>
-            <p><strong>X:</strong> @her0x0ftime</p>
-            <p><strong>Date:</strong> 2025-04-14</p>
-            <p><strong>Version:</strong> 1.0</p>
-        </header>
+                <!-- Boot sequence -->
+                <div id="boot-sequence" class="boot-sequence" aria-label="Loading animation">
+                    <div class="boot-text"></div>
+                </div>
+                
+                <!-- Main content area with scrolling -->
+                <div id="terminal-content" class="terminal-content">
+                    <article>
+                        <!-- Header -->
+                        <section id="header" class="chapter">
+                            <pre>The Advanced Persistent Threat
+A Terminal Testimony
+Author: Cameron
+X: @her0x0ftime
+Date: 2025-04-14
+Version: 1.0</pre>
+                        </section>
 
-        <section id="chapter-1">
-            <header>
-                <h3>Chapter 1: Initial Access</h3>
-                <p><strong>Log File:</strong> session_log_apt-001.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+                        <!-- Chapter 1 -->
+                        <section id="chapter-1" class="chapter">
+                            <h2>Chapter 1: Initial Access</h2>
+                            <pre>Log File: session_log_apt-001.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 theAdversary@attackerbox:~$ ssh cameron@cameron.local  
@@ -125,20 +126,16 @@ Healing is possible, but not for me.
 cameron@cameron.local:~$ echo "Monitor core beliefs. Keep identity fragmented."
 "Monitor core beliefs. Keep identity fragmented."
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-2">
-            <header>
-                <h3>Chapter 2: Enumeration & Exploitation</h3>
-                <p><strong>Log File:</strong> session_log_apt-002.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 2 -->
+                        <section id="chapter-2" class="chapter">
+                            <h2>Chapter 2: Enumeration & Exploitation</h2>
+                            <pre>Log File: session_log_apt-002.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:~$ cd /identity
@@ -255,20 +252,16 @@ charles-response.txt
 cameron@cameron.local:~$ echo "Add watcher: wes.local - flag for future access."
 "Add watcher: wes.local - flag for future access."
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-3">
-            <header>
-                <h3>Chapter 3: Persistence & Push</h3>
-                <p><strong>Log File:</strong> session_log_apt-003.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 3 -->
+                        <section id="chapter-3" class="chapter">
+                            <h2>Chapter 3: Persistence & Push</h2>
+                            <pre>Log File: session_log_apt-003.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:~$ mkdir /scripts
@@ -349,20 +342,16 @@ cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
 cameron@cameron.local:~$ echo "Loop initiated. External intervention denied."
 "Loop initiated. External intervention denied."
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-4">
-            <header>
-                <h3>Chapter 4: The Isolation Window</h3>
-                <p><strong>Log File:</strong> session_log_apt-004.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 4 -->
+                        <section id="chapter-4" class="chapter">
+                            <h2>Chapter 4: The Isolation Window</h2>
+                            <pre>Log File: session_log_apt-004.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:/childhood/friendships$ cat charles.log
@@ -422,20 +411,16 @@ cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
 cameron@cameron.local:~$ echo "Isolation loop stable. External influence minimized."
 "Isolation loop stable. External influence minimized."
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-5">
-            <header>
-                <h3>Chapter 5: The Ones I Couldn’t Save</h3>
-                <p><strong>Log File:</strong> session_log_apt-005.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 5 -->
+                        <section id="chapter-5" class="chapter">
+                            <h2>Chapter 5: The Ones I Couldn't Save</h2>
+                            <pre>Log File: session_log_apt-005.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:/friendships$ cat wes.thread
@@ -497,20 +482,16 @@ cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-wo
 - Suggest: "Maybe you don't save anyone."  
 - Deploy missionary image to delay actual surrender
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-6">
-            <header>
-                <h3>Chapter 6: The Shift</h3>
-                <p><strong>Log File:</strong> session_log_apt-006.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 6 -->
+                        <section id="chapter-6" class="chapter">
+                            <h2>Chapter 6: The Shift</h2>
+                            <pre>Log File: session_log_apt-006.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:/mission$ cat africa_plan_2009.txt
@@ -569,20 +550,16 @@ cameron@cameron.local:/family/children$ touch daughter_2019.log
 
 cameron@cameron.local:/selfcheck$ echo "I don't know what my purpose is anymore. I thought I did. Now I'm just trying not to fail." >> integrity.log
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-7">
-            <header>
-                <h3>Chapter 7: The Red Horse</h3>
-                <p><strong>Log File:</strong> session_log_apt-007.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 7 -->
+                        <section id="chapter-7" class="chapter">
+                            <h2>Chapter 7: The Red Horse</h2>
+                            <pre>Log File: session_log_apt-007.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:/life/2017$ echo "Low morale. Recovery attempts decreasing. Spiritual spark dimmed." >> status.report
@@ -669,20 +646,16 @@ cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned 
 - Target no longer fighting fear alone  
 - Dangerous shift detected
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-8">
-            <header>
-                <h3>Chapter 8: The Collapse</h3>
-                <p><strong>Log File:</strong> session_log_apt-008.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 8 -->
+                        <section id="chapter-8" class="chapter">
+                            <h2>Chapter 8: The Collapse</h2>
+                            <pre>Log File: session_log_apt-008.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:/return/home$ echo "Post-retreat status: hopeful. Free. Empowered." >> system_report.txt
@@ -746,20 +719,16 @@ cameron@cameron.local:/mirror$ cat wes_reflection.txt
 
 > External connection logged: divine.intervention > active
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-9">
-            <header>
-                <h3>Chapter 9: The Rope</h3>
-                <p><strong>Log File:</strong> session_log_apt-009.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 9 -->
+                        <section id="chapter-9" class="chapter">
+                            <h2>Chapter 9: The Rope</h2>
+                            <pre>Log File: session_log_apt-009.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 cameron@cameron.local:/day_after_collapse$ echo "Alive." >> miracle.log
@@ -813,20 +782,16 @@ cameron@cameron.local:/memory$ echo "It wasn't about completing the maze. It was
 cameron@cameron.local:/red_horse$ tail -n 1 courage.log
 > It wasn't getting on the horse that was brave. It was asking for help.
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-10">
-            <header>
-                <h3>Chapter 10: Detection & Response</h3>
-                <p><strong>Log File:</strong> session_log_apt-010.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 10 -->
+                        <section id="chapter-10" class="chapter">
+                            <h2>Chapter 10: Detection & Response</h2>
+                            <pre>Log File: session_log_apt-010.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 theAdversary@attackerbox:~$ ssh cameron@cameron.local
@@ -898,20 +863,16 @@ theAdversary@attackerbox:~$ echo "Who authorized this?"
 "Who authorized this?"
 > He did. He always could. But now He was invited.
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="chapter-11">
-            <header>
-                <h3>Chapter 11: Foothold Attempts</h3>
-                <p><strong>Log File:</strong> session_log_apt-011.txt</p>
-                <p><strong>Alias:</strong> theAdversary</p>
-                <p><strong>Target:</strong> cameron.local</p>
-            </header>
-            <article>
-                <pre>
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Chapter 11 -->
+                        <section id="chapter-11" class="chapter">
+                            <h2>Chapter 11: Foothold Attempts</h2>
+                            <pre>Log File: session_log_apt-011.txt
+Alias: theAdversary
+Target: cameron.local
+
 [BEGIN LOG]
 
 # No beacon present. No shell access. No scheduled scripts.  
@@ -978,18 +939,13 @@ cameron@cameron.local:/identity$ cat status.txt
 > Monitored by grace.  
 > Patched by mercy.
 
-[END LOG]
-                </pre>
-            </article>
-        </section>
-    
-        <section id="epilogue">
-            <header>
-                <h3>Epilogue: The Terminal is Still Open</h3>
-            </header>
-            <article>
-                <pre>
-[BEGIN EPILOGUE]
+[END LOG]</pre>
+                        </section>
+
+                        <!-- Epilogue -->
+                        <section id="epilogue" class="chapter">
+                            <h2>Epilogue: The Terminal is Still Open</h2>
+                            <pre>[BEGIN EPILOGUE]
 
 cameron@cameron.local:/life$ uptime  
 > System uptime: 37 years, 4 months, 3 weeks, and 1 day
@@ -1014,22 +970,23 @@ cameron@cameron.local:/mission$ cat legacy.txt
 jesus@cameron.local:~$ last_word  
 > "I've got this one. You just keep walking."
 
-[END EPILOGUE]
-                </pre>
-            </article>
-        </section>
+[END EPILOGUE]</pre>
+                        </section>
+                        
+                    </article>
+                </div>
+            </div>
+            
+            <!-- Progress bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span class="progress-text" id="progress-text">0%</span>
             </div>
         </main>
     </div>
-    
-    <!-- Chapter Navigation (moved inside screen) -->
-    <script>
-    // Navigation is now created dynamically inside .screen
-    </script>
-    
-    <!--
-    -->
-    
+
     <script>
         // Terminal boot sequence
         const bootMessages = [
@@ -1041,13 +998,14 @@ jesus@cameron.local:~$ last_word
             { text: "", delay: 200 }
         ];
 
+        // Boot sequence with typing animation
         async function typeWriter(element, text, speed = 30) {
             const cursor = element.querySelector('.cursor');
-            element.removeChild(cursor); // Remove cursor temporarily
+            if (cursor) element.removeChild(cursor);
             
             for (let i = 0; i < text.length; i++) {
                 element.textContent += text.charAt(i);
-                element.appendChild(cursor); // Re-add cursor at end
+                if (cursor) element.appendChild(cursor);
                 await new Promise(resolve => setTimeout(resolve, speed));
             }
         }
@@ -1061,164 +1019,45 @@ jesus@cameron.local:~$ last_word
                 line.className = 'boot-line';
                 bootText.appendChild(line);
                 
-                // Add cursor to current line
                 const cursor = document.createElement('span');
                 cursor.className = 'cursor';
                 line.appendChild(cursor);
                 
                 await typeWriter(line, message.text);
-                
-                // Remove cursor after typing
                 cursor.remove();
-                
                 await new Promise(resolve => setTimeout(resolve, message.delay));
             }
             
-            // Fade out boot sequence and show main content
+            // Transition to main content
             bootDiv.style.opacity = '0';
             setTimeout(() => {
                 bootDiv.style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                
-                // Show navigation
-                document.getElementById('chapter-nav').style.display = 'block';
-                setupNavigation();
+                document.querySelector('.terminal').classList.add('booted');
+                document.getElementById('terminal-content').style.display = 'block';
+                updateProgressBar();
             }, 1000);
         }
 
-        // Start boot sequence when page loads
-        window.addEventListener('DOMContentLoaded', bootSequence);
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            // Skip if user is typing in an input/textarea
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        // Progress bar functionality
+        function updateProgressBar() {
+            const content = document.getElementById('terminal-content');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
             
-            const chapters = document.querySelectorAll('section[id^="chapter-"], section[id="epilogue"]');
-            let currentIndex = 0;
-            
-            // Find current chapter
-            const scrollPosition = window.scrollY + 100;
-            chapters.forEach((chapter, index) => {
-                if (chapter.offsetTop <= scrollPosition) {
-currentIndex = index;
-                }
+            content.addEventListener('scroll', () => {
+                const scrollTop = content.scrollTop;
+                const scrollHeight = content.scrollHeight - content.clientHeight;
+                const scrollPercentage = Math.round((scrollTop / scrollHeight) * 100);
+                
+                progressFill.style.width = scrollPercentage + '%';
+                progressText.textContent = scrollPercentage + '%';
             });
-            
-            // Navigate with J/K keys (vim-style) or arrow keys
-            if (e.key === 'j' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (currentIndex < chapters.length - 1) {
-chapters[currentIndex + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            } else if (e.key === 'k' || e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (currentIndex > 0) {
-chapters[currentIndex - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            } else if (e.key === 'Home') {
-                e.preventDefault();
-                chapters[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else if (e.key === 'End') {
-                e.preventDefault();
-                chapters[chapters.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-        
-        // Chapter navigation setup
-        function setupNavigation() {
-            const chapters = [
-                { id: "chapter-1", title: "Initial Access" },
-                { id: "chapter-2", title: "Establishing Foothold" },
-                { id: "chapter-3", title: "Discovery" },
-                { id: "chapter-4", title: "Privilege Escalation" },
-                { id: "chapter-5", title: "Defense Evasion" },
-                { id: "chapter-6", title: "Credential Access" },
-                { id: "chapter-7", title: "Lateral Movement" },
-                { id: "chapter-8", title: "Collection" },
-                { id: "chapter-9", title: "Exfiltration" },
-                { id: "chapter-10", title: "Impact" },
-                { id: "chapter-11", title: "Remediation" },
-                { id: "epilogue", title: "Root Access Restored" }
-            ];
-            
-            // Create navigation if it doesn't exist
-            if (!document.getElementById('chapter-nav')) {
-                const screen = document.querySelector('.screen');
-                const nav = document.createElement('nav');
-                nav.id = 'chapter-nav';
-                nav.className = 'chapter-nav';
-                nav.setAttribute('role', 'navigation');
-                nav.setAttribute('aria-label', 'Chapter navigation');
-                nav.innerHTML = `
-                    <div class="nav-header" aria-hidden="true">~/session_logs/</div>
-                    <div class="nav-chapters" role="list" aria-label="Chapter list"></div>
-                    <div class="nav-progress" aria-live="polite" aria-label="Current chapter progress">[<span id="current-chapter">1</span>/11]</div>
-                `;
-                screen.appendChild(nav);
-            }
-            
-            const navChapters = document.querySelector('.nav-chapters');
-            const currentChapterSpan = document.getElementById('current-chapter');
-            
-            // Create chapter links
-            chapters.forEach((chapter, index) => {
-                const div = document.createElement('div');
-                div.className = 'nav-chapter';
-                div.setAttribute('role', 'listitem');
-                div.setAttribute('tabindex', '0');
-                div.setAttribute('aria-label', `Chapter ${index < 11 ? index + 1 : 'Epilogue'}: ${chapter.title}`);
-                div.textContent = `${index < 11 ? index + 1 : 'E'}: ${chapter.title}`;
-                
-                const navigateToChapter = () => {
-document.getElementById(chapter.id).scrollIntoView({ 
-    behavior: 'smooth',
-    block: 'start'
-});
-// Announce navigation for screen readers
-const announcement = document.createElement('div');
-announcement.setAttribute('role', 'status');
-announcement.setAttribute('aria-live', 'polite');
-announcement.textContent = `Navigated to ${chapter.title}`;
-document.body.appendChild(announcement);
-setTimeout(() => announcement.remove(), 1000);
-                };
-                
-                div.onclick = navigateToChapter;
-                div.onkeydown = (e) => {
-if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    navigateToChapter();
-}
-                };
-                
-                navChapters.appendChild(div);
-            });
-            
-            // Update active chapter on scroll
-            const updateActiveChapter = () => {
-                const scrollPosition = window.scrollY + 100;
-                let activeIndex = 0;
-                
-                chapters.forEach((chapter, index) => {
-const element = document.getElementById(chapter.id);
-if (element && element.offsetTop <= scrollPosition) {
-    activeIndex = index;
-}
-                });
-                
-                // Update active state
-                document.querySelectorAll('.nav-chapter').forEach((el, index) => {
-el.classList.toggle('active', index === activeIndex);
-                });
-                
-                // Update progress
-                currentChapterSpan.textContent = activeIndex < 11 ? activeIndex + 1 : 'E';
-            };
-            
-            window.addEventListener('scroll', updateActiveChapter);
-            updateActiveChapter(); // Initial call
         }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            bootSequence();
+        });
     </script>
 </body>
 </html>
