@@ -971,7 +971,7 @@ cameron@cameron.local:/identity$ cat status.txt
                             <pre>[BEGIN EPILOGUE]
 
 cameron@cameron.local:/life$ uptime
-> System uptime: 37 years, 4 months, 3 weeks, and 1 day
+> System uptime: <span id="system-uptime">calculating...</span>
 > Recovery process: continuous
 > Firewall status: grace.service enforced
 > Active connections: Creator, family, fellowship, purpose
@@ -1246,6 +1246,32 @@ creator@cameron.local:~$ last_word
             chapters.forEach(chapter => observer.observe(chapter));
         }
 
+        // Calculate system uptime
+        function calculateUptime() {
+            const startDate = new Date('2024-04-22');
+            const now = new Date();
+            const diffTime = now - startDate;
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            const years = Math.floor(totalDays / 365);
+            const months = Math.floor((totalDays % 365) / 30);
+            const days = totalDays % 30;
+
+            let uptimeStr = '';
+            if (years > 0) {
+                uptimeStr = `${years} year${years > 1 ? 's' : ''}, ${months} month${months !== 1 ? 's' : ''}, ${days} day${days !== 1 ? 's' : ''}`;
+            } else if (months > 0) {
+                uptimeStr = `${months} month${months !== 1 ? 's' : ''}, ${days} day${days !== 1 ? 's' : ''}`;
+            } else {
+                uptimeStr = `${days} day${days !== 1 ? 's' : ''}`;
+            }
+
+            const uptimeElement = document.getElementById('system-uptime');
+            if (uptimeElement) {
+                uptimeElement.textContent = uptimeStr;
+            }
+        }
+
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', () => {
             // Add skip listeners
@@ -1255,6 +1281,9 @@ creator@cameron.local:~$ last_word
 
             // Start boot sequence
             bootSequence();
+
+            // Calculate system uptime
+            calculateUptime();
         });
     </script>
 </body>
