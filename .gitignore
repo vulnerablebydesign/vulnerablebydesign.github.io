@@ -15,4 +15,7 @@ Thumbs.db
 # Local development backups
 /backups/
 /originals/
-/local-backup/CLAUDE.md
+/local-backup/
+
+# Claude Code config
+CLAUDE.md
