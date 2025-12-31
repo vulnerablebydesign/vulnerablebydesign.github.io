@@ -25,7 +25,6 @@
                 <!-- Boot sequence -->
                 <div id="boot-sequence" class="boot-sequence" aria-label="Loading animation">
                     <div class="boot-text"></div>
-                    <div class="skip-hint" role="status">Press any key or tap to skip</div>
                 </div>
                 
                 <!-- Main content area with scrolling -->
@@ -1048,42 +1047,12 @@ creator@cameron.local:~$ last_word
             { text: "", delay: 200 }
         ];
 
-        // Skip boot sequence functionality
-        let bootSkipped = false;
-
-        function skipBoot() {
-            if (bootSkipped) return;
-            bootSkipped = true;
-
-            const bootDiv = document.getElementById('boot-sequence');
-            bootDiv.style.transition = 'opacity 0.3s ease';
-            bootDiv.style.opacity = '0';
-
-            setTimeout(() => {
-                bootDiv.style.display = 'none';
-                document.querySelector('.terminal').classList.add('booted');
-                document.getElementById('terminal-content').style.display = 'block';
-                updateProgressBar();
-                initChapterNavigation();
-            }, 300);
-
-            // Clean up event listeners
-            cleanupBootListeners();
-        }
-
-        function cleanupBootListeners() {
-            document.removeEventListener('keydown', skipBoot);
-            document.removeEventListener('click', skipBoot);
-            document.removeEventListener('touchstart', skipBoot);
-        }
-
         // Boot sequence with typing animation
         async function typeWriter(element, text, speed = 30) {
             const cursor = element.querySelector('.cursor');
             if (cursor) element.removeChild(cursor);
 
             for (let i = 0; i < text.length; i++) {
-                if (bootSkipped) return; // Early exit if skipped
                 element.textContent += text.charAt(i);
                 if (cursor) element.appendChild(cursor);
                 await new Promise(resolve => setTimeout(resolve, speed));
@@ -1095,8 +1064,6 @@ creator@cameron.local:~$ last_word
             const bootText = bootDiv.querySelector('.boot-text');
 
             for (const message of bootMessages) {
-                if (bootSkipped) return; // Early exit if skipped
-
                 const line = document.createElement('div');
                 line.className = 'boot-line';
                 bootText.appendChild(line);
@@ -1106,23 +1073,19 @@ creator@cameron.local:~$ last_word
                 line.appendChild(cursor);
 
                 await typeWriter(line, message.text);
-                if (bootSkipped) return; // Check again after typing
                 cursor.remove();
                 await new Promise(resolve => setTimeout(resolve, message.delay));
             }
 
-            if (!bootSkipped) {
-                // Normal transition (boot completed without skip)
-                cleanupBootListeners();
-                bootDiv.style.opacity = '0';
-                setTimeout(() => {
-                    bootDiv.style.display = 'none';
-                    document.querySelector('.terminal').classList.add('booted');
-                    document.getElementById('terminal-content').style.display = 'block';
-                    updateProgressBar();
-                    initChapterNavigation();
-                }, 1000);
-            }
+            // Transition to content
+            bootDiv.style.opacity = '0';
+            setTimeout(() => {
+                bootDiv.style.display = 'none';
+                document.querySelector('.terminal').classList.add('booted');
+                document.getElementById('terminal-content').style.display = 'block';
+                updateProgressBar();
+                initChapterNavigation();
+            }, 1000);
         }
 
         // Progress bar functionality
@@ -1268,11 +1231,6 @@ creator@cameron.local:~$ last_word
 
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', () => {
-            // Add skip listeners
-            document.addEventListener('keydown', skipBoot);
-            document.addEventListener('click', skipBoot);
-            document.addEventListener('touchstart', skipBoot);
-
             // Start boot sequence
             bootSequence();
 
