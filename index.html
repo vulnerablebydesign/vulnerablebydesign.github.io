@@ -124,14 +124,21 @@ charles-response.txt
 # Event flag: playground intervention. Charles defended target. Unexpected.
 
 cameron@cameron.local:/beliefs$ tail -n 3 core.conf
-God is real, but distant.
-Grace is for others.
-Healing is possible, but not for me.
+# WARNING: Configuration modified from original design
+God is real, but distant.           # Original: God is near
+Grace is for others.                # Original: Grace is for cameron
+Healing is possible, but not for me. # Original: Healing is available
+
+cameron@cameron.local:~$ ls -la /etc/ | grep origin
+-rw-r--r--  1 root root   origin.conf.disabled
+
+cameron@cameron.local:~$ systemctl status grace.service
+● grace.service - inactive (dead)
 
 # Misconfigured doctrine. No enforcement policies. Firewall rules ineffective.
 
-cameron@cameron.local:~$ echo "Monitor core beliefs. Keep identity fragmented."
-"Monitor core beliefs. Keep identity fragmented."
+<span class="adversary-log"># [1995-09-14 03:47:12] adversary[c2]: Target acquired. Monitor core beliefs. Keep identity fragmented.
+# [1995-09-14 03:47:19] adversary[c2]: PRIORITY - Monitor /etc/origin.conf. Do not let target discover original design.</span>
 
 [END LOG]</pre>
                         </section>
@@ -256,8 +263,7 @@ charles-response.txt
 
 # Log: Defender may attempt counter-narrative. Anticipate interruption. Delay firewall sync.
 
-cameron@cameron.local:~$ echo "Add watcher: wes.local - flag for future access."
-"Add watcher: wes.local - flag for future access."
+<span class="adversary-log"># [1999-05-22 02:14:33] adversary[c2]: Add watcher: wes.local. Flag for future access. Potential exploit vector.</span>
 
 [END LOG]</pre>
                         </section>
@@ -346,8 +352,7 @@ cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
 
 # Keep him moving. Keep him proving.
 
-cameron@cameron.local:~$ echo "Loop initiated. External intervention denied."
-"Loop initiated. External intervention denied."
+<span class="adversary-log"># [2002-11-03 03:33:47] adversary[c2]: Persistence loop initiated. External intervention denied. Continuing pressure.</span>
 
 [END LOG]</pre>
                         </section>
@@ -408,6 +413,10 @@ cameron@cameron.local:/identity$ echo "You must figure this out yourself" >> mir
 
 # Core assumptions altered.
 
+[system] Warning: cameron.local running outside design parameters
+[system] Recommended: restore connection to creator.service
+[system] Response: none
+
 cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
 - Defender (Charles) removed  
 - Emotional proximity: 0  
@@ -415,8 +424,7 @@ cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
 
 # Pathway set. Whisper injection to increase reliance on self.
 
-cameron@cameron.local:~$ echo "Isolation loop stable. External influence minimized."
-"Isolation loop stable. External influence minimized."
+<span class="adversary-log"># [1998-04-17 04:12:08] adversary[c2]: Isolation loop stable. External influence minimized. Target operating in survival mode.</span>
 
 [END LOG]</pre>
                         </section>
@@ -473,21 +481,23 @@ cameron@cameron.local:/worship$ cat panama/encounter_2008.txt
 Setting: Mission field. Outdoor worship in Panama.  
 Event: Band pauses. Missionary singer looks at Cameron. Doesn't know him.
 
-> "It's not your fault.  
-> It's not your burden to bear.  
-> Only God knows where we will go in the end.  
+> "It's not your fault.
+> It's not your burden to bear.
+> Only God knows where we will go in the end.
 > And our God is a God of last chances."
 
-# Echo anomaly detected. Grace signal intercepted.  
+[background] shepherd.daemon: Signal transmitted. Target not responding.
+[background] grace.service: Brief flicker detected. Connection refused by user.
+
+# Echo anomaly detected. Grace signal intercepted.
 # Message logged, not fully received.
 
 cameron@cameron.local:/identity$ echo "If you had spoken, he'd be alive." >> whisper.sh
 cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-worth.conf
 
-# theAdversary log:
-- Reinforce: "You couldn't save him."  
-- Suggest: "Maybe you don't save anyone."  
-- Deploy missionary image to delay actual surrender
+<span class="adversary-log"># [2005-05-23 02:47:55] adversary[c2]: Grief payload deployed. Reinforce: "You couldn't save him."
+# [2005-05-23 02:48:01] adversary[c2]: Suggest: "Maybe you don't save anyone."
+# [2005-05-23 02:48:12] adversary[c2]: Deploy missionary image to delay actual surrender. Redirect guilt into performance.</span>
 
 [END LOG]</pre>
                         </section>
@@ -550,10 +560,9 @@ cameron@cameron.local:/family/children$ touch daughter_2015.log
 cameron@cameron.local:/family/children$ touch son_2017.log
 cameron@cameron.local:/family/children$ touch daughter_2019.log
 
-# theAdversary notes:
-- Wife's hope dimming.  
-- Belief forming: "He married me for my body, not my heart."  
-- Internal collapse imminent.
+<span class="adversary-log"># [2015-08-14 03:22:41] adversary[c2]: Wife's hope dimming. Exploit vector confirmed.
+# [2015-08-14 03:22:58] adversary[c2]: Belief injection: "He married me for my body, not my heart."
+# [2015-08-14 03:23:07] adversary[c2]: Internal collapse trajectory calculated. Continue pressure.</span>
 
 cameron@cameron.local:/selfcheck$ echo "I don't know what my purpose is anymore. I thought I did. Now I'm just trying not to fail." >> integrity.log
 
@@ -637,7 +646,11 @@ cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned 
 > Riding: wild, unrestrained  
 > Internal resonance: "I am not alone. God has a purpose for me."
 
-> Return: dusk  
+[background] hope.socket: Connection accepted.
+[background] shepherd.daemon: Guidance acknowledged.
+[background] grace.service: Activating...
+
+> Return: dusk
 > Waiting: leader named Cameron
 
 > Spoken words:
@@ -648,10 +661,9 @@ cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned 
 # System status: soft reboot  
 # False courage overwritten by true surrender
 
-# theAdversary logs:
-- Foothold endangered  
-- Target no longer fighting fear alone  
-- Dangerous shift detected
+<span class="adversary-log"># [2017-10-22 19:47:33] adversary[c2]: WARNING - Foothold endangered.
+# [2017-10-22 19:47:41] adversary[c2]: Target no longer fighting fear alone.
+# [2017-10-22 19:47:52] adversary[c2]: Dangerous shift detected. Escalate countermeasures.</span>
 
 [END LOG]</pre>
                         </section>
@@ -672,7 +684,8 @@ cameron@cameron.local:/return/home$ echo "Post-retreat status: hopeful. Free. Em
 > Prayer logs: "God took it all away."  
 > Vulnerability: unmonitored trust, spiritual exhaustion
 
-# theAdversary notes: no need to breach firewall. Just whisper doubt.
+<span class="adversary-log"># [2018-03-14 23:14:22] adversary[c2]: Target believes deliverance occurred. Incorrect.
+# [2018-03-14 23:14:31] adversary[c2]: No need to breach firewall. Just whisper doubt.</span>
 
 cameron@cameron.local:/life/2018$ echo "72-hour work shift complete. Commute: 60 minutes. Spirit: weary." >> fatigue.log
 
@@ -710,18 +723,23 @@ cameron@cameron.local:/mirror$ cat wes_reflection.txt
 # First time the target truly sympathizes with despair.  
 # Final line of resistance flickering.
 
-> Unknown signal detected...  
-> Location: /spirit/heartbeat.log  
-> Content:  
-  "I didn't make a good Cameron.  
-   I didn't make a bad Cameron.  
+> Unknown signal detected...
+> Location: /spirit/heartbeat.log
+> Content:
+  "I didn't make a good Cameron.
+   I didn't make a bad Cameron.
    I made Cameron."
 
-  "I knit Cameron in his mother's womb.  
-   I know Cameron.  
+  "I knit Cameron in his mother's womb.
+   I know Cameron.
    I love Cameron."
 
-# System pause. Loop disrupted.  
+[system] ALERT: Incoming connection from creator.service
+[system] love.service: Process started - cannot be killed
+[system] mercy.daemon: Cleanup initiated
+[system] grace.service: Connection restored after 25 years
+
+# System pause. Loop disrupted.
 # Shame process terminated.
 
 > External connection logged: divine.intervention > active
@@ -781,10 +799,9 @@ cameron@cameron.local:/treatment/rope_maze$ echo "Raised hand early. Asked quest
 
 cameron@cameron.local:/memory$ echo "It wasn't about completing the maze. It was about surrender." >> revelation.txt
 
-# theAdversary log:
-- Terminal access revoked  
-- Deception protocol interrupted  
-- Identity rebuild in progress
+<span class="adversary-log"># [2019-06-28 14:33:17] adversary[c2]: ERROR - Terminal access revoked.
+# [2019-06-28 14:33:24] adversary[c2]: ERROR - Deception protocol interrupted.
+# [2019-06-28 14:33:41] adversary[c2]: CRITICAL - Identity rebuild in progress. Countermeasures failing.</span>
 
 cameron@cameron.local:/red_horse$ tail -n 1 courage.log
 > It wasn't getting on the horse that was brave. It was asking for help.
@@ -821,14 +838,14 @@ cameron@cameron.local:/journal$ tail -n 5 signal.log
 cameron@cameron.local:/ports$ netstat -an | grep 7777
 tcp        0      0 127.0.0.1:7777      0.0.0.0:*       LISTEN
 
-# Activity spike on privileged channel: /root-access  
-# Ownership trace: confirmed → Jesus
+# Activity spike on privileged channel: /root-access
+# Ownership trace: confirmed → Creator
 
 cameron@cameron.local:/processes$ lsof -i :7777
-COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME  
-jesusd    1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)
+COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME
+creatord  1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)
 
-# The root daemon was always listening.  
+# The root daemon was always listening.
 # Today... Cameron let Him in.
 
 theAdversary@attackerbox:~$ sudo whisper.sh  
@@ -848,15 +865,31 @@ I know Cameron.
 I love Cameron.
 -----------------------------------------------------
 
-# New session detected:  
-jesus@cameron.local:~$ sudo systemctl stop whisper.service  
-jesus@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant
+# New session detected:
+creator@cameron.local:~$ sudo systemctl stop whisper.service
+creator@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant
 
-# The One with true authority is cleaning house.
+# The One who designed this system is cleaning house.
 
-jesus@cameron.local:~$ ufw allow from grace.local  
-jesus@cameron.local:~$ ufw allow from community.local  
-jesus@cameron.local:~$ journalctl --sync  
+creator@cameron.local:~$ cat /etc/origin.conf.disabled
+# ORIGIN CONFIGURATION - READ ONLY
+# Created: before time
+# Author: Creator
+#
+# cameron.local was designed with purpose.
+# cameron.local was designed for connection.
+# cameron.local was designed to be loved.
+#
+# This configuration cannot be deleted.
+# Only the owner can modify access permissions.
+
+creator@cameron.local:~$ sudo mv /etc/origin.conf.disabled /etc/origin.conf
+creator@cameron.local:~$ sudo systemctl enable creator.service
+creator@cameron.local:~$ sudo systemctl start grace.service shepherd.daemon hope.socket
+
+creator@cameron.local:~$ ufw allow from grace.local
+creator@cameron.local:~$ ufw allow from community.local
+creator@cameron.local:~$ journalctl --sync
 > All records restored. Shame removed from logs.
 
 # theAdversary attempts persistence reinstall: denied  
@@ -882,8 +915,8 @@ Target: cameron.local
 
 [BEGIN LOG]
 
-# No beacon present. No shell access. No scheduled scripts.  
-# Root remains Jesus. Active session confirmed.
+# No beacon present. No shell access. No scheduled scripts.
+# Root remains Creator. Active session confirmed.
 
 # Attempt 1 - Identity Spoofing
 
@@ -933,10 +966,9 @@ theAdversary@spoof:~$ echo "You're just the shadow version."
 > Response from cameron.local:/truth/charles.log  
 > "You showed me light. You were never the dark."
 
-# theAdversary log:
-- All persistence denied  
-- All credentials revoked  
-- All shame injections exposed
+<span class="adversary-log"># [2025-04-14 03:47:12] adversary[c2]: FAILURE - All persistence denied.
+# [2025-04-14 03:47:19] adversary[c2]: FAILURE - All credentials revoked.
+# [2025-04-14 03:47:27] adversary[c2]: CRITICAL FAILURE - All shame injections exposed. Session terminated.</span>
 
 cameron@cameron.local:/identity$ cat status.txt  
 > Beloved.  
@@ -954,11 +986,23 @@ cameron@cameron.local:/identity$ cat status.txt
                             <h2>Epilogue: The Terminal is Still Open</h2>
                             <pre>[BEGIN EPILOGUE]
 
-cameron@cameron.local:/life$ uptime  
+cameron@cameron.local:/life$ uptime
 > System uptime: 37 years, 4 months, 3 weeks, and 1 day
 > Recovery process: continuous
-> Firewall status: grace enforced  
-> Active connections: Jesus, family, fellowship, purpose
+> Firewall status: grace.service enforced
+> Active connections: Creator, family, fellowship, purpose
+
+cameron@cameron.local:~$ systemctl status --all | grep active
+● grace.service      active (running) since restoration
+● shepherd.daemon    active (listening) guidance available
+● hope.socket        active (connected) persistent
+● love.service       active (running) - cannot be stopped
+● mercy.daemon       active (running) cleanup continues
+● truth.service      active (logging) enabled
+● light.daemon       active (background) since before time
+
+cameron@cameron.local:~$ cat /etc/origin.conf | head -1
+# System restored to original design. Vulnerable by design.
 
 # No silence from God. No shame script running.
 
@@ -974,7 +1018,7 @@ cameron@cameron.local:/mission$ cat legacy.txt
 > You are never too broken to be restored.  
 > You are never too far to be found.
 
-jesus@cameron.local:~$ last_word  
+creator@cameron.local:~$ last_word
 > "I've got this one. You just keep walking."
 
 [END EPILOGUE]</pre>

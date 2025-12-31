@@ -330,6 +330,14 @@ a:hover {
     font-style: italic;
 }
 
+/* theAdversary tactical log entries - intercepted C2 traffic */
+.adversary-log {
+    color: #ff6633;
+    font-size: 0.9em;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+}
+
 .error {
     color: #ff3333;
     animation: textShadow 1.6s infinite;
