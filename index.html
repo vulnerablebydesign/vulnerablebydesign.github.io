@@ -19,29 +19,6 @@
         <!-- Flicker overlay -->
         <div class="flicker"></div>
 
-        <!-- Chapter navigation -->
-        <nav class="chapter-nav" role="navigation" aria-label="Chapter navigation">
-            <button class="chapter-nav-toggle" aria-expanded="false" aria-controls="chapter-list">
-                <span class="current-chapter">Title</span>
-                <span class="nav-icon" aria-hidden="true"></span>
-            </button>
-            <ul id="chapter-list" class="chapter-list" role="menu">
-                <li><a href="#header" role="menuitem">Title</a></li>
-                <li><a href="#chapter-1" role="menuitem">Ch 1: Initial Access</a></li>
-                <li><a href="#chapter-2" role="menuitem">Ch 2: Enumeration</a></li>
-                <li><a href="#chapter-3" role="menuitem">Ch 3: Persistence</a></li>
-                <li><a href="#chapter-4" role="menuitem">Ch 4: Isolation</a></li>
-                <li><a href="#chapter-5" role="menuitem">Ch 5: The Ones I Couldn't Save</a></li>
-                <li><a href="#chapter-6" role="menuitem">Ch 6: The Shift</a></li>
-                <li><a href="#chapter-7" role="menuitem">Ch 7: The Red Horse</a></li>
-                <li><a href="#chapter-8" role="menuitem">Ch 8: The Collapse</a></li>
-                <li><a href="#chapter-9" role="menuitem">Ch 9: The Rope</a></li>
-                <li><a href="#chapter-10" role="menuitem">Ch 10: Detection</a></li>
-                <li><a href="#chapter-11" role="menuitem">Ch 11: Foothold Attempts</a></li>
-                <li><a href="#epilogue" role="menuitem">Epilogue</a></li>
-            </ul>
-        </nav>
-
         <!-- Main terminal screen -->
         <main id="main-content" class="terminal" role="main">
             <div class="screen">
@@ -1007,12 +984,33 @@ jesus@cameron.local:~$ last_word
                 </div>
             </div>
             
-            <!-- Progress bar -->
+            <!-- Progress bar with chapter navigation -->
             <div class="progress-bar-container">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
                 <span class="progress-text" id="progress-text">0%</span>
+                <nav class="chapter-nav" role="navigation" aria-label="Chapter navigation">
+                    <button class="chapter-nav-toggle" aria-expanded="false" aria-controls="chapter-list">
+                        <span class="current-chapter">Title</span>
+                        <span class="nav-icon" aria-hidden="true"></span>
+                    </button>
+                    <ul id="chapter-list" class="chapter-list" role="menu">
+                        <li><a href="#header" role="menuitem">Title</a></li>
+                        <li><a href="#chapter-1" role="menuitem">Ch 1: Initial Access</a></li>
+                        <li><a href="#chapter-2" role="menuitem">Ch 2: Enumeration</a></li>
+                        <li><a href="#chapter-3" role="menuitem">Ch 3: Persistence</a></li>
+                        <li><a href="#chapter-4" role="menuitem">Ch 4: Isolation</a></li>
+                        <li><a href="#chapter-5" role="menuitem">Ch 5: The Ones I Couldn't Save</a></li>
+                        <li><a href="#chapter-6" role="menuitem">Ch 6: The Shift</a></li>
+                        <li><a href="#chapter-7" role="menuitem">Ch 7: The Red Horse</a></li>
+                        <li><a href="#chapter-8" role="menuitem">Ch 8: The Collapse</a></li>
+                        <li><a href="#chapter-9" role="menuitem">Ch 9: The Rope</a></li>
+                        <li><a href="#chapter-10" role="menuitem">Ch 10: Detection</a></li>
+                        <li><a href="#chapter-11" role="menuitem">Ch 11: Foothold Attempts</a></li>
+                        <li><a href="#epilogue" role="menuitem">Epilogue</a></li>
+                    </ul>
+                </nav>
             </div>
         </main>
     </div>
