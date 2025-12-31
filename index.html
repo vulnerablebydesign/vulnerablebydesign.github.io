@@ -5,20 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Advanced Persistent Threat - A Terminal Testimony</title>
     <meta name="description" content="A deeply personal narrative using cybersecurity metaphors to tell a story of struggle, faith, and recovery.">
+    <!-- Font preloading for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="assets/styles/terminal.css">
 </head>
 <body>
+    <!-- Skip link for accessibility -->
+    <a href="#terminal-content" class="skip-link">Skip to main content</a>
+
     <!-- CRT Monitor Container -->
     <div id="crt">
         <!-- Flicker overlay -->
         <div class="flicker"></div>
-        
+
+        <!-- Chapter navigation -->
+        <nav class="chapter-nav" role="navigation" aria-label="Chapter navigation">
+            <button class="chapter-nav-toggle" aria-expanded="false" aria-controls="chapter-list">
+                <span class="current-chapter">Title</span>
+                <span class="nav-icon" aria-hidden="true"></span>
+            </button>
+            <ul id="chapter-list" class="chapter-list" role="menu">
+                <li><a href="#header" role="menuitem">Title</a></li>
+                <li><a href="#chapter-1" role="menuitem">Ch 1: Initial Access</a></li>
+                <li><a href="#chapter-2" role="menuitem">Ch 2: Enumeration</a></li>
+                <li><a href="#chapter-3" role="menuitem">Ch 3: Persistence</a></li>
+                <li><a href="#chapter-4" role="menuitem">Ch 4: Isolation</a></li>
+                <li><a href="#chapter-5" role="menuitem">Ch 5: The Ones I Couldn't Save</a></li>
+                <li><a href="#chapter-6" role="menuitem">Ch 6: The Shift</a></li>
+                <li><a href="#chapter-7" role="menuitem">Ch 7: The Red Horse</a></li>
+                <li><a href="#chapter-8" role="menuitem">Ch 8: The Collapse</a></li>
+                <li><a href="#chapter-9" role="menuitem">Ch 9: The Rope</a></li>
+                <li><a href="#chapter-10" role="menuitem">Ch 10: Detection</a></li>
+                <li><a href="#chapter-11" role="menuitem">Ch 11: Foothold Attempts</a></li>
+                <li><a href="#epilogue" role="menuitem">Epilogue</a></li>
+            </ul>
+        </nav>
+
         <!-- Main terminal screen -->
         <main id="main-content" class="terminal" role="main">
             <div class="screen">
                 <!-- Boot sequence -->
                 <div id="boot-sequence" class="boot-sequence" aria-label="Loading animation">
                     <div class="boot-text"></div>
+                    <div class="skip-hint" role="status">Press any key or tap to skip</div>
                 </div>
                 
                 <!-- Main content area with scrolling -->
@@ -998,12 +1028,42 @@ jesus@cameron.local:~$ last_word
             { text: "", delay: 200 }
         ];
 
+        // Skip boot sequence functionality
+        let bootSkipped = false;
+
+        function skipBoot() {
+            if (bootSkipped) return;
+            bootSkipped = true;
+
+            const bootDiv = document.getElementById('boot-sequence');
+            bootDiv.style.transition = 'opacity 0.3s ease';
+            bootDiv.style.opacity = '0';
+
+            setTimeout(() => {
+                bootDiv.style.display = 'none';
+                document.querySelector('.terminal').classList.add('booted');
+                document.getElementById('terminal-content').style.display = 'block';
+                updateProgressBar();
+                initChapterNavigation();
+            }, 300);
+
+            // Clean up event listeners
+            cleanupBootListeners();
+        }
+
+        function cleanupBootListeners() {
+            document.removeEventListener('keydown', skipBoot);
+            document.removeEventListener('click', skipBoot);
+            document.removeEventListener('touchstart', skipBoot);
+        }
+
         // Boot sequence with typing animation
         async function typeWriter(element, text, speed = 30) {
             const cursor = element.querySelector('.cursor');
             if (cursor) element.removeChild(cursor);
-            
+
             for (let i = 0; i < text.length; i++) {
+                if (bootSkipped) return; // Early exit if skipped
                 element.textContent += text.charAt(i);
                 if (cursor) element.appendChild(cursor);
                 await new Promise(resolve => setTimeout(resolve, speed));
@@ -1013,29 +1073,36 @@ jesus@cameron.local:~$ last_word
         async function bootSequence() {
             const bootDiv = document.getElementById('boot-sequence');
             const bootText = bootDiv.querySelector('.boot-text');
-            
+
             for (const message of bootMessages) {
+                if (bootSkipped) return; // Early exit if skipped
+
                 const line = document.createElement('div');
                 line.className = 'boot-line';
                 bootText.appendChild(line);
-                
+
                 const cursor = document.createElement('span');
                 cursor.className = 'cursor';
                 line.appendChild(cursor);
-                
+
                 await typeWriter(line, message.text);
+                if (bootSkipped) return; // Check again after typing
                 cursor.remove();
                 await new Promise(resolve => setTimeout(resolve, message.delay));
             }
-            
-            // Transition to main content
-            bootDiv.style.opacity = '0';
-            setTimeout(() => {
-                bootDiv.style.display = 'none';
-                document.querySelector('.terminal').classList.add('booted');
-                document.getElementById('terminal-content').style.display = 'block';
-                updateProgressBar();
-            }, 1000);
+
+            if (!bootSkipped) {
+                // Normal transition (boot completed without skip)
+                cleanupBootListeners();
+                bootDiv.style.opacity = '0';
+                setTimeout(() => {
+                    bootDiv.style.display = 'none';
+                    document.querySelector('.terminal').classList.add('booted');
+                    document.getElementById('terminal-content').style.display = 'block';
+                    updateProgressBar();
+                    initChapterNavigation();
+                }, 1000);
+            }
         }
 
         // Progress bar functionality
@@ -1043,19 +1110,124 @@ jesus@cameron.local:~$ last_word
             const content = document.getElementById('terminal-content');
             const progressFill = document.getElementById('progress-fill');
             const progressText = document.getElementById('progress-text');
-            
+
             content.addEventListener('scroll', () => {
                 const scrollTop = content.scrollTop;
                 const scrollHeight = content.scrollHeight - content.clientHeight;
                 const scrollPercentage = Math.round((scrollTop / scrollHeight) * 100);
-                
+
                 progressFill.style.width = scrollPercentage + '%';
                 progressText.textContent = scrollPercentage + '%';
             });
         }
 
+        // Chapter navigation functionality
+        function initChapterNavigation() {
+            const nav = document.querySelector('.chapter-nav');
+            const toggle = document.querySelector('.chapter-nav-toggle');
+            const list = document.getElementById('chapter-list');
+            const content = document.getElementById('terminal-content');
+            const chapters = document.querySelectorAll('.chapter');
+            const navLinks = document.querySelectorAll('.chapter-list a');
+            const currentChapterSpan = document.querySelector('.current-chapter');
+
+            // Show nav after boot
+            nav.classList.add('visible');
+
+            // Toggle menu
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', !expanded);
+            });
+
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.chapter-nav')) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close on Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.focus();
+                }
+            });
+
+            // Smooth scroll to chapter
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').slice(1);
+                    const target = document.getElementById(targetId);
+
+                    if (target) {
+                        // Find the target's position relative to the scrollable container
+                        const targetPosition = target.offsetTop - content.offsetTop;
+                        content.scrollTo({
+                            top: targetPosition - 20,
+                            behavior: 'smooth'
+                        });
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+
+            // Track current chapter with Intersection Observer
+            const chapterNames = {
+                'header': 'Title',
+                'chapter-1': 'Ch. 1',
+                'chapter-2': 'Ch. 2',
+                'chapter-3': 'Ch. 3',
+                'chapter-4': 'Ch. 4',
+                'chapter-5': 'Ch. 5',
+                'chapter-6': 'Ch. 6',
+                'chapter-7': 'Ch. 7',
+                'chapter-8': 'Ch. 8',
+                'chapter-9': 'Ch. 9',
+                'chapter-10': 'Ch. 10',
+                'chapter-11': 'Ch. 11',
+                'epilogue': 'Epilogue'
+            };
+
+            const observerOptions = {
+                root: content,
+                rootMargin: '-10% 0px -80% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const chapterId = entry.target.id;
+
+                        // Update toggle text
+                        currentChapterSpan.textContent = chapterNames[chapterId] || chapterId;
+
+                        // Update active link
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${chapterId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            chapters.forEach(chapter => observer.observe(chapter));
+        }
+
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', () => {
+            // Add skip listeners
+            document.addEventListener('keydown', skipBoot);
+            document.addEventListener('click', skipBoot);
+            document.addEventListener('touchstart', skipBoot);
+
+            // Start boot sequence
             bootSequence();
         });
     </script>

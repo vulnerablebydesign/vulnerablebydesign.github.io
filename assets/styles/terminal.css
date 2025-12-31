@@ -14,6 +14,7 @@ body {
     font-size: 20px;
     overflow: hidden;
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
     color: #33ff33;
 }
 
@@ -22,6 +23,7 @@ body {
     position: relative;
     width: 100vw;
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
     background: #1a1a1a;
     overflow: hidden;
 }
@@ -35,15 +37,17 @@ body {
     left: 0;
     bottom: 0;
     right: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(18, 16, 16, 0) 50%,
-        rgba(0, 0, 0, 0.25) 50%
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
     );
-    background-size: 100% 8px;
     z-index: 2;
     pointer-events: none;
     animation: scanlines 8s linear infinite;
+    will-change: background-position; /* GPU acceleration */
 }
 
 /* Moving scanlines animation */
@@ -64,12 +68,13 @@ body {
     width: 94%;
     height: 94%;
     background: #000000;
-    border-radius: 20px;
+    border-radius: 30px / 25px; /* Subtle CRT curvature */
     padding: 40px;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         inset 0 0 100px rgba(0, 0, 0, 0.8),
         0 0 40px rgba(51, 255, 51, 0.5);
+    transform: perspective(1000px) rotateX(0.5deg); /* Slight CRT depth */
 }
 
 /* Screen content container */
@@ -91,7 +96,10 @@ body {
     font-size: 18px;
     line-height: 1.4;
     color: #33ff33;
-    text-shadow: 0 0 1px #33ff33;
+    text-shadow:
+        0 0 1px #33ff33,
+        0 0 2px rgba(51, 255, 51, 0.5),
+        0 0 4px rgba(51, 255, 51, 0.2); /* Enhanced phosphor glow */
     white-space: pre-wrap;
     word-wrap: break-word;
     transition: opacity 0.2s ease-in-out;
@@ -143,6 +151,26 @@ body {
     text-align: right;
 }
 
+/* Screen reflection effect */
+.terminal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.01) 30%,
+        transparent 50%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 6;
+    border-radius: inherit;
+}
+
 /* Vignette effect */
 .terminal::after {
     content: "";
@@ -173,6 +201,8 @@ body {
     z-index: 3;
     pointer-events: none;
     animation: flicker 0.15s infinite;
+    will-change: opacity; /* GPU acceleration */
+    transform: translateZ(0); /* Force GPU layer */
 }
 
 @keyframes flicker {
@@ -343,6 +373,18 @@ a:hover {
     width: 100%;
 }
 
+/* Skip boot hint */
+.skip-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: rgba(51, 255, 51, 0.5);
+    animation: pulse-hint 2s ease-in-out infinite;
+}
+
 .boot-line {
     margin-bottom: 5px;
     font-size: 20px;
@@ -379,6 +421,11 @@ a:hover {
     50% { border-color: #33ff33; }
 }
 
+@keyframes pulse-hint {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+}
+
 /* Chapter sections */
 .chapter {
     margin-bottom: 60px;
@@ -409,42 +456,285 @@ a:hover {
     background: #66ff66;
 }
 
+/* Chapter navigation */
+.chapter-nav {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    font-family: 'VT323', monospace;
+    display: none; /* Hidden until boot completes */
+}
+
+.booted ~ .chapter-nav,
+.chapter-nav.visible {
+    display: block;
+}
+
+.chapter-nav-toggle {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    padding: 10px 15px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.chapter-nav-toggle:hover,
+.chapter-nav-toggle:focus {
+    background: rgba(51, 255, 51, 0.1);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+}
+
+.nav-icon {
+    border: solid #33ff33;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+}
+
+.chapter-nav-toggle[aria-expanded="true"] .nav-icon {
+    transform: rotate(-135deg);
+}
+
+.chapter-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #33ff33;
+    border-radius: 4px;
+    list-style: none;
+    padding: 5px 0;
+    min-width: 220px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.chapter-nav-toggle[aria-expanded="true"] + .chapter-list {
+    display: block;
+}
+
+.chapter-list li a {
+    display: block;
+    padding: 8px 15px;
+    color: #33ff33;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s;
+    font-size: 14px;
+}
+
+.chapter-list li a:hover,
+.chapter-list li a:focus {
+    background: rgba(51, 255, 51, 0.2);
+    outline: none;
+}
+
+.chapter-list li a.active {
+    background: rgba(51, 255, 51, 0.15);
+    border-left: 3px solid #33ff33;
+    padding-left: 12px;
+}
+
+/* Chapter list scrollbar */
+.chapter-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chapter-list::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+
+.chapter-list::-webkit-scrollbar-thumb {
+    background: #33ff33;
+    border-radius: 4px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    color: #33ff33;
+    padding: 10px 20px;
+    border: 2px solid #33ff33;
+    z-index: 1000;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    text-decoration: none;
+    transition: top 0.2s;
+}
+
+.skip-link:focus {
+    top: 10px;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+    outline: 2px solid #33ff33;
+    outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid #33ff33;
+    outline-offset: 2px;
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+.terminal-content:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgba(51, 255, 51, 0.3);
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+    body {
+        font-size: 18px;
+    }
+
+    .terminal {
+        padding: 30px;
+        top: 2.5%;
+        left: 2.5%;
+        width: 95%;
+        height: 95%;
+    }
+
+    h1 {
+        font-size: 40px;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    pre {
+        font-size: 16px;
+    }
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     body {
         font-size: 16px;
     }
-    
+
     .terminal {
-        padding: 20px;
-        top: 2%;
-        left: 2%;
-        width: 96%;
-        height: 96%;
+        padding: 15px;
+        top: 1%;
+        left: 1%;
+        width: 98%;
+        height: 98%;
+        border-radius: 10px;
     }
-    
+
+    .screen {
+        height: calc(100% - 40px);
+    }
+
+    .terminal-content {
+        padding: 10px;
+    }
+
+    .progress-bar-container {
+        height: 35px;
+        padding: 0 10px;
+    }
+
     h1 {
-        font-size: 32px;
+        font-size: 28px;
+        letter-spacing: 1px;
     }
-    
+
     h2 {
+        font-size: 22px;
+        letter-spacing: 1px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    pre {
+        font-size: 13px;
+        line-height: 1.3;
+    }
+
+    .chapter {
+        margin-bottom: 40px;
+    }
+
+    .skip-hint {
+        font-size: 14px;
+        bottom: 30px;
+    }
+
+    .chapter-nav {
+        top: auto;
+        bottom: 55px;
+        right: 10px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+    .terminal {
+        padding: 10px;
+    }
+
+    h1 {
         font-size: 24px;
     }
-    
+
+    h2 {
+        font-size: 18px;
+    }
+
     h3 {
-        font-size: 20px;
+        font-size: 16px;
     }
-    
+
     pre {
-        font-size: 14px;
+        font-size: 12px;
     }
-    
-    .chapter-nav {
-        right: 10px;
-        top: 10px;
-        font-size: 14px;
-        padding: 10px;
-        max-width: 150px;
+
+    .skip-hint {
+        font-size: 12px;
     }
 }
 
