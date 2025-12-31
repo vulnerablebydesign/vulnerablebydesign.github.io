@@ -4,68 +4,44 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a static GitHub Pages website presenting a deeply personal narrative titled "The Advanced Persistent Threat: A Terminal Testimony". The project uses cybersecurity metaphors to tell a story of struggle, faith, and recovery.
+A static GitHub Pages website presenting "The Advanced Persistent Threat: A Terminal Testimony" - a deeply personal narrative using cybersecurity metaphors to tell a story of struggle, faith, and recovery.
 
-## Key Commands
+## Development
 
-### Development
-- **Local Preview**: Open `index.html` directly in a web browser (no build process required)
-- **Deploy**: Push changes to the `main` branch; GitHub Pages will automatically deploy
+- **Local Preview**: Open `index.html` directly in browser (no build process)
+- **Deploy**: Push to `main` branch - GitHub Pages deploys automatically
 
-### Git Operations
-```bash
-# Check changes before committing
-git status
-git diff
-
-# Stage and commit changes
-git add .
-git commit -m "Your commit message"
-
-# Push to GitHub (triggers deployment)
-git push origin main
-```
-
-## Architecture & Structure
+## Architecture
 
 ### Core Files
-- **index.html**: Single-page narrative with 11 chapters + epilogue, structured as terminal log entries
-- **assets/styles/terminal.css**: Terminal aesthetic styling with neon green text effects
-- **README.md**: Project documentation and setup instructions
+- `index.html` - Single-page narrative with 11 chapters + epilogue, includes JavaScript boot sequence
+- `assets/styles/terminal.css` - Terminal aesthetics with CRT effects (scanlines, flicker, VT323 font)
 
-### Design Patterns
-- **Terminal Metaphor**: The entire site mimics a terminal/console interface
-- **Semantic Structure**: Each chapter is a `<section>` with consistent heading hierarchy
-- **CSS Classes**: 
-  - `.command`: Terminal commands
-  - `.output`: Command output
-  - `.comment`: Inline comments
-  - `.keyword`, `.string`, `.function`: Syntax highlighting
+### Visual Effects System
+The CSS implements authentic CRT terminal effects:
+- Scanline overlay animation
+- Screen flicker effect
+- Vignette darkening at edges
+- Power-on animation
+- Text glow effects
+- Typed boot sequence with JavaScript
 
-### Content Structure
-The narrative uses cybersecurity terminology metaphorically:
+### Content Metaphor Mapping
 - "theAdversary" = negative thoughts/addiction
 - SSH sessions = internal dialogue
 - File systems = identity/memory aspects
 - Root access = spiritual authority
 - Firewall = protective relationships
 
-## Repository Management
-
-### Git Configuration
-- **Author**: vulnerablebydesign <her0x0ftime@gmail.com>
-- **Remote URL**: https://github.com/vulnerablebydesign/vulnerablebydesign.github.io.git
-
-### File Organization
-- **Backup Files**: Use `/backups/` directory for local-only files (ignored by Git)
-- **Naming Convention**: `*_original.*`, `*.backup`, `*_backup.*` are automatically ignored
-- **Development Files**: Keep backup/comparison files local only, never commit to repo
+### CSS Classes
+- `.command` / `.output` / `.comment` - Terminal styling
+- `.keyword` / `.string` / `.function` - Syntax highlighting
+- `.boot-sequence` / `.boot-line` - Boot animation
+- `.chapter` - Content sections
 
 ## Important Considerations
 
-1. **Static Site**: No JavaScript or build process - pure HTML/CSS
-2. **GitHub Pages**: Site deploys automatically from `main` branch
-3. **Sensitive Content**: The narrative contains personal stories about addiction, trauma, and recovery - handle with care
-4. **Terminal Aesthetic**: Maintain the monospace font and green-on-black color scheme for consistency
-5. **Mobile Responsiveness**: The terminal container has max-width constraints for readability
-6. **CRT Effects**: Site now includes authentic terminal effects (scanlines, flicker, VT323 font)
+1. **Static Site**: Pure HTML/CSS with minimal JavaScript for boot animation only
+2. **Sensitive Content**: Personal stories about addiction, trauma, and recovery - handle with care
+3. **Terminal Aesthetic**: Maintain VT323 font, green-on-black (#33ff33), and CRT effects
+4. **Accessibility**: Includes `prefers-reduced-motion` and `prefers-contrast: high` support
