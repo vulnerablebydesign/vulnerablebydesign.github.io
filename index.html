@@ -875,16 +875,11 @@ creator@cameron.local:~$ ufw allow from community.local
 creator@cameron.local:~$ journalctl --sync
 > All records restored. Shame removed from logs.
 
-# theAdversary attempts persistence reinstall: denied  
-# .bashrc lockout enabled
+theAdversary@attackerbox:~$ ssh cameron@cameron.local
+> Connection refused. Key revoked.
 
-theAdversary@attackerbox:~$ echo "Regain control."
-"Regain control."
-> Access denied. Root active. Admin live.
-
-theAdversary@attackerbox:~$ echo "Who authorized this?"
-"Who authorized this?"
-> He did. He always could. But now He was invited.
+theAdversary@attackerbox:~$ ./reinstall_persistence.sh
+> Permission denied. Root session active.
 
 [END LOG]</pre>
                         </section>
