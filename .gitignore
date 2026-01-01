@@ -19,3 +19,6 @@ Thumbs.db
 
 # Claude Code config
 CLAUDE.md
+
+# Private source material
+conversations.json
