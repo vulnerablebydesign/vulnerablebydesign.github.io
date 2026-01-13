@@ -167,8 +167,7 @@ We will contact you at: e2[object Object]function Function()...root</div>
 
       <p>One final payload. <code>cat /root/flag.txt</code> instead of <code>whoami</code>. The flag emerged from the chaos of mangled HTML and JavaScript artifacts:</p>
 
-      <div class="terminal-log">
-6b258d726d287462d60c103d0142a81c</div>
+      <div class="terminal-log"><span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">6b258d726d287462d60c103d0142a81c</span></span></div>
 
       <p>Box complete. RCE as root achieved via Handlebars SSTI with sandbox bypass using <code>process.mainModule.require()</code>.</p>
 

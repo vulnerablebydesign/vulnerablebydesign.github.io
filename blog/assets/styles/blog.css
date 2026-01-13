@@ -181,6 +181,15 @@ body::before {
   color: var(--terminal-green);
   margin-top: var(--spacing-lg);
   animation: blink 1s step-end infinite;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  transition: text-shadow 0.2s;
+}
+
+.press-start:hover {
+  text-shadow: 0 0 20px var(--terminal-green);
 }
 
 @keyframes blink {
@@ -344,25 +353,24 @@ body::before {
 
 .post-card-link {
   display: inline-block;
-  font-family: var(--font-terminal);
-  font-size: 1rem;
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
   color: var(--terminal-green);
   text-decoration: none;
-  padding: var(--spacing-xs) 0;
-  transition: all 0.2s;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 2px solid var(--terminal-green);
+  background: transparent;
+  margin-top: var(--spacing-xs);
+  animation: blink 1s step-end infinite;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .post-card-link:hover {
-  text-shadow: 0 0 10px var(--terminal-green);
-  padding-left: var(--spacing-sm);
-}
-
-.post-card-link::before {
-  content: "[ ";
-}
-
-.post-card-link::after {
-  content: " ]";
+  background: rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+  animation: none;
 }
 
 /* ============================================
@@ -821,4 +829,57 @@ body::before {
 a:focus-visible,
 button:focus-visible {
   box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+}
+
+/* ============================================
+   FLAG SPOILER - Portal Themed
+   ============================================ */
+.flag-spoiler {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-terminal);
+  cursor: pointer;
+}
+
+.flag-spoiler .flag-hidden {
+  color: var(--glados-yellow);
+  background: linear-gradient(90deg,
+    rgba(251, 191, 36, 0.2) 0%,
+    rgba(251, 191, 36, 0.1) 50%,
+    rgba(251, 191, 36, 0.2) 100%);
+  padding: 2px 8px;
+  border: 1px dashed var(--glados-yellow);
+  font-style: italic;
+  animation: cake-pulse 2s ease-in-out infinite;
+}
+
+.flag-spoiler .flag-revealed {
+  display: none;
+  color: var(--matrix-green);
+  background: var(--bg-surface);
+  padding: 2px 8px;
+  border: 1px solid var(--terminal-green);
+  font-family: var(--font-terminal);
+}
+
+.flag-spoiler.revealed .flag-hidden {
+  display: none;
+}
+
+.flag-spoiler.revealed .flag-revealed {
+  display: inline;
+}
+
+@keyframes cake-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Companion Cube decoration for spoilers */
+.flag-spoiler .flag-hidden::before {
+  content: "◇ ";
+}
+
+.flag-spoiler .flag-hidden::after {
+  content: " ◇";
 }
