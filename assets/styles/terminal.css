@@ -79,7 +79,7 @@ body {
 
 /* Screen content container */
 .screen {
-    height: calc(100% - 50px); /* Leave space for progress bar */
+    height: calc(100% - 55px); /* Leave space for status bar */
     overflow: hidden; /* Disable scrolling */
     position: relative;
     z-index: 5;
@@ -116,7 +116,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 40px;
+    height: 45px;
     background: #000000;
     border-top: 2px solid #33ff33;
     display: flex;
@@ -330,12 +330,34 @@ a:hover {
     font-style: italic;
 }
 
+/* === Phase 2: Content Color Differentiation === */
+
+/* Command prompts — brightest, the "action" */
+.cmd { color: #33ff33; }
+
+/* Output lines (> prefixed) — slightly softer */
+.out { color: #55dd55; }
+
+/* Comment lines (# prefixed) — muted italic, adversary's inner monologue */
+.cmt { color: #44aa44; font-style: italic; }
+
+/* System messages — [system], [background] — amber/gold */
+.sys { color: #ffaa33; }
+
+/* Creator session — creator@cameron.local — white with warm glow */
+.creator { color: #ffffcc; text-shadow: 0 0 4px rgba(255, 255, 200, 0.6); }
+
 /* theAdversary tactical log entries - intercepted C2 traffic */
 .adversary-log {
-    color: #ff6633;
+    color: #ff8844;
     font-size: 0.9em;
-    opacity: 0.85;
     letter-spacing: 0.5px;
+    border-left: 3px solid #ff8844;
+    padding-left: 10px;
+    margin: 10px 0;
+    background: rgba(255, 136, 68, 0.05);
+    display: block;
+    text-shadow: 0 0 2px rgba(255, 136, 68, 0.3);
 }
 
 .error {
@@ -605,6 +627,228 @@ button:focus-visible {
     border: 0;
 }
 
+/* Scroll indicator — positioned at bottom of visible terminal area */
+.scroll-cue {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #33ff33;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    opacity: 0.9;
+    transition: opacity 0.5s ease;
+    text-shadow: 0 0 4px rgba(51, 255, 51, 0.5);
+    z-index: 8;
+    pointer-events: none;
+    display: none;
+}
+
+.booted .scroll-cue {
+    display: block;
+}
+
+.scroll-cue.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scroll-cue-text {
+    display: block;
+    letter-spacing: 3px;
+}
+
+.scroll-cue-arrow {
+    display: block;
+    margin-top: 8px;
+    font-size: 24px;
+    animation: scroll-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes scroll-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* === Phase 3: Chapter Visual Separators === */
+.chapter-break {
+    text-align: center;
+    color: #44aa44;
+    opacity: 0.6;
+    margin: 30px 0;
+    font-size: 14px;
+    letter-spacing: 2px;
+    user-select: none;
+}
+
+/* === Phase 4: Title/Header Redesign === */
+.title-box {
+    text-align: center;
+    color: #33ff33;
+    line-height: 1.4;
+}
+
+.title-box-ascii {
+    white-space: pre;
+    margin-bottom: 0;
+}
+
+.title-box-css {
+    border: 2px solid #33ff33;
+    padding: 20px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+}
+
+.title-box .title-main {
+    font-size: 1.2em;
+    letter-spacing: 2px;
+}
+
+.title-links {
+    text-align: center;
+    margin-top: 10px;
+    color: #33ff33;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+}
+
+/* === Phase 5: Creator Visual Distinction === */
+.motd {
+    border: 1px solid #ffffcc;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
+    color: #ffffcc;
+    text-shadow: 0 0 8px rgba(255, 255, 200, 0.4);
+    background: rgba(255, 255, 200, 0.03);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* === Phase 6: Epilogue Emphasis === */
+.legacy {
+    border: 2px solid #33ff33;
+    padding: 20px;
+    margin: 30px 0;
+    background: rgba(51, 255, 51, 0.03);
+    text-align: center;
+    color: #55ff55;
+    font-size: 1.1em;
+    text-shadow: 0 0 6px rgba(51, 255, 51, 0.5);
+    font-family: 'VT323', monospace;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* === Phase 7: Content Advisory === */
+.content-advisory {
+    border: 1px solid #ffaa33;
+    border-left: 4px solid #ffaa33;
+    padding: 20px;
+    margin: 20px 0 40px 0;
+    color: #ffcc66;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1.8;
+    background: rgba(255, 170, 51, 0.05);
+    text-shadow: 0 0 2px rgba(255, 204, 102, 0.4);
+    white-space: pre-wrap;
+}
+
+/* === Phase 1: System Status Bar === */
+.status-metrics {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    color: #33ff33;
+    overflow: hidden;
+}
+
+.status-metric {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.status-metric .metric-label {
+    opacity: 0.7;
+}
+
+.metric-bar {
+    display: inline-flex;
+    width: 50px;
+    height: 8px;
+    background: rgba(51, 255, 51, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.metric-bar-fill {
+    height: 100%;
+    background: #33ff33;
+    transition: width 0.5s ease, background-color 0.5s ease;
+    border-radius: 2px;
+}
+
+.status-state {
+    font-size: 12px;
+    padding: 2px 6px;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.fw-status {
+    transition: opacity 0.15s ease;
+}
+
+/* Status bar transition color on chapter change */
+.progress-bar-container {
+    transition: border-color 0.5s ease;
+}
+
+/* Chapter 8 crash effect */
+@keyframes crash-flash {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: rgba(255, 51, 51, 0.15); }
+}
+
+@keyframes screen-shake {
+    0%, 100% { transform: translateX(0); }
+    10% { transform: translateX(-2px); }
+    20% { transform: translateX(2px); }
+    30% { transform: translateX(-2px); }
+    40% { transform: translateX(2px); }
+    50% { transform: translateX(-1px); }
+    60% { transform: translateX(1px); }
+    70% { transform: translateX(-1px); }
+    80% { transform: translateX(1px); }
+    90% { transform: translateX(0); }
+}
+
+.crash-flash {
+    animation: crash-flash 0.3s ease 2;
+}
+
+.screen-shake {
+    animation: screen-shake 0.5s ease;
+}
+
+/* Chapter 10 grace.enforced typing effect */
+.fw-typing {
+    border-right: 2px solid #ffffcc;
+    animation: blink-caret 0.5s step-end infinite;
+}
+
 /* Tablet responsive */
 @media (max-width: 1024px) and (min-width: 769px) {
     body {
@@ -694,6 +938,47 @@ button:focus-visible {
     .chapter-list {
         max-height: 50vh;
     }
+
+    /* Phase 1: Compact status metrics on mobile */
+    .metric-bar {
+        display: none;
+    }
+
+    .status-metrics {
+        gap: 10px;
+        font-size: 13px;
+    }
+
+    /* Phase 3: Shorter chapter breaks */
+    .chapter-break {
+        font-size: 12px;
+        margin: 20px 0;
+    }
+
+    /* Phase 4: Swap ASCII box for CSS-bordered div on mobile */
+    .title-box-ascii {
+        display: none !important;
+    }
+
+    .title-box-css {
+        display: block !important;
+    }
+
+    /* Phase 5: Reduce creator glow on mobile */
+    .creator {
+        text-shadow: none;
+    }
+
+    /* Phase 6: Smaller legacy padding */
+    .legacy {
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    /* Skip screen shake on mobile */
+    .screen-shake {
+        animation: none;
+    }
 }
 
 /* Small phones */
@@ -717,6 +1002,21 @@ button:focus-visible {
     pre {
         font-size: 12px;
     }
+
+    /* Phase 1: Color-only progress bar on small phones */
+    .status-metrics {
+        display: none;
+    }
+
+    .status-state {
+        display: none;
+    }
+
+    /* Phase 3: Minimal chapter breaks */
+    .chapter-break {
+        font-size: 11px;
+        letter-spacing: 0;
+    }
 }
 
 /* Accessibility */
@@ -731,13 +1031,31 @@ button:focus-visible {
     body {
         background: #000000;
     }
-    
+
     .terminal {
         border: 2px solid #ffffff;
     }
-    
-    h1, h2, h3, p, pre, a {
+
+    h1, h2, h3, p, pre, a,
+    .cmd, .out, .cmt, .sys, .creator, .legacy {
         color: #ffffff;
         text-shadow: none;
+    }
+
+    .motd {
+        color: #ffffff;
+        text-shadow: none;
+        border-color: #ffffff;
+    }
+
+    .content-advisory {
+        color: #ffffff;
+        border-color: #ffffff;
+        text-shadow: none;
+    }
+
+    .adversary-log {
+        color: #ffffff;
+        border-color: #ffffff;
     }
 }

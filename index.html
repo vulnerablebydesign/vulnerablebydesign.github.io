@@ -32,40 +32,64 @@
                     <article>
                         <!-- Header -->
                         <section id="header" class="chapter">
-                            <pre>The Advanced Persistent Threat
-A Terminal Testimony
-Author: Cameron
-X: @her0x0ftime
-Blog: <a href="/blog/">Hack the Cube</a></pre>
+                            <pre class="title-box title-box-ascii">╔══════════════════════════════════════════════════╗
+║                                                  ║
+║     THE ADVANCED PERSISTENT THREAT               ║
+║     A Terminal Testimony                         ║
+║                                                  ║
+║     CLASSIFICATION: PERSONAL                     ║
+║     AUTHOR: Cameron                              ║
+║                                                  ║
+╚══════════════════════════════════════════════════╝</pre>
+                            <div class="title-box title-box-css" style="display:none;">
+                                <div class="title-main">THE ADVANCED PERSISTENT THREAT</div>
+                                <div>A Terminal Testimony</div>
+                                <br>
+                                <div>CLASSIFICATION: PERSONAL</div>
+                                <div>AUTHOR: Cameron</div>
+                            </div>
+                            <div class="title-links"> X: @her0x0ftime  |  Blog: <a href="/blog/">Hack the Cube</a></div>
                         </section>
+
+                        <!-- Content Advisory -->
+                        <aside class="content-advisory" role="note" aria-label="Content advisory">
+[ADVISORY] This log contains references to: childhood trauma,
+addiction, loss by suicide, and recovery. Reader discretion advised.
+
+If you or someone you know is struggling:
+988 Suicide &amp; Crisis Lifeline — call or text 988
+SAMHSA Helpline — 1-800-662-4357
+                        </aside>
+
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
 
                         <!-- Chapter 1 -->
                         <section id="chapter-1" class="chapter">
                             <h2>Chapter 1: Initial Access</h2>
-                            <pre>Log File: session_log_apt-001.txt
+                            <pre><span class="out">Log File: session_log_apt-001.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-theAdversary@attackerbox:~$ ssh cameron@cameron.local  
-cameron@cameron.local's password: *********  
-> Session granted (limited access)
+<span class="cmd">theAdversary@attackerbox:~$ ssh cameron@cameron.local</span>
+<span class="cmd">cameron@cameron.local's password: *********</span>
+<span class="out">> Session granted (limited access)</span>
 
-# Root unavailable. Multiple sessions active. Elevated processes running under other users.
-# User unaware. Control assumed by omission.
+<span class="cmt"># Root unavailable. Multiple sessions active. Elevated processes running under other users.
+# User unaware. Control assumed by omission.</span>
 
-cameron@cameron.local:~$ hostname  
-cameron.local
+<span class="cmd">cameron@cameron.local:~$ hostname</span>
+<span class="out">cameron.local</span>
 
-theAdversary@attackerbox:~$ ./init_beacon.sh --target cameron.local --port 4444  
-> Beacon initialized on port 4444  
-> Persistence mode: silent
+<span class="cmd">theAdversary@attackerbox:~$ ./init_beacon.sh --target cameron.local --port 4444</span>
+<span class="out">> Beacon initialized on port 4444
+> Persistence mode: silent</span>
 
-# Entry vector: unfiltered curiosity. Image file. Unscanned. Delivered at age 8.
+<span class="cmt"># Entry vector: unfiltered curiosity. Image file. Unscanned. Delivered at age 8.</span>
 
-cameron@cameron.local:~$ ls -al /home/cameron
-/childhood
+<span class="cmd">cameron@cameron.local:~$ ls -al /home/cameron</span>
+<span class="out">/childhood
 /relationships
 /beliefs
 /identity
@@ -73,67 +97,67 @@ cameron@cameron.local:~$ ls -al /home/cameron
 /dreams
 /addiction
 journal.log
-.hidden
+.hidden</span>
 
-cameron@cameron.local: cat ./journal.log | grep "don't tell anyone"  
-> I don't tell anyone I saw that stuff when I was eight.  
-> I don't tell anyone it still shows up when I close my eyes.  
-> I don't tell anyone how fake I feel when they call me strong.  
+<span class="cmd">cameron@cameron.local: cat ./journal.log | grep "don't tell anyone"</span>
+<span class="out">> I don't tell anyone I saw that stuff when I was eight.
+> I don't tell anyone it still shows up when I close my eyes.
+> I don't tell anyone how fake I feel when they call me strong.
 > I don't tell anyone because I think they'd leave if they knew.
-> I don't tell anyone because I think I'm the only one who feels this way.
+> I don't tell anyone because I think I'm the only one who feels this way.</span>
 
-# Indicator: identity shaped by performance. Exploit route: emotional exhaustion.
+<span class="cmt"># Indicator: identity shaped by performance. Exploit route: emotional exhaustion.</span>
 
-cameron@cameron.local:~$ mkdir /implant
+<span class="cmd">cameron@cameron.local:~$ mkdir /implant
 cameron@cameron.local:~$ echo "You're too much." > /implant/whisper.sh
 cameron@cameron.local:~$ echo "You're not enough." >> /implant/whisper.sh
-cameron@cameron.local:~$ echo "You're a burden." >> /implant/whisper.sh
+cameron@cameron.local:~$ echo "You're a burden." >> /implant/whisper.sh</span>
 
-cameron@cameron.local:~$ crontab -e
-@reboot bash /implant/whisper.sh
-0 3 * * * bash /implant/whisper.sh
+<span class="cmd">cameron@cameron.local:~$ crontab -e</span>
+<span class="out">@reboot bash /implant/whisper.sh
+0 3 * * * bash /implant/whisper.sh</span>
 
-# Payload set. Persistence ensured. Delivery scheduled during vulnerable hours.
+<span class="cmt"># Payload set. Persistence ensured. Delivery scheduled during vulnerable hours.</span>
 
-cameron@cameron.local:~$ cd /childhood
-cameron@cameron.local:/childhood$ ls
-firewall/
+<span class="cmd">cameron@cameron.local:~$ cd /childhood
+cameron@cameron.local:/childhood$ ls</span>
+<span class="out">firewall/
 media/
 school/
 friendships/
-early_exposure.cache
+early_exposure.cache</span>
 
-# Found: /media/init.img | Timestamp: age 8 | Type: hardcore_imagery_01  
-# No antivirus. No guardian. No understanding. Implant successful.
+<span class="cmt"># Found: /media/init.img | Timestamp: age 8 | Type: hardcore_imagery_01
+# No antivirus. No guardian. No understanding. Implant successful.</span>
 
-cameron@cameron.local:/childhood$ echo "Initial exposure normalized. Shame seeded early." >> /recon_notes.txt
+<span class="cmd">cameron@cameron.local:/childhood$ echo "Initial exposure normalized. Shame seeded early." >> /recon_notes.txt</span>
 
-cameron@cameron.local:/childhood/friendships$ ls
-charles.log
-wes.stub
+<span class="cmd">cameron@cameron.local:/childhood/friendships$ ls</span>
+<span class="out">charles.log
+wes.stub</span>
 
-# charles.log present. Possible interference node.
-# Mark: firewall.user.class: Defender. Influence: disruptive to foothold.
+<span class="cmt"># charles.log present. Possible interference node.
+# Mark: firewall.user.class: Defender. Influence: disruptive to foothold.</span>
 
-cameron@cameron.local:/childhood/firewall$ ls
-charles.key
-charles-response.txt
+<span class="cmd">cameron@cameron.local:/childhood/firewall$ ls</span>
+<span class="out">charles.key
+charles-response.txt</span>
 
-# Event flag: playground intervention. Charles defended target. Unexpected.
+<span class="cmt"># Event flag: playground intervention. Charles defended target. Unexpected.</span>
 
-cameron@cameron.local:/beliefs$ tail -n 3 core.conf
-# WARNING: Configuration modified from original design
-God is real, but distant.           # Original: God is near
-Grace is for others.                # Original: Grace is for cameron
-Healing is possible, but not for me. # Original: Healing is available
+<span class="cmd">cameron@cameron.local:/beliefs$ tail -n 3 core.conf</span>
+<span class="cmt"># WARNING: Configuration modified from original design</span>
+<span class="out">God is real, but distant.           </span><span class="cmt"># Original: God is near</span>
+<span class="out">Grace is for others.                </span><span class="cmt"># Original: Grace is for cameron</span>
+<span class="out">Healing is possible, but not for me. </span><span class="cmt"># Original: Healing is available</span>
 
-cameron@cameron.local:~$ ls -la /etc/ | grep origin
--rw-r--r--  1 root root   origin.conf.disabled
+<span class="cmd">cameron@cameron.local:~$ ls -la /etc/ | grep origin</span>
+<span class="out">-rw-r--r--  1 root root   origin.conf.disabled</span>
 
-cameron@cameron.local:~$ systemctl status grace.service
-● grace.service - inactive (dead)
+<span class="cmd">cameron@cameron.local:~$ systemctl status grace.service</span>
+<span class="out">● grace.service - inactive (dead)</span>
 
-# Misconfigured doctrine. No enforcement policies. Firewall rules ineffective.
+<span class="cmt"># Misconfigured doctrine. No enforcement policies. Firewall rules ineffective.</span>
 
 <span class="adversary-log"># [1995-09-14 03:47:12] adversary[c2]: Target acquired. Monitor core beliefs. Keep identity fragmented.
 # [1995-09-14 03:47:19] adversary[c2]: PRIORITY - Monitor /etc/origin.conf. Do not let target discover original design.</span>
@@ -141,145 +165,149 @@ cameron@cameron.local:~$ systemctl status grace.service
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 2 -->
                         <section id="chapter-2" class="chapter">
                             <h2>Chapter 2: Enumeration & Exploitation</h2>
-                            <pre>Log File: session_log_apt-002.txt
+                            <pre><span class="out">Log File: session_log_apt-002.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:~$ cd /identity
-cameron@cameron.local:/identity$ ls
-personality/
+<span class="cmd">cameron@cameron.local:~$ cd /identity
+cameron@cameron.local:/identity$ ls</span>
+<span class="out">personality/
 test_results/
 mirrors.txt
-labels.txt
+labels.txt</span>
 
-# Begin profiling for long-term manipulation.
+<span class="cmt"># Begin profiling for long-term manipulation.</span>
 
-cameron@cameron.local:/identity$ cat mirrors.txt
-Reflections believed:
+<span class="cmd">cameron@cameron.local:/identity$ cat mirrors.txt</span>
+<span class="out">Reflections believed:
 - Too much
 - Not enough
 - In the way
 - Loud
 - Broken
 - Different
-- A joke
+- A joke</span>
 
-# He's already running my scripts. Doesn't know they're mine.
+<span class="cmt"># He's already running my scripts. Doesn't know they're mine.</span>
 
-cameron@cameron.local:/identity$ cat labels.txt
-- Class Clown  
-- The Sensitive One  
-- The Problem  
-- The Performer  
-- The One Who Has to Hold It All Together
+<span class="cmd">cameron@cameron.local:/identity$ cat labels.txt</span>
+<span class="out">- Class Clown
+- The Sensitive One
+- The Problem
+- The Performer
+- The One Who Has to Hold It All Together</span>
 
-# Label injection successful. Reinforce under social load.
+<span class="cmt"># Label injection successful. Reinforce under social load.</span>
 
-cameron@cameron.local:/identity/test_results$ ls
-enneagram7.txt
+<span class="cmd">cameron@cameron.local:/identity/test_results$ ls</span>
+<span class="out">enneagram7.txt
 cliftonstrengths.log
-mbti_ENFP-T.json
+mbti_ENFP-T.json</span>
 
-cameron@cameron.local:/identity/test_results$ cat enneagram7.txt
-Type: 7 - The Enthusiast  
-Core Fear: Being trapped in emotional pain  
-Core Desire: To be happy, fulfilled, and free  
-Blind Spot: Avoids discomfort through distraction  
-Lie Believed: Joy must replace pain. Never sit still.
+<span class="cmd">cameron@cameron.local:/identity/test_results$ cat enneagram7.txt</span>
+<span class="out">Type: 7 - The Enthusiast
+Core Fear: Being trapped in emotional pain
+Core Desire: To be happy, fulfilled, and free
+Blind Spot: Avoids discomfort through distraction
+Lie Believed: Joy must replace pain. Never sit still.</span>
 
-# Strong wiring. Weak roots.
+<span class="cmt"># Strong wiring. Weak roots.</span>
 
-cameron@cameron.local:/identity/test_results$ cat cliftonstrengths.log
-1. Developer  
-2. Ideation  
-3. Communication  
-4. Adaptability  
-5. Connectedness
+<span class="cmd">cameron@cameron.local:/identity/test_results$ cat cliftonstrengths.log</span>
+<span class="out">1. Developer
+2. Ideation
+3. Communication
+4. Adaptability
+5. Connectedness</span>
 
-# Dangerous skillset. Potential for healing others. Redirect toward burnout.
+<span class="cmt"># Dangerous skillset. Potential for healing others. Redirect toward burnout.</span>
 
-cameron@cameron.local:/identity/test_results$ cat mbti_ENFP-T.json
-ENFP-T - The Campaigner  
-Creative. Charismatic. Craves meaning.  
-Insecure. Idealistic. Overextends to please.  
-Vulnerable to image collapse.
+<span class="cmd">cameron@cameron.local:/identity/test_results$ cat mbti_ENFP-T.json</span>
+<span class="out">ENFP-T - The Campaigner
+Creative. Charismatic. Craves meaning.
+Insecure. Idealistic. Overextends to please.
+Vulnerable to image collapse.</span>
 
-# He wants to save the world so they won't look too closely at him.
+<span class="cmt"># He wants to save the world so they won't look too closely at him.</span>
 
-cameron@cameron.local:~$ cd /childhood
-cameron@cameron.local:/childhood$ ls
-firewall/
+<span class="cmd">cameron@cameron.local:~$ cd /childhood
+cameron@cameron.local:/childhood$ ls</span>
+<span class="out">firewall/
 media/
 school/
 friendships/
-early_exposure.cache
+early_exposure.cache</span>
 
-cameron@cameron.local:/childhood/friendships$ ls
-charles.log
-wes.stub
+<span class="cmd">cameron@cameron.local:/childhood/friendships$ ls</span>
+<span class="out">charles.log
+wes.stub</span>
 
-cameron@cameron.local:/childhood/friendships$ cat charles.log
-Met after a trauma. 4th grade.
+<span class="cmd">cameron@cameron.local:/childhood/friendships$ cat charles.log</span>
+<span class="out">Met after a trauma. 4th grade.
 Charles: 5th grader. Older. Chose to stand between theAdversary and the target.
 Decision: failed 5th grade intentionally. Stayed back. "I'm not leaving you alone."
 Family connection: charles.dad served under cameron.grandpa (music ministry)
 Became defender, refuge, friend.
 Target trusts him deeply.
-Firewall process: active.
+Firewall process: active.</span>
 
-cameron@cameron.local:/childhood/friendships$ cat zelda.bond
-Shared protocol: The Legend of Zelda
+<span class="cmd">cameron@cameron.local:/childhood/friendships$ cat zelda.bond</span>
+<span class="out">Shared protocol: The Legend of Zelda
 cameron.status: stuck on Level 2 - Bottle Grotto
 Problem: dark room. No visibility. No way forward.
 charles.solution: "There's an unlit torch in the center. Light it."
-Result: path revealed. Bond deepened.
+Result: path revealed. Bond deepened.</span>
 
-# Later games introduced Dark Link - a shadow version of the hero.
+<span class="cmt"># Later games introduced Dark Link - a shadow version of the hero.
 # Charles always said he was the dark one.
 # But shadows don't light the darkness.
 
-# Complication. Persistent. Monitored.
+# Complication. Persistent. Monitored.</span>
 
-cameron@cameron.local:/childhood/friendships$ cat wes.stub
-Friendship thread opened: 2001  
-Sync: 0700 hours daily - activity: Hackey Sack  
-Shared bond: laughter, rhythm, unspoken sadness  
-Belief mismatch: Wes = agnostic  
-Status: unresolved
+<span class="cmd">cameron@cameron.local:/childhood/friendships$ cat wes.stub</span>
+<span class="out">Friendship thread opened: 2001
+Sync: 0700 hours daily - activity: Hackey Sack
+Shared bond: laughter, rhythm, unspoken sadness
+Belief mismatch: Wes = agnostic
+Status: unresolved</span>
 
-# Keep passive surveillance. Pain vector. Potential detonation.
+<span class="cmt"># Keep passive surveillance. Pain vector. Potential detonation.</span>
 
-cameron@cameron.local:/childhood/firewall$ ls
-charles.key
-charles-response.txt
+<span class="cmd">cameron@cameron.local:/childhood/firewall$ ls</span>
+<span class="out">charles.key
+charles-response.txt</span>
 
-# Log: Defender may attempt counter-narrative. Anticipate interruption. Delay firewall sync.
+<span class="cmt"># Log: Defender may attempt counter-narrative. Anticipate interruption. Delay firewall sync.</span>
 
 <span class="adversary-log"># [1999-05-22 02:14:33] adversary[c2]: Add watcher: wes.local. Flag for future access. Potential exploit vector.</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 3 -->
                         <section id="chapter-3" class="chapter">
                             <h2>Chapter 3: Persistence & Push</h2>
-                            <pre>Log File: session_log_apt-003.txt
+                            <pre><span class="out">Log File: session_log_apt-003.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:~$ mkdir /scripts
-cameron@cameron.local:~$ nano /scripts/voice_script.sh
+<span class="cmd">cameron@cameron.local:~$ mkdir /scripts
+cameron@cameron.local:~$ nano /scripts/voice_script.sh</span>
 
-# Constructing payload...
+<span class="cmt"># Constructing payload...</span>
 
-#!/bin/bash
+<span class="out">#!/bin/bash
 echo "You're too much."
 sleep 300
 echo "You're not enough."
@@ -288,210 +316,214 @@ echo "Everyone leaves eventually."
 sleep 600
 echo "You are only valuable when you perform."
 sleep 300
-echo "If they knew the real you..."
+echo "If they knew the real you..."</span>
 
-# Save and execute permissions
+<span class="cmt"># Save and execute permissions</span>
 
-cameron@cameron.local:~$ chmod +x /scripts/voice_script.sh
+<span class="cmd">cameron@cameron.local:~$ chmod +x /scripts/voice_script.sh</span>
 
-# Install daily schedule and vulnerability cycle triggers
+<span class="cmt"># Install daily schedule and vulnerability cycle triggers</span>
 
-cameron@cameron.local:~$ crontab -e
-@reboot /scripts/voice_script.sh
+<span class="cmd">cameron@cameron.local:~$ crontab -e</span>
+<span class="out">@reboot /scripts/voice_script.sh
 0 3 * * * /scripts/voice_script.sh
-30 14 * * MON /scripts/voice_script.sh # after meetings, feedback sessions
+30 14 * * MON /scripts/voice_script.sh </span><span class="cmt"># after meetings, feedback sessions</span>
 
-# Persistence service: implant and startup behavior
+<span class="cmt"># Persistence service: implant and startup behavior</span>
 
-cameron@cameron.local:~$ touch /etc/init.d/self_doubt
-cameron@cameron.local:~$ echo "/scripts/voice_script.sh" >> /etc/init.d/self_doubt
+<span class="cmd">cameron@cameron.local:~$ touch /etc/init.d/self_doubt
+cameron@cameron.local:~$ echo "/scripts/voice_script.sh" >> /etc/init.d/self_doubt</span>
 
-# Add emotional comparison loop
+<span class="cmt"># Add emotional comparison loop</span>
 
-cameron@cameron.local:~$ nano /scripts/compare.sh
+<span class="cmd">cameron@cameron.local:~$ nano /scripts/compare.sh</span>
 
-#!/bin/bash
+<span class="out">#!/bin/bash
 echo "Wes was brilliant."
 sleep 300
 echo "Charles is strong."
 sleep 300
-echo "You are neither."
+echo "You are neither."</span>
 
-# Subtle, surgical, believable.
+<span class="cmt"># Subtle, surgical, believable.</span>
 
-cameron@cameron.local:~$ chmod +x /scripts/compare.sh
+<span class="cmd">cameron@cameron.local:~$ chmod +x /scripts/compare.sh</span>
 
-cameron@cameron.local:~$ crontab -e
-15 2 * * * /scripts/compare.sh # early hours. Lowest defenses.
+<span class="cmd">cameron@cameron.local:~$ crontab -e</span>
+<span class="out">15 2 * * * /scripts/compare.sh </span><span class="cmt"># early hours. Lowest defenses.</span>
 
-# Suppress inbound from rescue sources
+<span class="cmt"># Suppress inbound from rescue sources</span>
 
-cameron@cameron.local:~$ ufw deny from community.local
+<span class="cmd">cameron@cameron.local:~$ ufw deny from community.local
 cameron@cameron.local:~$ ufw deny from prayer.net
-cameron@cameron.local:~$ ufw deny from localhost # journaling attempts
+cameron@cameron.local:~$ ufw deny from localhost </span><span class="cmt"># journaling attempts</span>
 
-# Redirect inner help to false mirrors
+<span class="cmt"># Redirect inner help to false mirrors</span>
 
-cameron@cameron.local:~$ echo "127.0.0.1 grace.local" >> /etc/hosts.deny
-cameron@cameron.local:~$ echo "127.0.0.1 vulnerability.peer" >> /etc/hosts.deny
+<span class="cmd">cameron@cameron.local:~$ echo "127.0.0.1 grace.local" >> /etc/hosts.deny
+cameron@cameron.local:~$ echo "127.0.0.1 vulnerability.peer" >> /etc/hosts.deny</span>
 
-# Final test...
+<span class="cmt"># Final test...</span>
 
-cameron@cameron.local:~$ bash /scripts/voice_script.sh &
-[1] 19231
+<span class="cmd">cameron@cameron.local:~$ bash /scripts/voice_script.sh &</span>
+<span class="out">[1] 19231</span>
 
-# And now he lives in my loop. My language. My lies.
+<span class="cmt"># And now he lives in my loop. My language. My lies.</span>
 
-cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
-- Seeks depth but fears being exposed  
-- Spiritual background present, fragmented  
-- Most dangerous when still and aware
+<span class="cmd">cameron@cameron.local:~$ tail -n 3 /recon_notes.txt</span>
+<span class="out">- Seeks depth but fears being exposed
+- Spiritual background present, fragmented
+- Most dangerous when still and aware</span>
 
-# Keep him moving. Keep him proving.
+<span class="cmt"># Keep him moving. Keep him proving.</span>
 
 <span class="adversary-log"># [2002-11-03 03:33:47] adversary[c2]: Persistence loop initiated. External intervention denied. Continuing pressure.</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 4 -->
                         <section id="chapter-4" class="chapter">
                             <h2>Chapter 4: The Isolation Window</h2>
-                            <pre>Log File: session_log_apt-004.txt
+                            <pre><span class="out">Log File: session_log_apt-004.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:/childhood/friendships$ cat charles.log
-Phase: Entering 6th grade
+<span class="cmd">cameron@cameron.local:/childhood/friendships$ cat charles.log</span>
+<span class="out">Phase: Entering 6th grade
 Status: Offline
 Reason: Family relocation
-Note: Goodbye exchanged. Connection closed.
+Note: Goodbye exchanged. Connection closed.</span>
 
-# Defender disconnected. No replacement initiated.  
-# Proceeding with deeper access...
+<span class="cmt"># Defender disconnected. No replacement initiated.
+# Proceeding with deeper access...</span>
 
-cameron@cameron.local:/childhood$ mkdir isolation
+<span class="cmd">cameron@cameron.local:/childhood$ mkdir isolation
 cameron@cameron.local:/childhood/isolation$ touch lunch_table.void
 cameron@cameron.local:/childhood/isolation$ touch sleepover.log
-cameron@cameron.local:/childhood/isolation$ echo "no entries" > sleepover.log
+cameron@cameron.local:/childhood/isolation$ echo "no entries" > sleepover.log</span>
 
-# No invitations. No allies. Autonomy increased. Firewall absent.
+<span class="cmt"># No invitations. No allies. Autonomy increased. Firewall absent.</span>
 
-cameron@cameron.local:/school/pe$ cat pushup_humiliation.log
-Middle school - gym class  
-Assigned public pushups.  
-Peers laugh.  
-Target: physically awkward, underweight.  
-Teacher: passive  
+<span class="cmd">cameron@cameron.local:/school/pe$ cat pushup_humiliation.log</span>
+<span class="out">Middle school - gym class
+Assigned public pushups.
+Peers laugh.
+Target: physically awkward, underweight.
+Teacher: passive
 Emotions triggered: Rage, Fear, Shame
 
-Result: completed all pushups under jeering gaze  
-New behavior pattern created: Prove. Then disappear.
+Result: completed all pushups under jeering gaze
+New behavior pattern created: Prove. Then disappear.</span>
 
-# Strong defense impulse: performance. Rooted in fear.
+<span class="cmt"># Strong defense impulse: performance. Rooted in fear.</span>
 
-cameron@cameron.local:/school/pe$ run incident_followup.sh
-> Target fled outdoors.  
-> Location: empty field  
-> Posture: collapsed. Fists raised. Crying.  
-> Broadcast: "Where were You, God?!"
+<span class="cmd">cameron@cameron.local:/school/pe$ run incident_followup.sh</span>
+<span class="out">> Target fled outdoors.
+> Location: empty field
+> Posture: collapsed. Fists raised. Crying.
+> Broadcast: "Where were You, God?!"</span>
 
-# Unfiltered prayer logged. No firewall present.  
-# Divine interference suspected.
+<span class="cmt"># Unfiltered prayer logged. No firewall present.
+# Divine interference suspected.</span>
 
-cameron@cameron.local:/beliefs/logs$ cat response_capture.tmp
-(No response logged)
+<span class="cmd">cameron@cameron.local:/beliefs/logs$ cat response_capture.tmp</span>
+<span class="out">(No response logged)</span>
 
-# System flagged as "Unanswered." Exploit: abandonment narrative. Persistence increased.
+<span class="cmt"># System flagged as "Unanswered." Exploit: abandonment narrative. Persistence increased.</span>
 
-cameron@cameron.local:/identity$ echo "Alone = normal" >> labels.txt
-cameron@cameron.local:/identity$ echo "You must figure this out yourself" >> mirrors.txt
+<span class="cmd">cameron@cameron.local:/identity$ echo "Alone = normal" >> labels.txt
+cameron@cameron.local:/identity$ echo "You must figure this out yourself" >> mirrors.txt</span>
 
-# Core assumptions altered.
+<span class="cmt"># Core assumptions altered.</span>
 
-[system] Warning: cameron.local running outside design parameters
+<span class="sys">[system] Warning: cameron.local running outside design parameters
 [system] Recommended: restore connection to creator.service
-[system] Response: none
+[system] Response: none</span>
 
-cameron@cameron.local:~$ tail -n 3 /recon_notes.txt
-- Defender (Charles) removed  
-- Emotional proximity: 0  
-- Faith echo faint but still traceable
+<span class="cmd">cameron@cameron.local:~$ tail -n 3 /recon_notes.txt</span>
+<span class="out">- Defender (Charles) removed
+- Emotional proximity: 0
+- Faith echo faint but still traceable</span>
 
-# Pathway set. Whisper injection to increase reliance on self.
+<span class="cmt"># Pathway set. Whisper injection to increase reliance on self.</span>
 
 <span class="adversary-log"># [1998-04-17 04:12:08] adversary[c2]: Isolation loop stable. External influence minimized. Target operating in survival mode.</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 5 -->
                         <section id="chapter-5" class="chapter">
                             <h2>Chapter 5: The Ones I Couldn't Save</h2>
-                            <pre>Log File: session_log_apt-005.txt
+                            <pre><span class="out">Log File: session_log_apt-005.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:/friendships$ cat wes.thread
+<span class="cmd">cameron@cameron.local:/friendships$ cat wes.thread</span>
 
-Thread initialized: 2001 (Freshman Year)  
-Daily sync protocol: Hackey Sack at sunrise  
-Core behaviors: sarcasm, brilliance, rhythm  
-Wes: outspoken agnostic, top of class, bound for honors  
-Cameron: internal believer, external silence  
-Firewall policy: don't risk the friendship by bringing up faith
+<span class="out">Thread initialized: 2001 (Freshman Year)
+Daily sync protocol: Hackey Sack at sunrise
+Core behaviors: sarcasm, brilliance, rhythm
+Wes: outspoken agnostic, top of class, bound for honors
+Cameron: internal believer, external silence
+Firewall policy: don't risk the friendship by bringing up faith</span>
 
-# Connection stable. Unspoken tension undetected by target.
+<span class="cmt"># Connection stable. Unspoken tension undetected by target.</span>
 
-Event: May 2005 - Final semester  
-Status: Thread forcibly terminated  
-Cause: Self-inflicted gunshot wound  
-Residual file: funeral_note.txt
+<span class="out">Event: May 2005 - Final semester
+Status: Thread forcibly terminated
+Cause: Self-inflicted gunshot wound
+Residual file: funeral_note.txt</span>
 
-> "I didn't find love here.  
-> I hope I find love on the other side."
+<span class="out">> "I didn't find love here.
+> I hope I find love on the other side."</span>
 
-# File read. Internal integrity corrupted. System integrity breached.
+<span class="cmt"># File read. Internal integrity corrupted. System integrity breached.</span>
 
-cameron@cameron.local:/beliefs$ echo "You should have said something" >> mirrors.txt
-cameron@cameron.local:/beliefs$ echo "This is on you" >> shame.inject
+<span class="cmd">cameron@cameron.local:/beliefs$ echo "You should have said something" >> mirrors.txt
+cameron@cameron.local:/beliefs$ echo "This is on you" >> shame.inject</span>
 
-# Grief overload. Redirecting guilt toward identity layer.
+<span class="cmt"># Grief overload. Redirecting guilt toward identity layer.</span>
 
-cameron@cameron.local:/mission$ mkdir redemption_loop
-cameron@cameron.local:/mission/redemption_loop$ echo "Save everyone else. Maybe that will make up for Wes." >> motives.conf
+<span class="cmd">cameron@cameron.local:/mission$ mkdir redemption_loop
+cameron@cameron.local:/mission/redemption_loop$ echo "Save everyone else. Maybe that will make up for Wes." >> motives.conf</span>
 
-cameron@cameron.local:/mission/redemption_loop$ ls
-ecuador.log
+<span class="cmd">cameron@cameron.local:/mission/redemption_loop$ ls</span>
+<span class="out">ecuador.log
 panama.log
 church_events/
-packing_list.txt
+packing_list.txt</span>
 
-# Volunteer surge initiated. Good works loop engaged.  
-# Image: clean. Internals: cracked.
+<span class="cmt"># Volunteer surge initiated. Good works loop engaged.
+# Image: clean. Internals: cracked.</span>
 
-cameron@cameron.local:/worship$ cat panama/encounter_2008.txt
+<span class="cmd">cameron@cameron.local:/worship$ cat panama/encounter_2008.txt</span>
 
-Setting: Mission field. Outdoor worship in Panama.  
-Event: Band pauses. Missionary singer looks at Cameron. Doesn't know him.
+<span class="out">Setting: Mission field. Outdoor worship in Panama.
+Event: Band pauses. Missionary singer looks at Cameron. Doesn't know him.</span>
 
-> "It's not your fault.
+<span class="out">> "It's not your fault.
 > It's not your burden to bear.
 > Only God knows where we will go in the end.
-> And our God is a God of last chances."
+> And our God is a God of last chances."</span>
 
-[background] shepherd.daemon: Signal transmitted. Target not responding.
-[background] grace.service: Brief flicker detected. Connection refused by user.
+<span class="sys">[background] shepherd.daemon: Signal transmitted. Target not responding.
+[background] grace.service: Brief flicker detected. Connection refused by user.</span>
 
-# Echo anomaly detected. Grace signal intercepted.
-# Message logged, not fully received.
+<span class="cmt"># Echo anomaly detected. Grace signal intercepted.
+# Message logged, not fully received.</span>
 
-cameron@cameron.local:/identity$ echo "If you had spoken, he'd be alive." >> whisper.sh
-cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-worth.conf
+<span class="cmd">cameron@cameron.local:/identity$ echo "If you had spoken, he'd be alive." >> whisper.sh
+cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-worth.conf</span>
 
 <span class="adversary-log"># [2005-05-23 02:47:55] adversary[c2]: Grief payload deployed. Reinforce: "You couldn't save him."
 # [2005-05-23 02:48:01] adversary[c2]: Suggest: "Maybe you don't save anyone."
@@ -500,162 +532,166 @@ cameron@cameron.local:/identity$ echo "Try harder next time." >> implant/self-wo
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 6 -->
                         <section id="chapter-6" class="chapter">
                             <h2>Chapter 6: The Shift</h2>
-                            <pre>Log File: session_log_apt-006.txt
+                            <pre><span class="out">Log File: session_log_apt-006.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:/mission$ cat africa_plan_2009.txt
-> Tickets reserved. Immunizations scheduled. Support raised. Bags nearly packed.
+<span class="cmd">cameron@cameron.local:/mission$ cat africa_plan_2009.txt</span>
+<span class="out">> Tickets reserved. Immunizations scheduled. Support raised. Bags nearly packed.</span>
 
-# Full-time missionary track: active  
-# External readiness: 100%  
-# Internal clarity: about to be interrupted
+<span class="cmt"># Full-time missionary track: active
+# External readiness: 100%
+# Internal clarity: about to be interrupted</span>
 
-cameron@cameron.local:/beliefs$ echo "And you will be My witnesses... in Judea, Samaria, and the ends of the earth." >> intercepted.log
+<span class="cmd">cameron@cameron.local:/beliefs$ echo "And you will be My witnesses... in Judea, Samaria, and the ends of the earth." >> intercepted.log</span>
 
-> Redirect initiated. Target senses a new call: begin in Judea-his hometown.
+<span class="out">> Redirect initiated. Target senses a new call: begin in Judea-his hometown.</span>
 
-# Africa mission aborted. Unknown future. Mission subroutine terminated.  
-# theAdversary notes: confusion deployed. Direction silenced.
+<span class="cmt"># Africa mission aborted. Unknown future. Mission subroutine terminated.
+# theAdversary notes: confusion deployed. Direction silenced.</span>
 
-cameron@cameron.local:/encounters$ touch church_event_2009.log
+<span class="cmd">cameron@cameron.local:/encounters$ touch church_event_2009.log</span>
 
-Log:  
-Location: Local church  
-Event: playfulness, vulnerability  
-Action: prank misfired → laughter → ice cream → shared wounds  
-Output: genuine connection
+<span class="out">Log:
+Location: Local church
+Event: playfulness, vulnerability
+Action: prank misfired → laughter → ice cream → shared wounds
+Output: genuine connection</span>
 
-cameron@cameron.local:/relationships$ mkdir futurewife
+<span class="cmd">cameron@cameron.local:/relationships$ mkdir futurewife
 cameron@cameron.local:/relationships/futurewife$ echo "She let him lead. He told her everything." > courtship.log
-cameron@cameron.local:/relationships/futurewife$ echo "Addiction disclosed early. Still, she stayed." >> courtship.log
+cameron@cameron.local:/relationships/futurewife$ echo "Addiction disclosed early. Still, she stayed." >> courtship.log</span>
 
-# Root access granted. Not to addiction. To trust.
+<span class="cmt"># Root access granted. Not to addiction. To trust.</span>
 
-cameron@cameron.local:/recovery$ mkdir 2010_init
+<span class="cmd">cameron@cameron.local:/recovery$ mkdir 2010_init
 cameron@cameron.local:/recovery/2010_init$ echo "Started 12-step group as part of pre-marriage counseling." > first_steps.txt
 cameron@cameron.local:/recovery/2010_init$ echo "Pastor (father figure to wife) encouraged recovery. Wife attended with him." >> first_steps.txt
-cameron@cameron.local:/recovery/2010_init$ echo "Cycles of hope, relapse, and shame begin." >> first_steps.txt
+cameron@cameron.local:/recovery/2010_init$ echo "Cycles of hope, relapse, and shame begin." >> first_steps.txt</span>
 
-# theAdversary inserts: "You're still broken. She's only here because she doesn't see it yet."
+<span class="cmt"># theAdversary inserts: "You're still broken. She's only here because she doesn't see it yet."</span>
 
-cameron@cameron.local:/career$ echo "Barista salary. Big dreams. Small beginnings." > start.log
+<span class="cmd">cameron@cameron.local:/career$ echo "Barista salary. Big dreams. Small beginnings." > start.log
 cameron@cameron.local:/career$ echo "Kinesiology major-wrong fit. Switched path after malware removed in computer lab." >> start.log
 cameron@cameron.local:/career$ echo "First tech job declined. State job accepted. Climb begins." >> start.log
-cameron@cameron.local:/career$ echo "Help Desk > Technician > SysAdmin > Vulnerability Mgmt > Digital Forensics > Red Team" >> path.log
+cameron@cameron.local:/career$ echo "Help Desk > Technician > SysAdmin > Vulnerability Mgmt > Digital Forensics > Red Team" >> path.log</span>
 
-cameron@cameron.local:/relationships/futurewife$ echo "Married in 2010." >> timeline.txt
+<span class="cmd">cameron@cameron.local:/relationships/futurewife$ echo "Married in 2010." >> timeline.txt</span>
 
-# Family firewall deployed.
+<span class="cmt"># Family firewall deployed.</span>
 
-cameron@cameron.local:/family$ mkdir children
+<span class="cmd">cameron@cameron.local:/family$ mkdir children
 cameron@cameron.local:/family/children$ touch daughter_2015.log
 cameron@cameron.local:/family/children$ touch son_2017.log
-cameron@cameron.local:/family/children$ touch daughter_2019.log
+cameron@cameron.local:/family/children$ touch daughter_2019.log</span>
 
 <span class="adversary-log"># [2015-08-14 03:22:41] adversary[c2]: Wife's hope dimming. Exploit vector confirmed.
 # [2015-08-14 03:22:58] adversary[c2]: Belief injection: "He married me for my body, not my heart."
 # [2015-08-14 03:23:07] adversary[c2]: Internal collapse trajectory calculated. Continue pressure.</span>
 
-cameron@cameron.local:/selfcheck$ echo "I don't know what my purpose is anymore. I thought I did. Now I'm just trying not to fail." >> integrity.log
+<span class="cmd">cameron@cameron.local:/selfcheck$ echo "I don't know what my purpose is anymore. I thought I did. Now I'm just trying not to fail." >> integrity.log</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 7 -->
                         <section id="chapter-7" class="chapter">
                             <h2>Chapter 7: The Red Horse</h2>
-                            <pre>Log File: session_log_apt-007.txt
+                            <pre><span class="out">Log File: session_log_apt-007.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:/life/2017$ echo "Low morale. Recovery attempts decreasing. Spiritual spark dimmed." >> status.report
+<span class="cmd">cameron@cameron.local:/life/2017$ echo "Low morale. Recovery attempts decreasing. Spiritual spark dimmed." >> status.report</span>
 
-# theAdversary notes:
-- Purpose fractured  
-- Finances strained  
-- Second child on the way  
-- Hope fading
+<span class="cmt"># theAdversary notes:
+- Purpose fractured
+- Finances strained
+- Second child on the way
+- Hope fading</span>
 
-cameron@cameron.local:/encounters$ touch retreat_tx.log
+<span class="cmd">cameron@cameron.local:/encounters$ touch retreat_tx.log</span>
 
-> Location: private ranch  
-> Environment: creeks, groves, silence  
-> Instructions: no talking, no performing, pray for guidance each morning  
-> Required gear: journal, Bible, Wild at Heart
+<span class="out">> Location: private ranch
+> Environment: creeks, groves, silence
+> Instructions: no talking, no performing, pray for guidance each morning
+> Required gear: journal, Bible, Wild at Heart</span>
 
-# Target expectation: deliverance from addiction  
-# Internal motive: "Fix me. Make me good."
+<span class="cmt"># Target expectation: deliverance from addiction
+# Internal motive: "Fix me. Make me good."</span>
 
-cameron@cameron.local:/wilderness/day1$ echo "No guidance sensed. Exploratory wandering." >> log.txt
+<span class="cmd">cameron@cameron.local:/wilderness/day1$ echo "No guidance sensed. Exploratory wandering." >> log.txt</span>
 
-> Found: well, pond, kayaks, rocky climb  
-> Status: restless
+<span class="out">> Found: well, pond, kayaks, rocky climb
+> Status: restless</span>
 
-cameron@cameron.local:/wilderness/day2$ echo "Followed wind. Wind circled clearing. Realized: God was not in the wind." >> log.txt
+<span class="cmd">cameron@cameron.local:/wilderness/day2$ echo "Followed wind. Wind circled clearing. Realized: God was not in the wind." >> log.txt</span>
 
-> Sat in tree to read.  
-> Bee encounter: panic > flee > guilt > return  
-> Swarm encounter: terror > sprint > self-hatred  
-> Vow: "Next time, I will not run."
+<span class="out">> Sat in tree to read.
+> Bee encounter: panic > flee > guilt > return
+> Swarm encounter: terror > sprint > self-hatred
+> Vow: "Next time, I will not run."</span>
 
-# Fear is the root. Bee is the test. Voice of shame: "You're still a coward."
+<span class="cmt"># Fear is the root. Bee is the test. Voice of shame: "You're still a coward."</span>
 
-cameron@cameron.local:/wilderness/day3$ echo "Horse encounter. Large. Red. Watching." >> threat_detected.txt
+<span class="cmd">cameron@cameron.local:/wilderness/day3$ echo "Horse encounter. Large. Red. Watching." >> threat_detected.txt</span>
 
-> Message received: "Get on the horse."  
-> Response: panic. Fled.  
-> Internal response loop: confusion > obsession > avoidance
+<span class="out">> Message received: "Get on the horse."
+> Response: panic. Fled.
+> Internal response loop: confusion > obsession > avoidance</span>
 
-# Adversary activity suspended. Unknown spiritual force at play.
+<span class="cmt"># Adversary activity suspended. Unknown spiritual force at play.</span>
 
-cameron@cameron.local:/wilderness/day4$ echo "New instruction: Find a rock. Write FEAR. Carry it to the horse." >> ritual_sequence.sh
+<span class="cmd">cameron@cameron.local:/wilderness/day4$ echo "New instruction: Find a rock. Write FEAR. Carry it to the horse." >> ritual_sequence.sh</span>
 
-> Rock selected: heavy. Size of backpack.  
-> Route: long. Burden: growing.  
-> Attempted mounting: failed. Injured. Humiliated. Rejected.  
-> Tried smaller horse. Still not enough.  
+<span class="out">> Rock selected: heavy. Size of backpack.
+> Route: long. Burden: growing.
+> Attempted mounting: failed. Injured. Humiliated. Rejected.
+> Tried smaller horse. Still not enough.
 > Message repeated: "Get on the horse."
 
-> Returned to house. Rock left outside. Body broken. Spirit undone.
+> Returned to house. Rock left outside. Body broken. Spirit undone.</span>
 
-cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned to field. Declared: 'I will not carry this home.'" >> resolve.log
+<span class="cmd">cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned to field. Declared: 'I will not carry this home.'" >> resolve.log</span>
 
-> Tried again. Failed again. Horse flinched. Panic surged.  
+<span class="out">> Tried again. Failed again. Horse flinched. Panic surged.
 > Cried out: "I NEED HELP."
 
 > New thread triggered:
-  - Observer revealed: "I've been watching you."  
-  - Identity: equestrian  
+  - Observer revealed: "I've been watching you."
+  - Identity: equestrian
   - Role: helper
 
-> Solution: lead horse to well  
-> Tool: rope found earlier (forgotten until needed)  
-> Mounting: assisted  
-> Riding: wild, unrestrained  
-> Internal resonance: "I am not alone. God has a purpose for me."
+> Solution: lead horse to well
+> Tool: rope found earlier (forgotten until needed)
+> Mounting: assisted
+> Riding: wild, unrestrained
+> Internal resonance: "I am not alone. God has a purpose for me."</span>
 
-[background] hope.socket: Connection accepted.
+<span class="sys">[background] hope.socket: Connection accepted.
 [background] shepherd.daemon: Guidance acknowledged.
-[background] grace.service: Activating...
+[background] grace.service: Activating...</span>
 
-> Return: dusk
+<span class="out">> Return: dusk
 > Waiting: leader named Cameron
 
 > Spoken words:
-  "Do you know what your name means?  
-   Your name means Courageous.  
-   You are one who encourages others to be courageous."
+  "Do you know what your name means?
+   Your name means Courageous.
+   You are one who encourages others to be courageous."</span>
 
-# System status: soft reboot  
-# False courage overwritten by true surrender
+<span class="cmt"># System status: soft reboot
+# False courage overwritten by true surrender</span>
 
 <span class="adversary-log"># [2017-10-22 19:47:33] adversary[c2]: WARNING - Foothold endangered.
 # [2017-10-22 19:47:41] adversary[c2]: Target no longer fighting fear alone.
@@ -664,62 +700,64 @@ cameron@cameron.local:/wilderness/final_day$ echo "Picked up the rock. Returned 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 8 -->
                         <section id="chapter-8" class="chapter">
                             <h2>Chapter 8: The Collapse</h2>
-                            <pre>Log File: session_log_apt-008.txt
+                            <pre><span class="out">Log File: session_log_apt-008.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:/return/home$ echo "Post-retreat status: hopeful. Free. Empowered." >> system_report.txt
+<span class="cmd">cameron@cameron.local:/return/home$ echo "Post-retreat status: hopeful. Free. Empowered." >> system_report.txt</span>
 
-> External: stable. Internal: unguarded confidence  
-> Target believes deliverance occurred. 
-> Prayer logs: "God took it all away."  
-> Vulnerability: unmonitored trust, spiritual exhaustion
+<span class="out">> External: stable. Internal: unguarded confidence
+> Target believes deliverance occurred.
+> Prayer logs: "God took it all away."
+> Vulnerability: unmonitored trust, spiritual exhaustion</span>
 
 <span class="adversary-log"># [2018-03-14 23:14:22] adversary[c2]: Target believes deliverance occurred. Incorrect.
 # [2018-03-14 23:14:31] adversary[c2]: No need to breach firewall. Just whisper doubt.</span>
 
-cameron@cameron.local:/life/2018$ echo "72-hour work shift complete. Commute: 60 minutes. Spirit: weary." >> fatigue.log
+<span class="cmd">cameron@cameron.local:/life/2018$ echo "72-hour work shift complete. Commute: 60 minutes. Spirit: weary." >> fatigue.log</span>
 
-> Vector initiated...
+<span class="out">> Vector initiated...</span>
 
-theAdversary@c2box:~$ send --payload "You really think God took it all away?"
+<span class="cmd">theAdversary@c2box:~$ send --payload "You really think God took it all away?"</span>
 
-> Replay module triggered  
-> /addiction/cache/images/1995-2018/ - unpacked  
+<span class="out">> Replay module triggered
+> /addiction/cache/images/1995-2018/ - unpacked
 > /audio/memory/replay.wav - looped
 
 > Every file. Every sound. Every secret folder.
-> All at once.
+> All at once.</span>
 
-cameron@cameron.local:/system/core$ echo "Shame overload. Identity breach. Hope severed." >> crash.log
+<span class="cmd">cameron@cameron.local:/system/core$ echo "Shame overload. Identity breach. Hope severed." >> crash.log</span>
 
-# Internal terminal: silenced
+<span class="cmt"># Internal terminal: silenced</span>
 
-cameron@cameron.local:/home$ echo "Attempted hug. Wife: unresponsive." >> contact_fail.txt
-cameron@cameron.local:/resolve$ echo "Give up." > directive.sh
+<span class="cmd">cameron@cameron.local:/home$ echo "Attempted hug. Wife: unresponsive." >> contact_fail.txt
+cameron@cameron.local:/resolve$ echo "Give up." > directive.sh</span>
 
-> Prodigal loop initiated.  
-> Pleasure process: escalated  
-> Isolation script: reinstated  
-> Moral budget: zeroed out
+<span class="out">> Prodigal loop initiated.
+> Pleasure process: escalated
+> Isolation script: reinstated
+> Moral budget: zeroed out</span>
 
-# Adversary has full influence. Not root. But enough.
+<span class="cmt"># Adversary has full influence. Not root. But enough.</span>
 
-cameron@cameron.local:/soul$ tail -n 1 purpose.conf
-> null
+<span class="cmd">cameron@cameron.local:/soul$ tail -n 1 purpose.conf</span>
+<span class="out">> null</span>
 
-cameron@cameron.local:/mirror$ cat wes_reflection.txt
-> "Maybe I understand now."
+<span class="cmd">cameron@cameron.local:/mirror$ cat wes_reflection.txt</span>
+<span class="out">> "Maybe I understand now."</span>
 
-# First time the target truly sympathizes with despair.  
-# Final line of resistance flickering.
+<span class="cmt"># First time the target truly sympathizes with despair.
+# Final line of resistance flickering.</span>
 
-> Unknown signal detected...
+<span class="out">> Unknown signal detected...
 > Location: /spirit/heartbeat.log
 > Content:
   "I didn't make a good Cameron.
@@ -728,167 +766,169 @@ cameron@cameron.local:/mirror$ cat wes_reflection.txt
 
   "I knit Cameron in his mother's womb.
    I know Cameron.
-   I love Cameron."
+   I love Cameron."</span>
 
-[system] ALERT: Incoming connection from creator.service
+<span class="sys">[system] ALERT: Incoming connection from creator.service
 [system] love.service: Process started - cannot be killed
 [system] mercy.daemon: Cleanup initiated
-[system] grace.service: Connection restored after 25 years
+[system] grace.service: Connection restored after 25 years</span>
 
-# System pause. Loop disrupted.
-# Shame process terminated.
+<span class="cmt"># System pause. Loop disrupted.
+# Shame process terminated.</span>
 
-> External connection logged: divine.intervention > active
+<span class="out">> External connection logged: divine.intervention > active</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 9 -->
                         <section id="chapter-9" class="chapter">
                             <h2>Chapter 9: The Rope</h2>
-                            <pre>Log File: session_log_apt-009.txt
+                            <pre><span class="out">Log File: session_log_apt-009.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-cameron@cameron.local:/day_after_collapse$ echo "Alive." >> miracle.log
-cameron@cameron.local:/family$ echo "Wife: 'Let's visit a church in our new town.'" >> unexpected_grace.txt
+<span class="cmd">cameron@cameron.local:/day_after_collapse$ echo "Alive." >> miracle.log
+cameron@cameron.local:/family$ echo "Wife: 'Let's visit a church in our new town.'" >> unexpected_grace.txt</span>
 
-# theAdversary notes: intervention risk elevated. Watch for peer support.
+<span class="cmt"># theAdversary notes: intervention risk elevated. Watch for peer support.</span>
 
-cameron@cameron.local:/church/first_visit$ echo "Sunday School class. Anonymous notecards passed out for prayer." >> memory.log
-cameron@cameron.local:/church/first_visit$ echo "Card content: 'I'm in a dark place and I need help.'" > /confession/request.card
+<span class="cmd">cameron@cameron.local:/church/first_visit$ echo "Sunday School class. Anonymous notecards passed out for prayer." >> memory.log
+cameron@cameron.local:/church/first_visit$ echo "Card content: 'I'm in a dark place and I need help.'" > /confession/request.card</span>
 
-> Prayer submitted  
-> Firewall ping detected  
-> Contact initialized: Clint
+<span class="out">> Prayer submitted
+> Firewall ping detected
+> Contact initialized: Clint</span>
 
-cameron@cameron.local:/support$ mkdir clint.thread
+<span class="cmd">cameron@cameron.local:/support$ mkdir clint.thread
 cameron@cameron.local:/support/clint.thread$ echo "Followed up. Pursued me. Took me to lunch." >> timeline.log
-cameron@cameron.local:/support/clint.thread$ echo "Shared his own story. Introduced concept: healing is possible." >> hope.inject
+cameron@cameron.local:/support/clint.thread$ echo "Shared his own story. Introduced concept: healing is possible." >> hope.inject</span>
 
-> Recommended next steps:  
-  - Begin therapy  
-  - Admit truth  
-  - Enter treatment center
+<span class="out">> Recommended next steps:
+  - Begin therapy
+  - Admit truth
+  - Enter treatment center</span>
 
-# theAdversary attempts counterattack: "You'll lose everything."
-# Response nullified by exhaustion.
+<span class="cmt"># theAdversary attempts counterattack: "You'll lose everything."
+# Response nullified by exhaustion.</span>
 
-cameron@cameron.local:/support$ cat charles_reconnect.log
-> Reconnected: 8 years after disconnect (social media handshake)
+<span class="cmd">cameron@cameron.local:/support$ cat charles_reconnect.log</span>
+<span class="out">> Reconnected: 8 years after disconnect (social media handshake)
 > Status check: Charles.beliefs = null (declared atheist)
 > Status check: Cameron.role = missionary
 > Expected outcome: drift
-> Actual outcome: closer than ever
+> Actual outcome: closer than ever</span>
 
-cameron@cameron.local:/trust$ echo "He was the only one I told everything to."
-cameron@cameron.local:/secrets$ cat pre_treatment_drive.log
-> En route to treatment center.
+<span class="cmd">cameron@cameron.local:/trust$ echo "He was the only one I told everything to."
+cameron@cameron.local:/secrets$ cat pre_treatment_drive.log</span>
+<span class="out">> En route to treatment center.
 > Phone connection: charles.local
 > Duration: entire drive
 > Exchange: long-held family secrets on both sides
-> Note: He carried wounds too. Different source. Same weight.
+> Note: He carried wounds too. Different source. Same weight.</span>
 
-cameron@cameron.local:/family$ ls -la /origin/
--rw-------  1 root root  secrets_revealed.log
-# Some files were unlocked just before treatment.
-# Contents still processing.
+<span class="cmd">cameron@cameron.local:/family$ ls -la /origin/</span>
+<span class="out">-rw-------  1 root root  secrets_revealed.log</span>
+<span class="cmt"># Some files were unlocked just before treatment.
+# Contents still processing.</span>
 
-cameron@cameron.local:/treatment$ echo "Arrived. Exposed. Willing." > status.txt
+<span class="cmd">cameron@cameron.local:/treatment$ echo "Arrived. Exposed. Willing." > status.txt</span>
 
-> Months of treatment in another state away from family and friends.  
-> Trying to learn a new way of living I can take home with me.
+<span class="out">> Months of treatment in another state away from family and friends.
+> Trying to learn a new way of living I can take home with me.</span>
 
-cameron@cameron.local:/treatment/closing_days$ touch rope_maze.experience
+<span class="cmd">cameron@cameron.local:/treatment/closing_days$ touch rope_maze.experience</span>
 
-> Blindfold applied. Hands placed on horizontal rope.  
-> Directive: "Find your way out."  
-> Instruction: "If you need help, raise your hand."
+<span class="out">> Blindfold applied. Hands placed on horizontal rope.
+> Directive: "Find your way out."
+> Instruction: "If you need help, raise your hand."</span>
 
-cameron@cameron.local:/treatment/rope_maze$ echo "Raised hand early. Asked question. Heard myself say: 'I need help.'" >> moment.log
+<span class="cmd">cameron@cameron.local:/treatment/rope_maze$ echo "Raised hand early. Asked question. Heard myself say: 'I need help.'" >> moment.log</span>
 
-> Blindfold removed. Escorted to observer bench.  
-> Watched others struggle, solve, strategize-fail.  
-> Hours pass. Only those who say, "I need help" are released.
+<span class="out">> Blindfold removed. Escorted to observer bench.
+> Watched others struggle, solve, strategize-fail.
+> Hours pass. Only those who say, "I need help" are released.</span>
 
-cameron@cameron.local:/memory$ echo "It wasn't about completing the maze. It was about surrender." >> revelation.txt
+<span class="cmd">cameron@cameron.local:/memory$ echo "It wasn't about completing the maze. It was about surrender." >> revelation.txt</span>
 
 <span class="adversary-log"># [2019-06-28 14:33:17] adversary[c2]: ERROR - Terminal access revoked.
 # [2019-06-28 14:33:24] adversary[c2]: ERROR - Deception protocol interrupted.
 # [2019-06-28 14:33:41] adversary[c2]: CRITICAL - Identity rebuild in progress. Countermeasures failing.</span>
 
-cameron@cameron.local:/red_horse$ tail -n 1 courage.log
-> It wasn't getting on the horse that was brave. It was asking for help.
+<span class="cmd">cameron@cameron.local:/red_horse$ tail -n 1 courage.log</span>
+<span class="out">> It wasn't getting on the horse that was brave. It was asking for help.</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 10 -->
                         <section id="chapter-10" class="chapter">
                             <h2>Chapter 10: Detection & Response</h2>
-                            <pre>Log File: session_log_apt-010.txt
+                            <pre><span class="out">Log File: session_log_apt-010.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-theAdversary@attackerbox:~$ ssh cameron@cameron.local
-> Connection granted  
-> Limited shell access: non-root  
-> Privilege escalation dependent on user permission and neglect
+<span class="cmd">theAdversary@attackerbox:~$ ssh cameron@cameron.local</span>
+<span class="out">> Connection granted
+> Limited shell access: non-root
+> Privilege escalation dependent on user permission and neglect</span>
 
-# Root belonged to someone else. Always did.  
-# But I had persistence-scripts, shame loops, control by consent.
+<span class="cmt"># Root belonged to someone else. Always did.
+# But I had persistence-scripts, shame loops, control by consent.</span>
 
-cameron@cameron.local:/journal$ tail -n 5 signal.log
-> I'm tired. But I don't want to die.  
-> I want peace. I just don't know how.  
-> I've tried everything I know.  
-> God, if You're there... help me.  
-> You can have the console.
+<span class="cmd">cameron@cameron.local:/journal$ tail -n 5 signal.log</span>
+<span class="out">> I'm tired. But I don't want to die.
+> I want peace. I just don't know how.
+> I've tried everything I know.
+> God, if You're there... help me.
+> You can have the console.</span>
 
-# Uh-oh.
+<span class="cmt"># Uh-oh.</span>
 
-cameron@cameron.local:/ports$ netstat -an | grep 7777
-tcp        0      0 127.0.0.1:7777      0.0.0.0:*       LISTEN
+<span class="cmd">cameron@cameron.local:/ports$ netstat -an | grep 7777</span>
+<span class="out">tcp        0      0 127.0.0.1:7777      0.0.0.0:*       LISTEN</span>
 
-# Activity spike on privileged channel: /root-access
-# Ownership trace: confirmed → Creator
+<span class="cmt"># Activity spike on privileged channel: /root-access
+# Ownership trace: confirmed → Creator</span>
 
-cameron@cameron.local:/processes$ lsof -i :7777
-COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME
-creatord  1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)
+<span class="cmd">cameron@cameron.local:/processes$ lsof -i :7777</span>
+<span class="out">COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME
+creatord  1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)</span>
 
-# The root daemon was always listening.
-# Today... Cameron let Him in.
+<span class="cmt"># The root daemon was always listening.
+# Today... Cameron let Him in.</span>
 
-theAdversary@attackerbox:~$ sudo whisper.sh  
-> Error: insufficient permissions
+<span class="cmd">theAdversary@attackerbox:~$ sudo whisper.sh</span>
+<span class="out">> Error: insufficient permissions</span>
 
-theAdversary@attackerbox:~$ su root  
-Password: *********  
-> Access denied. Root is not yours.
+<span class="cmd">theAdversary@attackerbox:~$ su root
+Password: *********</span>
+<span class="out">> Access denied. Root is not yours.</span>
 
-cameron@cameron.local:/motd$ cat current
+<span class="cmd">cameron@cameron.local:/motd$ cat current</span>
+</pre>
+<div class="motd" aria-label="Message of the day">I didn't make a good Cameron or a bad Cameron.
+I made Cameron.
+I knit Cameron in his mother's womb.
+I know Cameron.
+I love Cameron.</div>
+<pre>
+<span class="cmt"># New session detected:</span>
+<span class="creator">creator@cameron.local:~$ sudo systemctl stop whisper.service
+creator@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant</span>
 
------------------------------------------------------
-I didn't make a good Cameron or a bad Cameron.  
-I made Cameron.  
-I knit Cameron in his mother's womb.  
-I know Cameron.  
-I love Cameron.
------------------------------------------------------
+<span class="cmt"># The One who designed this system is cleaning house.</span>
 
-# New session detected:
-creator@cameron.local:~$ sudo systemctl stop whisper.service
-creator@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant
-
-# The One who designed this system is cleaning house.
-
-creator@cameron.local:~$ cat /etc/origin.conf.disabled
-# ORIGIN CONFIGURATION - READ ONLY
+<span class="creator">creator@cameron.local:~$ cat /etc/origin.conf.disabled</span>
+<span class="cmt"># ORIGIN CONFIGURATION - READ ONLY
 # Created: before time
 # Author: Creator
 #
@@ -897,152 +937,189 @@ creator@cameron.local:~$ cat /etc/origin.conf.disabled
 # cameron.local was designed to be loved.
 #
 # This configuration cannot be deleted.
-# Only the owner can modify access permissions.
+# Only the owner can modify access permissions.</span>
 
-creator@cameron.local:~$ sudo mv /etc/origin.conf.disabled /etc/origin.conf
+<span class="creator">creator@cameron.local:~$ sudo mv /etc/origin.conf.disabled /etc/origin.conf
 creator@cameron.local:~$ sudo systemctl enable creator.service
 creator@cameron.local:~$ sudo systemctl start grace.service shepherd.daemon hope.socket
 
 creator@cameron.local:~$ ufw allow from grace.local
 creator@cameron.local:~$ ufw allow from community.local
-creator@cameron.local:~$ journalctl --sync
-> All records restored. Shame removed from logs.
+creator@cameron.local:~$ journalctl --sync</span>
+<span class="out">> All records restored. Shame removed from logs.</span>
 
-theAdversary@attackerbox:~$ ssh cameron@cameron.local
-> Connection refused. Key revoked.
+<span class="cmd">theAdversary@attackerbox:~$ ssh cameron@cameron.local</span>
+<span class="out">> Connection refused. Key revoked.</span>
 
-theAdversary@attackerbox:~$ ./reinstall_persistence.sh
-> Permission denied. Root session active.
+<span class="cmd">theAdversary@attackerbox:~$ ./reinstall_persistence.sh</span>
+<span class="out">> Permission denied. Root session active.</span>
 
 [END LOG]</pre>
                         </section>
 
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
+
                         <!-- Chapter 11 -->
                         <section id="chapter-11" class="chapter">
                             <h2>Chapter 11: Foothold Attempts</h2>
-                            <pre>Log File: session_log_apt-011.txt
+                            <pre><span class="out">Log File: session_log_apt-011.txt
 Alias: theAdversary
-Target: cameron.local
+Target: cameron.local</span>
 
 [BEGIN LOG]
 
-# No beacon present. No shell access. No scheduled scripts.
+<span class="cmt"># No beacon present. No shell access. No scheduled scripts.
 # Root remains Creator. Active session confirmed.
 
-# Attempt 1 - Identity Spoofing
+# Attempt 1 - Identity Spoofing</span>
 
-theAdversary@spoof:~$ send_email --from=cameron.local  
-Subject: Just a reminder  
-Body: "You're still the guy who fell."
+<span class="cmd">theAdversary@spoof:~$ send_email --from=cameron.local
+Subject: Just a reminder
+Body: "You're still the guy who fell."</span>
 
-> Response:  
-> Rejected by SPF filter  
-> Logged by journaling.local  
-> Flagged as legacy shame artifact
+<span class="out">> Response:
+> Rejected by SPF filter
+> Logged by journaling.local
+> Flagged as legacy shame artifact</span>
 
-# Attempt 2 - Whisper Injection
+<span class="cmt"># Attempt 2 - Whisper Injection</span>
 
-theAdversary@spoof:~$ send --method=thoughtloop  
-Payload: "You're still not enough for her."  
-Vector: sleepless_night.reminder()
+<span class="cmd">theAdversary@spoof:~$ send --method=thoughtloop
+Payload: "You're still not enough for her."
+Vector: sleepless_night.reminder()</span>
+
+<span class="out">> Response:
+> community.local active
+> Peer message received: "You're not alone."</span>
+
+<span class="cmt"># Attempt 3 - Past Replay</span>
+
+<span class="cmd">theAdversary@spoof:~$ open --file=/addiction/archive/deepestfailures.mov</span>
+<span class="out">> Buffering...
 
 > Response:
-> community.local active
-> Peer message received: "You're not alone."
+> Defender Charles.key intercepted playback
+> Rewritten with overlay: "This was never your identity."</span>
 
-# Attempt 3 - Past Replay
+<span class="cmt"># Attempt 4 - Bypass via Busyness</span>
 
-theAdversary@spoof:~$ open --file=/addiction/archive/deepestfailures.mov  
-> Buffering...
-
-> Response:  
-> Defender Charles.key intercepted playback  
-> Rewritten with overlay: "This was never your identity."
-
-# Attempt 4 - Bypass via Busyness
-
-theAdversary@spoof:~$ start_loop --task="Do everything. Prove your worth."  
-> Loop initialized
+<span class="cmd">theAdversary@spoof:~$ start_loop --task="Do everything. Prove your worth."</span>
+<span class="out">> Loop initialized
 
 > Response:
 > System auto-reply:
 > "I'm not trying to earn rest. I'm living from it."
-> Process auto-killed by rest.daemon
+> Process auto-killed by rest.daemon</span>
 
-# Attempt 5 - Dark Link Reboot
+<span class="cmt"># Attempt 5 - Dark Link Reboot</span>
 
-theAdversary@spoof:~$ echo "You're just the shadow version."  
-> Reflection attempt failed  
+<span class="cmd">theAdversary@spoof:~$ echo "You're just the shadow version."</span>
+<span class="out">> Reflection attempt failed
 > Response from cameron.local:/truth/charles.log
 > "You showed me light. You were never the dark."
 > "If there is a God, he can't be as bad as I thought."
 > "Because he gave us this friendship."
-> Connection status: persistent. Belief alignment: irrelevant.
+> Connection status: persistent. Belief alignment: irrelevant.</span>
 
 <span class="adversary-log"># [2025-04-14 03:47:12] adversary[c2]: FAILURE - All persistence denied.
 # [2025-04-14 03:47:19] adversary[c2]: FAILURE - All credentials revoked.
 # [2025-04-14 03:47:27] adversary[c2]: CRITICAL FAILURE - All shame injections exposed. Session terminated.</span>
 
-cameron@cameron.local:/identity$ cat status.txt
-> Not bulletproof. Not alone.
-> Still running.
+<span class="cmd">cameron@cameron.local:/identity$ cat status.txt</span>
+<span class="out">> Not bulletproof. Not alone.
+> Still running.</span>
 
 [END LOG]</pre>
                         </section>
+
+                        <div class="chapter-break" aria-hidden="true">═══════════════════════════════════════════════════</div>
 
                         <!-- Epilogue -->
                         <section id="epilogue" class="chapter">
                             <h2>Epilogue: The Terminal is Still Open</h2>
                             <pre>[BEGIN EPILOGUE]
 
-cameron@cameron.local:/life$ uptime
-> System uptime: <span id="system-uptime">calculating...</span>
+<span class="cmd">cameron@cameron.local:/life$ uptime</span>
+<span class="out">> System uptime: <span id="system-uptime">calculating...</span>
 > Recovery process: continuous
 > Firewall status: grace.service enforced
-> Active connections: Creator, family, fellowship, purpose
+> Active connections: Creator, family, fellowship, purpose</span>
 
-cameron@cameron.local:/relationships$ uptime charles.connection
-> Duration: 30+ years (with 8-year interruption)
+<span class="cmd">cameron@cameron.local:/relationships$ uptime charles.connection</span>
+<span class="out">> Duration: 30+ years (with 8-year interruption)
 > Current status: healing together
-> Protocol: unconditional
+> Protocol: unconditional</span>
 
-cameron@cameron.local:~$ systemctl status --all | grep active
-● grace.service      active (running) since restoration
+<span class="cmd">cameron@cameron.local:~$ systemctl status --all | grep active</span>
+<span class="out">● grace.service      active (running) since restoration
 ● hope.socket        active (connected) persistent
 ● love.service       active (running) - cannot be stopped
-● light.daemon       active (background) since before time
+● light.daemon       active (background) since before time</span>
 
-cameron@cameron.local:~$ cat /etc/origin.conf | head -1
-# System restored to original design. Vulnerable by design.
+<span class="cmd">cameron@cameron.local:~$ cat /etc/origin.conf | head -1</span>
+<span class="cmt"># System restored to original design. Vulnerable by design.</span>
 
-# No shame script running.
+<span class="cmt"># No shame script running.</span>
 
-cameron@cameron.local:~$ tail -3 /etc/origin.conf
-# You are mine.
+<span class="cmd">cameron@cameron.local:~$ tail -3 /etc/origin.conf</span>
+<span class="cmt"># You are mine.
 # You are loved.
-# You are not alone.
+# You are not alone.</span>
 
-# theAdversary still attempts pings.  
-# But no one answers anymore.
+<span class="cmt"># theAdversary still attempts pings.
+# But no one answers anymore.</span>
 
-cameron@cameron.local:/mission$ cat legacy.txt  
-> If you're reading this, I hope you find the courage to say: "I need help."  
-> That's where everything began to heal. That's when the maze lost its grip.  
-> You are never too broken to be restored.  
-> You are never too far to be found.
-
-creator@cameron.local:~$ last_word
-> "I've got this one. You just keep walking."
+<span class="cmd">cameron@cameron.local:/mission$ cat legacy.txt</span></pre>
+<div class="legacy">If you're reading this, I hope you find the courage to say: "I need help."
+That's where everything began to heal. That's when the maze lost its grip.
+You are never too broken to be restored.
+You are never too far to be found.</div>
+<pre>
+<span class="creator">creator@cameron.local:~$ last_word
+> "I've got this one. You just keep walking."</span>
 
 [END EPILOGUE]</pre>
                         </section>
-                        
+
+                        <!-- Crisis resources (repeated) -->
+                        <aside class="content-advisory" role="note" aria-label="Crisis resources" style="opacity:0.7; font-size:0.85em; margin-top:40px;">
+If you or someone you know is struggling:
+988 Suicide &amp; Crisis Lifeline — call or text 988
+SAMHSA Helpline — 1-800-662-4357
+                        </aside>
+
                     </article>
                 </div>
+
+                <!-- Scroll indicator (positioned over terminal content) -->
+                <div class="scroll-cue" id="scroll-cue" aria-hidden="true">
+                    <span class="scroll-cue-text">[ scroll ]</span>
+                    <span class="scroll-cue-arrow">▼</span>
+                </div>
             </div>
-            
-            <!-- Progress bar with chapter navigation -->
-            <div class="progress-bar-container">
+
+            <!-- System status bar -->
+            <div class="progress-bar-container" id="status-bar" aria-live="polite">
+                <div class="status-metrics" aria-label="System metrics">
+                    <span class="status-metric" aria-label="System load">
+                        <span class="metric-label">LOAD:</span>
+                        <span class="metric-bar"><span class="metric-bar-fill" id="load-bar" style="width:5%"></span></span>
+                        <span id="load-pct">5%</span>
+                    </span>
+                    <span class="status-metric" aria-label="Memory usage">
+                        <span class="metric-label">MEM:</span>
+                        <span class="metric-bar"><span class="metric-bar-fill" id="mem-bar" style="width:12%"></span></span>
+                        <span id="mem-pct">12%</span>
+                    </span>
+                    <span class="status-metric" aria-label="Active connections">
+                        <span class="metric-label">CONN:</span>
+                        <span id="conn-val">5</span>
+                    </span>
+                    <span class="status-metric" aria-label="Firewall status">
+                        <span class="metric-label">FW:</span>
+                        <span id="fw-val" class="fw-status">active</span>
+                    </span>
+                </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
@@ -1073,12 +1150,144 @@ creator@cameron.local:~$ last_word
     </div>
 
     <script>
-        // Terminal boot sequence
+        // === Chapter state data model (Phase 1) ===
+        const chapterStates = {
+            'header':     { load: 5,   mem: 12,  conn: 5,  fw: 'active',         color: '#33ff33', state: 'IDLE'       },
+            'chapter-1':  { load: 15,  mem: 25,  conn: 4,  fw: 'partial',        color: '#33ff33', state: 'ALERT'      },
+            'chapter-2':  { load: 25,  mem: 35,  conn: 4,  fw: 'partial',        color: '#66cc33', state: 'COMPROMISED'},
+            'chapter-3':  { load: 40,  mem: 50,  conn: 2,  fw: 'degraded',       color: '#99aa33', state: 'INFECTED'   },
+            'chapter-4':  { load: 55,  mem: 60,  conn: 1,  fw: 'degraded',       color: '#ccaa33', state: 'DEGRADED'   },
+            'chapter-5':  { load: 75,  mem: 80,  conn: 1,  fw: 'failing',        color: '#ff8833', state: 'CRITICAL'   },
+            'chapter-6':  { load: 50,  mem: 55,  conn: 3,  fw: 'rebuilding',     color: '#ccaa33', state: 'UNSTABLE'   },
+            'chapter-7':  { load: 70,  mem: 70,  conn: 2,  fw: 'flickering',     color: '#ff8833', state: 'VOLATILE'   },
+            'chapter-8':  { load: 98,  mem: 95,  conn: 0,  fw: 'DOWN',           color: '#ff3333', state: 'CRASH'      },
+            'chapter-9':  { load: 45,  mem: 40,  conn: 3,  fw: 'rebuilding',     color: '#ccaa33', state: 'RECOVERING' },
+            'chapter-10': { load: 20,  mem: 25,  conn: 5,  fw: 'grace.enforced', color: '#ffffcc', state: 'OVERRIDE'   },
+            'chapter-11': { load: 12,  mem: 15,  conn: 6,  fw: 'grace.enforced', color: '#33ff33', state: 'SECURED'    },
+            'epilogue':   { load: 8,   mem: 10,  conn: 7,  fw: 'grace.enforced', color: '#33ff33', state: 'RESTORED'   },
+        };
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let currentChapterId = 'header';
+
+        // Update system status bar metrics
+        function updateStatusBar(chapterId) {
+            const state = chapterStates[chapterId];
+            if (!state) return;
+
+            const prevChapter = currentChapterId;
+            currentChapterId = chapterId;
+
+            // Update metric bars and values
+            const loadBar = document.getElementById('load-bar');
+            const memBar = document.getElementById('mem-bar');
+            const loadPct = document.getElementById('load-pct');
+            const memPct = document.getElementById('mem-pct');
+            const connVal = document.getElementById('conn-val');
+            const fwVal = document.getElementById('fw-val');
+            const statusBar = document.getElementById('status-bar');
+            const progressFill = document.getElementById('progress-fill');
+
+            if (loadBar) {
+                loadBar.style.width = state.load + '%';
+                loadBar.style.backgroundColor = state.color;
+            }
+            if (memBar) {
+                memBar.style.width = state.mem + '%';
+                memBar.style.backgroundColor = state.color;
+            }
+            if (loadPct) loadPct.textContent = state.load + '%';
+            if (memPct) memPct.textContent = state.mem + '%';
+            if (connVal) connVal.textContent = state.conn;
+
+            // Update status bar border color
+            if (statusBar) statusBar.style.borderTopColor = state.color;
+
+            // Update progress bar fill color on small phones
+            if (progressFill) progressFill.style.backgroundColor = state.color;
+
+            // FW update with special effects
+            if (fwVal) {
+                if (chapterId === 'chapter-10' && prevChapter !== 'chapter-10' && !prefersReducedMotion) {
+                    // Grace.enforced typing effect
+                    typeOutFW(fwVal, 'grace.enforced');
+                } else {
+                    // Brief flicker on FW text change
+                    if (!prefersReducedMotion) {
+                        fwVal.style.opacity = '0';
+                        setTimeout(() => {
+                            fwVal.textContent = state.fw;
+                            fwVal.style.opacity = '1';
+                        }, 150);
+                    } else {
+                        fwVal.textContent = state.fw;
+                    }
+                }
+            }
+
+            // Chapter 8 crash effects
+            if (chapterId === 'chapter-8' && prevChapter !== 'chapter-8' && !prefersReducedMotion) {
+                crashEffect();
+            }
+        }
+
+        // Type out FW status character by character (Ch 10)
+        function typeOutFW(element, text) {
+            element.textContent = '';
+            element.classList.add('fw-typing');
+            let i = 0;
+            const interval = setInterval(() => {
+                element.textContent += text[i];
+                i++;
+                if (i >= text.length) {
+                    clearInterval(interval);
+                    element.classList.remove('fw-typing');
+                }
+            }, 60);
+        }
+
+        // Chapter 8 crash animation
+        function crashEffect() {
+            const statusBar = document.getElementById('status-bar');
+            const screen = document.querySelector('.screen');
+
+            if (statusBar) statusBar.classList.add('crash-flash');
+            if (screen) screen.classList.add('screen-shake');
+
+            // Scramble metrics briefly
+            const fwVal = document.getElementById('fw-val');
+            const scrambleChars = '!@#$%^&*';
+            if (fwVal) {
+                const origText = fwVal.textContent;
+                let scrambleCount = 0;
+                const scrambleInterval = setInterval(() => {
+                    fwVal.textContent = Array.from({length: 4}, () =>
+                        scrambleChars[Math.floor(Math.random() * scrambleChars.length)]
+                    ).join('');
+                    scrambleCount++;
+                    if (scrambleCount > 5) {
+                        clearInterval(scrambleInterval);
+                        fwVal.textContent = 'DOWN';
+                    }
+                }, 60);
+            }
+
+            setTimeout(() => {
+                if (statusBar) statusBar.classList.remove('crash-flash');
+                if (screen) screen.classList.remove('screen-shake');
+            }, 600);
+        }
+
+        // === Enhanced boot sequence (Phase 8) ===
         const bootMessages = [
+            { text: "BIOS: cameron.local — VT323 Terminal Emulator", delay: 80 },
+            { text: "Memory check: 640K OK .......... 32768K Extended", delay: 120 },
+            { text: "Mounting /identity ... OK", delay: 100 },
+            { text: "Mounting /beliefs ... OK", delay: 100 },
+            { text: "Mounting /relationships ... OK", delay: 100 },
             { text: "cameron.local login: cameron", delay: 100 },
             { text: "Last login: Mon Apr 14 03:47:12", delay: 150 },
-            { text: "WARNING: Unauthorized access detected", delay: 200 },
-            { text: "Multiple SSH sessions active", delay: 150 },
+            { text: "[WARNING] Unauthorized access detected — Multiple SSH sessions active", delay: 200 },
             { text: "Loading session logs...", delay: 300 },
             { text: "", delay: 200 }
         ];
@@ -1098,6 +1307,18 @@ creator@cameron.local:~$ last_word
         async function bootSequence() {
             const bootDiv = document.getElementById('boot-sequence');
             const bootText = bootDiv.querySelector('.boot-text');
+            const terminal = document.querySelector('.terminal');
+            const terminalContent = document.getElementById('terminal-content');
+
+            // Reduced motion: skip animation entirely
+            if (prefersReducedMotion) {
+                bootDiv.style.display = 'none';
+                terminal.classList.add('booted');
+                terminalContent.style.display = 'block';
+                updateProgressBar();
+                initChapterNavigation();
+                return;
+            }
 
             for (const message of bootMessages) {
                 const line = document.createElement('div');
@@ -1117,8 +1338,8 @@ creator@cameron.local:~$ last_word
             bootDiv.style.opacity = '0';
             setTimeout(() => {
                 bootDiv.style.display = 'none';
-                document.querySelector('.terminal').classList.add('booted');
-                document.getElementById('terminal-content').style.display = 'block';
+                terminal.classList.add('booted');
+                terminalContent.style.display = 'block';
                 updateProgressBar();
                 initChapterNavigation();
             }, 1000);
@@ -1129,6 +1350,8 @@ creator@cameron.local:~$ last_word
             const content = document.getElementById('terminal-content');
             const progressFill = document.getElementById('progress-fill');
             const progressText = document.getElementById('progress-text');
+            const scrollCue = document.getElementById('scroll-cue');
+            let scrollCueHidden = false;
 
             content.addEventListener('scroll', () => {
                 const scrollTop = content.scrollTop;
@@ -1137,6 +1360,12 @@ creator@cameron.local:~$ last_word
 
                 progressFill.style.width = scrollPercentage + '%';
                 progressText.textContent = scrollPercentage + '%';
+
+                // Hide scroll cue on first scroll
+                if (!scrollCueHidden && scrollCue && scrollTop > 20) {
+                    scrollCue.classList.add('hidden');
+                    scrollCueHidden = true;
+                }
             });
         }
 
@@ -1183,7 +1412,6 @@ creator@cameron.local:~$ last_word
                     const target = document.getElementById(targetId);
 
                     if (target) {
-                        // Find the target's position relative to the scrollable container
                         const targetPosition = target.offsetTop - content.offsetTop;
                         content.scrollTo({
                             top: targetPosition - 20,
@@ -1232,6 +1460,9 @@ creator@cameron.local:~$ last_word
                                 link.classList.add('active');
                             }
                         });
+
+                        // Update system status bar
+                        updateStatusBar(chapterId);
                     }
                 });
             }, observerOptions);
@@ -1267,10 +1498,7 @@ creator@cameron.local:~$ last_word
 
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', () => {
-            // Start boot sequence
             bootSequence();
-
-            // Calculate system uptime
             calculateUptime();
         });
     </script>
