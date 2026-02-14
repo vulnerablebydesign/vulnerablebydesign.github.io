@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A Node.js application with a Handlebars template engine. What could go wrong? Everything, apparently. GlaDOS guides Chell through SSTI exploitation and sandbox escape.">
+  <meta name="description" content="A Node.js application with a Handlebars template engine. What could go wrong? Everything, apparently. Chell discovers SSTI and escapes a sandbox with GlaDOS watching.">
   <meta name="theme-color" content="#0a0a0f">
   <title>Bike | Hack the Cube</title>
 
@@ -74,46 +74,48 @@
 
       <h2>The Mission Briefing</h2>
 
-      <p>The target materialized in the testing chamber with all the subtlety of a JavaScript framework announcement. A Linux box. Port 80. Node.js.</p>
+      <p>My first "Very Easy" box. <strong>Bike</strong>. A Linux machine with a web application. Eleven guided questions between me and the flag. I figured this would be a quick warm-up.</p>
+
+      <p>I was half right about the "quick" part.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
         <div class="dialogue-text">"A web application. How... pedestrian. I'm sure this will be educational for you. In the way that watching paint dry is educational about the passage of time."</div>
       </div>
 
-      <p>The mission parameters were clear: eleven guided questions stood between the test subject and the flag. Each question a breadcrumb, leading deeper into the machine's vulnerabilities.</p>
-
       <h2>Reconnaissance</h2>
 
-      <p>The scan revealed a minimal attack surface. Two ports. SSH on 22—because of course there's SSH—and port 80 showing as "tcpwrapped." Mysterious. Intriguing. Probably nothing that would require actual effort.</p>
+      <p>My scan came back with a minimal attack surface. Two ports &mdash; SSH on 22 and port 80 showing as "tcpwrapped." That was new to me.</p>
 
       <div class="terminal-log">
 PORT   STATE SERVICE    VERSION
 22/tcp open  ssh        OpenSSH 8.2p1 Ubuntu
 80/tcp open  tcpwrapped</div>
 
+      <p>I learned something useful here: <strong>"tcpwrapped" means the service accepted the TCP connection but didn't respond to nmap's probes</strong>. It's usually a web service that's being picky about what requests it answers. The fix was running a more targeted scan:</p>
+
+      <div class="terminal-log">
+nmap -sC -sV -p 80 10.129.x.x</div>
+
+      <p>This time it identified <strong>Node.js</strong> running Express middleware. The HTTP headers even included an <code>X-Powered-By: Express</code> header &mdash; basically advertising the technology stack to anyone who asks.</p>
+
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
         <div class="dialogue-text">"'Tcpwrapped' indicates a web service that didn't respond to nmap's probes. Likely HTTP with filtering or unusual behavior. I recommend further investigation. Not that you need my recommendation to poke at things blindly."</div>
       </div>
 
-      <p>A targeted scan on port 80 revealed the truth: Node.js running Express middleware. The HTTP headers confirmed it with an X-Powered-By header that practically screamed "hack me."</p>
-
       <h2>The Discovery</h2>
 
-      <p>Wappalyzer painted the full picture: Express framework, Node.js runtime, jQuery 2.2.4 (because legacy JavaScript libraries are a cornerstone of modern security), and Google Hosted Libraries.</p>
+      <p>I browsed to the website and found a simple page with an email input field. Wappalyzer filled in the details: Express framework, Node.js, Handlebars template engine, jQuery 2.2.4.</p>
 
-      <p>But the real discovery came from a simple test. The website had an email input field. What would happen if, instead of an email address, we sent something more... interesting?</p>
+      <p>That word &mdash; <strong>Handlebars</strong> &mdash; caught my attention. Template engines process user input to generate dynamic HTML. And if user input goes directly into a template without sanitization... that's <strong>Server Side Template Injection</strong> (SSTI).</p>
+
+      <p>I tested the theory. Instead of typing an email address, I typed:</p>
 
       <div class="terminal-log">
 {{7*7}}</div>
 
-      <div class="dialogue glados">
-        <div class="dialogue-speaker">GlaDOS</div>
-        <div class="dialogue-text">"The payload {{7*7}} tests if user input is processed by a template engine. If the server returns 49, input is being evaluated as template code. This confirms SSTI vulnerability. It can lead to Remote Code Execution. I'm sure you knew that already."</div>
-      </div>
-
-      <p>The server didn't return 49. It returned something better: an error message. A beautiful, verbose error message that revealed the template engine's identity.</p>
+      <p>If the server returned "49," it would mean my input was being evaluated as template code. But instead I got something even better &mdash; a verbose error message:</p>
 
       <div class="terminal-log">
 Error: Parse error on line 1:
@@ -122,18 +124,21 @@ Error: Parse error on line 1:
 Expecting 'ID', 'STRING', 'NUMBER'...
     at Parser.parseError (.../handlebars/dist/cjs/...)</div>
 
-      <p><strong>Handlebars.</strong> The template engine was Handlebars. And it was very unhappy with our mathematical curiosity.</p>
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The payload {{7*7}} tests if user input is processed by a template engine. If the server returns 49, input is being evaluated as template code. This confirms SSTI vulnerability. It can lead to Remote Code Execution. I'm sure you knew that already."</div>
+      </div>
+
+      <p><strong>Handlebars confirmed.</strong> The error message didn't just tell me the template engine &mdash; it exposed the file path on the server. That's a lesson in itself: error messages are information leaks. Always pay attention to them.</p>
 
       <h2>The Exploit</h2>
 
-      <p>Server Side Template Injection in Handlebars. A classic. The concept is elegant: if user input is processed through a template engine without proper sanitization, an attacker can inject template directives that execute arbitrary code.</p>
-
-      <p>The test subject consulted the sacred texts—HackTricks—and found a promising payload. URL-encoded and delivered with hope.</p>
+      <p>So I had SSTI in Handlebars. Time to get code execution. I found a payload on <a href="https://book.hacktricks.wiki/en/pentesting-web/ssti-server-side-template-injection/index.html" style="color: var(--terminal-green);">HackTricks</a> designed for Handlebars SSTI, URL-encoded it, and sent it through the input field.</p>
 
       <div class="terminal-log">
 ReferenceError: require is not defined</div>
 
-      <p>Blocked. The sandbox prevented direct use of <code>require()</code>. Node.js modules were tantalizingly out of reach.</p>
+      <p>Blocked. The payload tried to use <code>require()</code> to import Node.js modules like <code>child_process</code> (which lets you run system commands), but the sandbox prevented it. <code>require</code> simply didn't exist in the template context.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
@@ -142,21 +147,21 @@ ReferenceError: require is not defined</div>
 
       <h2>The Sandbox Escape</h2>
 
-      <p>The key insight: <code>require()</code> was blocked, but the <code>global</code> object was not. And through <code>global</code>, one could access <code>process</code>. And through <code>process.mainModule</code>, one could access... <code>require()</code>.</p>
+      <p>This was the part that really taught me something. <code>require()</code> was blocked directly, but the JavaScript runtime still had the <code>global</code> object available. And through <code>global</code>, I could access <code>process</code>. And <code>process</code> had a property called <code>mainModule</code>. And <code>mainModule</code> had its own <code>require</code> function.</p>
 
-      <p>It was like finding a backdoor to a backdoor. Elegant. Stupid. Perfect.</p>
+      <p>It's like finding a side door when the front door is locked. The sandbox blocked the obvious path, but it didn't block the chain of object references that led to the same destination:</p>
 
       <div class="terminal-log">
 process.mainModule.require('child_process').execSync('whoami')</div>
 
-      <p>The modified payload threaded through the Handlebars labyrinth, escaped the sandbox, and executed. The response came back embedded in the page:</p>
+      <p>I wrapped this in a Handlebars template payload, URL-encoded it, and sent it. The response came back buried in the page output:</p>
 
       <div class="terminal-log">
 We will contact you at: e2[object Object]function Function()...root</div>
 
       <p><strong>root.</strong></p>
 
-      <p>The web server was running as root. No privilege escalation required. The misconfiguration that keeps on giving.</p>
+      <p>The web server was running as root. No privilege escalation needed. This is a classic misconfiguration &mdash; web services should almost never run as root, precisely because if someone gets code execution (like I just did), they immediately have full system access.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
@@ -165,26 +170,27 @@ We will contact you at: e2[object Object]function Function()...root</div>
 
       <h2>The Flag</h2>
 
-      <p>One final payload. <code>cat /root/flag.txt</code> instead of <code>whoami</code>. The flag emerged from the chaos of mangled HTML and JavaScript artifacts:</p>
+      <p>One final payload &mdash; same sandbox escape, but with <code>cat /root/flag.txt</code> instead of <code>whoami</code>:</p>
 
       <div class="terminal-log"><span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">6b258d726d287462d60c103d0142a81c</span></span></div>
 
-      <p>Box complete. RCE as root achieved via Handlebars SSTI with sandbox bypass using <code>process.mainModule.require()</code>.</p>
+      <p>Box complete. RCE as root through Handlebars SSTI with a sandbox bypass via <code>process.mainModule.require()</code>.</p>
 
-      <h2>Lessons Learned</h2>
+      <h2>What I Learned</h2>
 
-      <p>The test subject demonstrated adequate performance. For a human. Some key takeaways emerged from the smoking ruins of the Bike machine:</p>
+      <p>Bike was my introduction to SSTI and it packed a lot of concepts into one "Very Easy" box:</p>
 
       <ul>
-        <li><strong>Targeted port scans yield better service detection</strong> — Running <code>nmap -sC -sV -p 80</code> revealed Node.js where the full scan showed only "tcpwrapped"</li>
-        <li><strong>Error messages reveal technology stacks</strong> — The Handlebars parse error exposed the template engine, backend paths, and even handler locations</li>
-        <li><strong>Sandbox escapes often exist via alternative object paths</strong> — When <code>require()</code> is blocked, traverse through <code>process.mainModule</code></li>
-        <li><strong>Always enumerate process/global objects in Node.js SSTI</strong> — The prototype chain is your friend</li>
+        <li><strong>Targeted port scans reveal more</strong> &mdash; Running <code>nmap -sC -sV -p 80</code> identified Node.js where the full scan only showed "tcpwrapped." When a service is vague, scan it specifically</li>
+        <li><strong>Error messages are information goldmines</strong> &mdash; The Handlebars parse error revealed the template engine, backend paths, and file locations. Never ignore verbose errors</li>
+        <li><strong>SSTI = Server Side Template Injection</strong> &mdash; If user input goes through a template engine unsanitized, you can inject template directives that execute code. Test with <code>{{7*7}}</code> or similar</li>
+        <li><strong>Sandboxes have side doors</strong> &mdash; When <code>require()</code> is blocked, traverse through <code>global → process → mainModule → require</code>. The prototype chain is your friend</li>
+        <li><strong>Services running as root amplify everything</strong> &mdash; My SSTI gave me code execution, and because the server ran as root, that was instant game over. No privesc needed</li>
       </ul>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
-        <div class="dialogue-text">"Test subject performance: Adequate. Followed protocols, adapted when initial payloads failed, successfully completed all test objectives. Data collected will be invaluable for science. You may proceed to the next test chamber. The cake situation remains unchanged."</div>
+        <div class="dialogue-text">"Test complete. You followed protocols, adapted when initial payloads failed, and successfully completed all objectives. Data collected will be invaluable for science. You may proceed to the next test chamber. The cake situation remains unchanged."</div>
       </div>
 
     </main>
@@ -195,7 +201,7 @@ We will contact you at: e2[object Object]function Function()...root</div>
         <li>Port scan: SSH (22), HTTP (80) - Node.js/Express</li>
         <li>Technology identification: Handlebars template engine (error-based)</li>
         <li>Vulnerability: Server Side Template Injection (SSTI)</li>
-        <li>Sandbox bypass: require() blocked → used process.mainModule.require()</li>
+        <li>Sandbox bypass: require() blocked &rarr; used process.mainModule.require()</li>
         <li>RCE as root achieved</li>
         <li>Flag extracted from /root/flag.txt</li>
       </ol>
