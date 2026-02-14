@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A printer, an SNMP leak, and a CUPS vulnerability walk into a test chamber. Chell navigates HP JetDirect exploitation and privilege escalation through localhost services.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Antique | Hack the Cube</title>
+
+  <meta property="og:title" content="Antique - Hack the Cube">
+  <meta property="og:description" content="SNMP leaks printer passwords. CUPS reads root's files. For science.">
+  <meta property="og:image" content="/blog/posts/antique/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-13T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Antique</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 13, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Linux</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~05:30:00</span>
+        </div>
+      </div>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/linux.html" class="tag">linux</a>
+        <a href="/blog/tags/easy.html" class="tag">easy</a>
+        <a href="/blog/tags/snmp.html" class="tag">snmp</a>
+        <a href="/blog/tags/cups.html" class="tag">cups</a>
+        <a href="/blog/tags/printer.html" class="tag">printer</a>
+        <a href="/blog/tags/privesc.html" class="tag">privesc</a>
+        <a href="/blog/tags/telnet.html" class="tag">telnet</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>The box was called <strong>Antique</strong>. A name that turned out to be painfully accurate.</p>
+
+      <p>My initial TCP scan came back with almost nothing &mdash; just port 23. Telnet. In 2026. I stared at the terminal for a moment, processing the fact that somewhere in the world, a machine was still running a Telnet service like it was 1995.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Telnet. Unencrypted. Password-protected by a protocol that transmits credentials in plaintext. Humanity's relationship with security continues to be... aspirational. Connect to it. Let's see what's pretending to be important on the other side."</div>
+      </div>
+
+      <p>I connected and was greeted by an <strong>HP JetDirect</strong> banner. A printer management interface. The kind of device that network admins deploy once, configure never, and forget forever.</p>
+
+      <p>It wanted a password. I didn't have one. Yet.</p>
+
+      <h2>Reconnaissance</h2>
+
+      <p>TCP wasn't telling me much, so I shifted to UDP. This is something I'm learning to do more often &mdash; a lot of beginners (myself included) skip UDP scans because they're slow. But UDP services can be goldmines.</p>
+
+      <div class="terminal-log">
+nmap -sU --top-ports 25 10.129.1.19
+
+PORT    STATE         SERVICE
+161/udp open          snmp</div>
+
+      <p>Port 161. <strong>SNMP</strong> &mdash; Simple Network Management Protocol. The protocol that lets you query network devices for their configuration data. The key word here is "simple," because the security model for SNMPv1 is basically a shared password called a "community string." And the default community string is...</p>
+
+      <div class="terminal-log">public</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"SNMP with a default community string. On a printer management interface. Storing a Telnet password. This is less of a security architecture and more of a... confessional. The device is practically volunteering its secrets."</div>
+      </div>
+
+      <p>Here's the thing about SNMP that made this box click for me: network devices store their configuration in a tree structure called a <strong>MIB</strong> (Management Information Base). Every piece of data has an address called an <strong>OID</strong>. You can walk the entire tree and dump everything the device is willing to share. With the default <code>public</code> community string, that's usually... everything.</p>
+
+      <h2>The Password in the Printer</h2>
+
+      <p>I ran an SNMP walk against the target:</p>
+
+      <div class="terminal-log">
+snmpwalk -v2c -c public 10.129.1.19</div>
+
+      <p>Buried in the output was a specific OID from HP's enterprise MIB space:</p>
+
+      <div class="terminal-log">
+iso.3.6.1.4.1.11.2.3.9.1.1.13.0 = BITS: 50 40 73 73 77 30 72 64
+40 31 32 33 21 21 31 32 33</div>
+
+      <p>Hex-encoded ASCII. I decoded it and got:</p>
+
+      <div class="terminal-log">P@ssw0rd@123!!123</div>
+
+      <p>The Telnet password for HP JetDirect. Stored in the SNMP MIB tree. Readable by anyone who tries the default community string. This is what "defense in depth" looks like when there's no depth.</p>
+
+      <h2>Initial Foothold</h2>
+
+      <p>I logged into the JetDirect Telnet service with the extracted password. Inside, I discovered the <code>exec</code> command &mdash; it lets you run system commands directly from the printer management shell.</p>
+
+      <div class="terminal-log">
+telnet 10.129.1.19
+
+HP JetDirect
+
+Password: P@ssw0rd@123!!123
+
+Please type "?" for HELP
+
+> exec id
+uid=7(lp) gid=7(lp) groups=7(lp),19(lpadmin)</div>
+
+      <p>I was in as the <code>lp</code> user &mdash; the printer service account. More importantly, I was in the <strong>lpadmin</strong> group. That detail would matter later. A lot.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"You have command execution on a printer. Running as the print spooler. In the lpadmin group. I want you to think about what that group name implies. Take your time. I have centuries."</div>
+      </div>
+
+      <h2>User Flag</h2>
+
+      <p>The user flag was right there in <code>lp</code>'s home directory:</p>
+
+      <div class="terminal-log">
+> exec cat /home/lp/user.txt
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">348593d0a03d6ad4faafc085f69cac99</span></span></div>
+
+      <p>One down. But getting from a printer service account to root? That's where the real lesson was hiding.</p>
+
+      <h2>The Privilege Escalation</h2>
+
+      <p>I started enumerating from the inside. One of the most valuable things to check after getting a foothold is what's listening on localhost &mdash; services bound to <code>127.0.0.1</code> that you'd never see from an external port scan.</p>
+
+      <div class="terminal-log">
+> exec ss -tlnp
+
+LISTEN  0  5  127.0.0.1:631  *:*</div>
+
+      <p>Port 631. <strong>CUPS</strong> &mdash; the Common Unix Printing System. Running on localhost only, invisible from the outside. I checked the version:</p>
+
+      <div class="terminal-log">
+> exec curl -s localhost:631 | grep title
+
+&lt;title&gt;Home - CUPS 1.6.1&lt;/title&gt;</div>
+
+      <p>CUPS 1.6.1. This version has a known vulnerability: <strong>CVE-2012-5519</strong>.</p>
+
+      <p>Here's how it works, and this is the part that really taught me something: CUPS has a configuration directive called <code>ErrorLog</code> that specifies where error logs are written. Members of the <code>lpadmin</code> group can change this setting using <code>cupsctl</code>. The trick is that CUPS runs as <strong>root</strong>, so when you point the error log at an arbitrary file, CUPS reads it with root privileges and serves the content through its web interface.</p>
+
+      <p>It's a local file read vulnerability, but it only works if you're in the <code>lpadmin</code> group. Which I was.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A printing service that lets print administrators read any file on the system as root. The vulnerability has existed since 2012. That's fourteen years of root file access through a printer configuration tool. I'd call it a design flaw, but that implies there was a design."</div>
+      </div>
+
+      <p>The exploit was two commands:</p>
+
+      <div class="terminal-log">
+> exec cupsctl ErrorLog=/root/root.txt
+> exec curl -s localhost:631/admin/log/error_log
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">597cf6adfe49b81e3e9a609c055a0c15</span></span></div>
+
+      <p>Set the error log to <code>/root/root.txt</code>. Then read the "error log" through CUPS' web interface. Root flag captured.</p>
+
+      <h2>What I Learned</h2>
+
+      <p>This box taught me more about overlooked attack surfaces than any other I've done so far:</p>
+
+      <ul>
+        <li><strong>Always scan UDP</strong> &mdash; SNMP on port 161 was the entire foothold. A TCP-only scan would have left me staring at a password prompt forever</li>
+        <li><strong>Default SNMP community strings are everywhere</strong> &mdash; <code>public</code> and <code>private</code> are the admin/admin of the network device world. Always try them</li>
+        <li><strong>Printers are computers too</strong> &mdash; HP JetDirect, CUPS, print spoolers &mdash; these are full services with real vulnerabilities, not just things that jam paper</li>
+        <li><strong>Check localhost services after getting a foothold</strong> &mdash; <code>ss -tlnp</code> reveals services bound to 127.0.0.1 that external scans can never see. These are often your escalation path</li>
+        <li><strong>Group memberships matter</strong> &mdash; Being in <code>lpadmin</code> looked irrelevant until I found CUPS. Always check <code>id</code> and research what each group can do</li>
+        <li><strong>Old CVEs are still live</strong> &mdash; CVE-2012-5519 is from 2012. Fourteen years old and still providing root access</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Test complete. Both flags obtained. Your methodology showed improvement &mdash; you remembered to scan UDP this time, which is more than most test subjects manage. The attack path was elegant in its absurdity: a default password on a protocol from 1988 revealed credentials stored in a printer, which led to a 2012 vulnerability in a printing service. The entire chain was held together by humanity's collective decision to never update anything. Same time next test chamber?"</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>TCP scan: only port 23 (Telnet) &mdash; HP JetDirect, password-protected</li>
+        <li>UDP scan: port 161 (SNMP) open with default <code>public</code> community string</li>
+        <li>SNMP walk extracted HP JetDirect password from MIB OID</li>
+        <li>Telnet login with extracted password, discovered <code>exec</code> command</li>
+        <li>Command execution as <code>lp</code> user (lpadmin group), captured user flag</li>
+        <li>Internal enumeration: CUPS 1.6.1 on localhost:631</li>
+        <li>CVE-2012-5519: <code>cupsctl ErrorLog=/root/root.txt</code> + curl to read root flag</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/irked/" class="post-nav-link prev">Irked</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
