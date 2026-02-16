@@ -287,14 +287,14 @@ The service did not respond to the start or control request in a timely fashion.
     <aside class="attack-path">
       <h3>Attack Path Summary</h3>
       <ol>
-        <li>Nmap scan: 13 ports open, IIS on 80 with "HTB Printer Admin Panel," WinRM on 5985, AD DC for <strong>return.local</strong></li>
-        <li>Settings page exposed LDAP config: <strong>svc-printer</strong> account, editable server address</li>
+        <li>Nmap scan: 13 ports open, IIS on 80 with "HTB Printer Admin Panel," WinRM on 5985, AD DC for return.local</li>
+        <li>Settings page exposed LDAP config: svc-printer account, editable server address</li>
         <li>Redirected LDAP auth to attacker IP, captured cleartext password via netcat on port 389</li>
-        <li>Hex dump verified password: <strong>1edFg43012!!</strong></li>
-        <li>evil-winrm shell as svc-printer, captured <strong>user flag</strong></li>
-        <li><code>whoami /all</code> revealed <strong>Server Operators</strong> group membership</li>
+        <li>Hex dump verified password: 1edFg43012!!</li>
+        <li>evil-winrm shell as svc-printer, captured user flag</li>
+        <li>whoami /all revealed Server Operators group membership</li>
         <li>Reconfigured VSS service binPath to copy root.txt, restarted service</li>
-        <li>Read copied file &mdash; <strong>root flag</strong> captured</li>
+        <li>Read copied file &mdash; root flag captured</li>
       </ol>
     </aside>
 

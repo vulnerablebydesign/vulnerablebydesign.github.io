@@ -221,12 +221,12 @@ LISTEN  0  5  127.0.0.1:631  *:*</div>
       <h3>Attack Path Summary</h3>
       <ol>
         <li>TCP scan: only port 23 (Telnet) &mdash; HP JetDirect, password-protected</li>
-        <li>UDP scan: port 161 (SNMP) open with default <strong>public</strong> community string</li>
+        <li>UDP scan: port 161 (SNMP) open with default public community string</li>
         <li>SNMP walk extracted HP JetDirect password from MIB OID</li>
-        <li>Telnet login with extracted password, discovered <strong>exec</strong> command</li>
-        <li>Command execution as <strong>lp</strong> user (lpadmin group), captured user flag</li>
+        <li>Telnet login with extracted password, discovered exec command</li>
+        <li>Command execution as lp user (lpadmin group), captured user flag</li>
         <li>Internal enumeration: CUPS 1.6.1 on localhost:631</li>
-        <li>CVE-2012-5519: <strong>cupsctl ErrorLog=/root/root.txt</strong> + curl to read root flag</li>
+        <li>CVE-2012-5519: cupsctl ErrorLog=/root/root.txt + curl to read root flag</li>
       </ol>
     </aside>
 

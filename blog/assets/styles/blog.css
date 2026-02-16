@@ -681,6 +681,17 @@ body::before {
   padding-left: var(--spacing-lg);
 }
 
+/* Keep attack path text uniform — no emphasis styling */
+.attack-path strong,
+.attack-path b,
+.attack-path code {
+  font-weight: normal;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+
 .attack-path li {
   margin-bottom: var(--spacing-sm);
   color: var(--text-primary);
