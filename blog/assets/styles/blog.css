@@ -303,7 +303,6 @@ body::before {
 
 .post-card-content {
   padding: var(--spacing-md);
-  text-align: center;
 }
 
 .post-card-title {
