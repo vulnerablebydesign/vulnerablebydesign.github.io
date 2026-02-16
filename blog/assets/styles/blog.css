@@ -302,7 +302,7 @@ body::before {
 }
 
 .post-card-content {
-  padding: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md);
 }
 
 .post-card-title {
@@ -370,7 +370,7 @@ body::before {
   padding: var(--spacing-xs) var(--spacing-sm);
   border: 2px solid var(--terminal-green);
   background: transparent;
-  margin: var(--spacing-sm) 0;
+  margin: var(--spacing-xs) 0 var(--spacing-sm);
   animation: blink 1s step-end infinite;
   text-transform: uppercase;
   letter-spacing: 1px;
