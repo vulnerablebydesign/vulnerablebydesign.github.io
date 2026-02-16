@@ -16,6 +16,9 @@ body {
     height: 100vh;
     height: 100dvh; /* Dynamic viewport height for mobile */
     color: #33ff33;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* CRT container */
@@ -39,8 +42,8 @@ body {
     right: 0;
     background: repeating-linear-gradient(
         0deg,
-        rgba(0, 0, 0, 0.15),
-        rgba(0, 0, 0, 0.15) 1px,
+        rgba(0, 0, 0, 0.05),
+        rgba(0, 0, 0, 0.05) 1px,
         transparent 1px,
         transparent 2px
     );
@@ -96,10 +99,7 @@ body {
     font-size: 18px;
     line-height: 1.4;
     color: #33ff33;
-    text-shadow:
-        0 0 1px #33ff33,
-        0 0 2px rgba(51, 255, 51, 0.5),
-        0 0 4px rgba(51, 255, 51, 0.2); /* Enhanced phosphor glow */
+    text-shadow: 0 0 1px rgba(51, 255, 51, 0.3); /* Subtle phosphor glow — readable */
     white-space: pre-wrap;
     word-wrap: break-word;
     transition: opacity 0.2s ease-in-out;
@@ -278,7 +278,7 @@ h3 {
 
 p, pre, li {
     color: #33ff33;
-    text-shadow: 0 0 1px #33ff33; /* Minimal shadow for clarity */
+    text-shadow: 0 0 1px rgba(51, 255, 51, 0.3); /* Subtle glow — readable */
     line-height: 1.6;
 }
 
