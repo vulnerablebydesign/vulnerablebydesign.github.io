@@ -69,6 +69,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+
+/* VT323 has no bold weight — use color emphasis instead */
+strong, b {
+  font-weight: normal;
+  color: #fff;
 }
 
 /* Scanlines overlay */
