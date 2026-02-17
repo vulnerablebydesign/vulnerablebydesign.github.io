@@ -151,7 +151,7 @@ curl -s http://10.129.95.235
 
       <p>Here's the first lesson this box teaches: <strong>client-side controls are decorative</strong>. A dropdown menu in HTML looks like a restricted input. You can only pick from the predefined options. But that restriction lives entirely in your browser. The server receives a POST parameter &mdash; just a string &mdash; and has no way to know whether it came from a dropdown, a text field, or a curl command.</p>
 
-      <p>I started by testing the <code>country</code> parameter for SQL injection. Single quote appended to "Brazil":</p>
+      <p>I started by testing the <code>country</code> parameter for SQL injection. I sent just a single quote as the country value:</p>
 
       <div class="terminal-log">
 curl -s -d "username=test&country='" http://10.129.95.235
