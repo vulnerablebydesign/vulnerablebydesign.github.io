@@ -127,7 +127,7 @@ PORT     STATE SERVICE VERSION
 
       <p>Here's the first lesson this box teaches: <strong>client-side controls are decorative</strong>. A dropdown menu in HTML looks like a restricted input. You can only pick from the predefined options. But that restriction lives entirely in your browser. The server receives a POST parameter &mdash; just a string &mdash; and has no way to know whether it came from a dropdown, a text field, or a curl command.</p>
 
-      <p>I intercepted the registration request with Burp Suite and started testing. The username field was clean &mdash; likely parameterized. But the <code>country</code> parameter? I replaced "Brazil" with a single quote.</p>
+      <p>I intercepted the registration request with Burp Suite and started testing. The username field was clean &mdash; likely parameterized. But the <code>country</code> parameter? I appended a single quote to "Brazil".</p>
 
       <div class="terminal-log">
 POST / HTTP/1.1
