@@ -48,11 +48,22 @@
         </div>
       </div>
 
-      <img
-        src="/blog/posts/return/images/header.png"
-        alt="Return - Windows Active Directory printer exploitation"
-        class="post-header-image"
-      >
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/return/images/header-800w.webp 800w,
+                 /blog/posts/return/images/header-1200w.webp 1200w,
+                 /blog/posts/return/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/return/images/header.png"
+          alt="Return - Windows Active Directory printer exploitation"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
 
       <div class="tags-container" style="justify-content: center;">
         <a href="/blog/tags/machine.html" class="tag">machine</a>
