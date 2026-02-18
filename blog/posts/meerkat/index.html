@@ -76,13 +76,13 @@
         <a href="/blog/tags/ssh.html" class="tag">ssh</a>
         <a href="/blog/tags/rce.html" class="tag">rce</a>
         <a href="/blog/tags/glados.html" class="tag glados">glados</a>
-        <a href="/blog/tags/fact-core.html" class="tag fact-core">fact-core</a>
+        <a href="/blog/tags/fact-sphere.html" class="tag fact-sphere">fact-sphere</a>
       </div>
 
       <div class="post-characters">
         <span class="post-meta-label">Guides:</span>
         <span class="character-glados">GlaDOS</span>
-        <span class="character-fact-core">Fact Core</span>
+        <span class="character-fact-sphere">Fact Sphere</span>
       </div>
     </header>
 
@@ -141,9 +141,9 @@ tshark -r /tmp/meerkat/meerkat.pcap -Y "http.request" -T fields -e ip.src -e ip.
         </tbody>
       </table>
 
-      <div class="dialogue fact-core">
-        <div class="dialogue-speaker">Fact Core</div>
-        <div class="dialogue-text">"263 Suricata alerts across 9 distinct signature categories. The python-requests User-Agent comprised 50.9% of all alerts. The Bonitasoft login attempts averaged 1.07 per second during the credential stuffing window. Four alerts detected the actual RCE payload upload. The IDS logged all of this in real time. No automated response was triggered. These are facts."</div>
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"263 Suricata alerts across 9 distinct signature categories. The python-requests User-Agent comprised 50.9% of all alerts. The Bonitasoft login attempts averaged 1.07 per second during the credential stuffing window. Four alerts detected the actual RCE payload upload. The IDS logged all of this in real time. No automated response was triggered."</div>
       </div>
 
       <p>263 alerts, and the attack practically narrated itself. The <code>python-requests</code> User-Agent (134 alerts) meant scripted automation. The Bonitasoft login attempts (59) and default user logins (4) pointed at credential stuffing. The authorization bypass alerts (12) and RCE upload alerts (4) confirmed CVE-2022-25237 exploitation. And that lonely <code>/etc/passwd via HTTP</code> alert at the bottom? Post-exploitation reconnaissance.</p>
@@ -191,9 +191,9 @@ Jan 19, 2023 09:39:17 CST  seb.broom@forela.co.uk,g0vernm3nt,en</div>
 
       <p>The attacker used this bypass to upload a malicious REST API extension &mdash; <code>rce_api_extension.zip</code> &mdash; via the page upload endpoint: <code>/bonita/API/pageUpload;i18ntranslation</code>. Once installed, this extension provided a simple command execution interface at <code>/bonita/API/extension/rce</code>.</p>
 
-      <div class="dialogue fact-core">
-        <div class="dialogue-speaker">Fact Core</div>
-        <div class="dialogue-text">"CVE-2022-25237 received a CVSS base score of 9.8. It affects BonitaSoft Community and Subscription editions prior to version 2021.2 Update 6. The semicolon path parameter bypass exploits a parsing discrepancy between Apache Tomcat's URL routing and the application's security filter. This class of servlet filter bypass has been independently discovered in at least 14 other Java web applications. This is a fact."</div>
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"CVE-2022-25237 received a CVSS base score of 9.8. It affects BonitaSoft Community and Subscription editions prior to version 2021.2 Update 6. The semicolon path parameter bypass exploits a parsing discrepancy between Apache Tomcat's URL routing and the application's security filter. This class of servlet filter bypass has been independently discovered in at least 14 other Java web applications."</div>
       </div>
 
       <p>I extracted the RCE commands from the PCAP to see exactly what the attacker did with their access.</p>

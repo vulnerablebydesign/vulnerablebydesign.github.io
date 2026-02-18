@@ -28,10 +28,10 @@
   --glados-yellow: #fbbf24;
   --cave-amber: #f59e0b;
 
-  /* Personality Core colors */
-  --space-core-purple: #A78BFA;
-  --adventure-core-green: #34D399;
-  --fact-core-blue: #60A5FA;
+  /* Personality Sphere colors */
+  --space-sphere-purple: #A78BFA;
+  --adventure-sphere-green: #34D399;
+  --fact-sphere-blue: #60A5FA;
   --curiosity-core-pink: #F472B6;
   --anger-core-red: #EF4444;
   --morality-core-lime: #A3E635;
@@ -451,8 +451,8 @@ body::before {
   background: rgba(245, 158, 11, 0.1);
   border-color: rgba(245, 158, 11, 0.3);
 }
-.tag.fact-core {
-  color: var(--fact-core-blue);
+.tag.fact-sphere {
+  color: var(--fact-sphere-blue);
   background: rgba(96, 165, 250, 0.1);
   border-color: rgba(96, 165, 250, 0.3);
 }
@@ -461,8 +461,8 @@ body::before {
   background: rgba(244, 114, 182, 0.1);
   border-color: rgba(244, 114, 182, 0.3);
 }
-.tag.adventure-core {
-  color: var(--adventure-core-green);
+.tag.adventure-sphere {
+  color: var(--adventure-sphere-green);
   background: rgba(52, 211, 153, 0.1);
   border-color: rgba(52, 211, 153, 0.3);
 }
@@ -553,9 +553,9 @@ body::before {
 .character-glados { color: var(--glados-yellow); }
 .character-wheatley { color: var(--wheatley-blue); }
 .character-cave { color: var(--cave-amber); }
-.character-space-core { color: var(--space-core-purple); }
-.character-adventure-core { color: var(--adventure-core-green); }
-.character-fact-core { color: var(--fact-core-blue); }
+.character-space-sphere { color: var(--space-sphere-purple); }
+.character-adventure-sphere { color: var(--adventure-sphere-green); }
+.character-fact-sphere { color: var(--fact-sphere-blue); }
 .character-curiosity-core { color: var(--curiosity-core-pink); }
 .character-anger-core { color: var(--anger-core-red); }
 .character-morality-core { color: var(--morality-core-lime); }
@@ -668,9 +668,9 @@ body::before {
 .dialogue.glados { border-color: var(--glados-yellow); }
 .dialogue.wheatley { border-color: var(--wheatley-blue); }
 .dialogue.cave { border-color: var(--cave-amber); }
-.dialogue.space-core { border-color: var(--space-core-purple); }
-.dialogue.adventure-core { border-color: var(--adventure-core-green); }
-.dialogue.fact-core { border-color: var(--fact-core-blue); }
+.dialogue.space-sphere { border-color: var(--space-sphere-purple); }
+.dialogue.adventure-sphere { border-color: var(--adventure-sphere-green); }
+.dialogue.fact-sphere { border-color: var(--fact-sphere-blue); }
 .dialogue.curiosity-core { border-color: var(--curiosity-core-pink); }
 .dialogue.anger-core { border-color: var(--anger-core-red); }
 .dialogue.morality-core { border-color: var(--morality-core-lime); }
@@ -688,9 +688,9 @@ body::before {
 .dialogue.glados .dialogue-speaker { color: var(--glados-yellow); }
 .dialogue.wheatley .dialogue-speaker { color: var(--wheatley-blue); }
 .dialogue.cave .dialogue-speaker { color: var(--cave-amber); }
-.dialogue.space-core .dialogue-speaker { color: var(--space-core-purple); }
-.dialogue.adventure-core .dialogue-speaker { color: var(--adventure-core-green); }
-.dialogue.fact-core .dialogue-speaker { color: var(--fact-core-blue); }
+.dialogue.space-sphere .dialogue-speaker { color: var(--space-sphere-purple); }
+.dialogue.adventure-sphere .dialogue-speaker { color: var(--adventure-sphere-green); }
+.dialogue.fact-sphere .dialogue-speaker { color: var(--fact-sphere-blue); }
 .dialogue.curiosity-core .dialogue-speaker { color: var(--curiosity-core-pink); }
 .dialogue.anger-core .dialogue-speaker { color: var(--anger-core-red); }
 .dialogue.morality-core .dialogue-speaker { color: var(--morality-core-lime); }
