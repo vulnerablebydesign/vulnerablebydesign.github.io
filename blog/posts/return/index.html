@@ -75,11 +75,13 @@
         <a href="/blog/tags/printer.html" class="tag">printer</a>
         <a href="/blog/tags/privesc.html" class="tag">privesc</a>
         <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+        <a href="/blog/tags/adventure-core.html" class="tag">adventure-core</a>
       </div>
 
       <div class="post-characters">
         <span class="post-meta-label">Guides:</span>
         <span class="character-glados">GlaDOS</span>
+        <span class="character-adventure-core">Adventure Core</span>
       </div>
     </header>
 
@@ -99,6 +101,11 @@
       <h2>Reconnaissance</h2>
 
       <p>The TCP scan came back loud. Thirteen open ports. This wasn't a minimal Linux box with SSH and a web server &mdash; this was a full Windows domain controller announcing its entire identity to anyone who asked.</p>
+
+      <div class="dialogue adventure-core">
+        <div class="dialogue-speaker">Adventure Core</div>
+        <div class="dialogue-text">"Thirteen ports. Thirteen doors into the unknown. Some people would run a vulnerability scanner and call it a day. But not us, sweetheart. We're going in through the one nobody expects &mdash; the printer settings page. Because real adventurers always take the side entrance."</div>
+      </div>
 
       <div class="terminal-log">
 nmap -sC -sV 10.129.95.241
@@ -250,6 +257,11 @@ SeLoadDriverPrivilege Load and unload device drivers   Enabled</div>
       </ol>
 
       <p>Any of these could lead to SYSTEM. But Server Operators is the most straightforward path, and this box was teaching me about service abuse.</p>
+
+      <div class="dialogue adventure-core">
+        <div class="dialogue-speaker">Adventure Core</div>
+        <div class="dialogue-text">"Server Operators. You hear that? That's the sound of the final boss door unlocking. We've got the keys to every service on this machine. All we need to do is pick one, rewrite its destiny, and ride it straight to SYSTEM. This is the part of the movie where the music kicks in."</div>
+      </div>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
