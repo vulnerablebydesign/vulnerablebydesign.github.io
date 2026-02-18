@@ -451,6 +451,21 @@ body::before {
   background: rgba(245, 158, 11, 0.1);
   border-color: rgba(245, 158, 11, 0.3);
 }
+.tag.fact-core {
+  color: var(--fact-core-blue);
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+.tag.curiosity-core {
+  color: var(--curiosity-core-pink);
+  background: rgba(244, 114, 182, 0.1);
+  border-color: rgba(244, 114, 182, 0.3);
+}
+.tag.adventure-core {
+  color: var(--adventure-core-green);
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.3);
+}
 
 /* ============================================
    SINGLE POST LAYOUT
