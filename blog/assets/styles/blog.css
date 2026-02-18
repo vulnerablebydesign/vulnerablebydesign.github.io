@@ -28,6 +28,17 @@
   --glados-yellow: #fbbf24;
   --cave-amber: #f59e0b;
 
+  /* Personality Core colors */
+  --space-core-purple: #A78BFA;
+  --adventure-core-green: #34D399;
+  --fact-core-blue: #60A5FA;
+  --curiosity-core-pink: #F472B6;
+  --anger-core-red: #EF4444;
+  --morality-core-lime: #A3E635;
+  --turret-red: #F87171;
+  --defective-turret-pink: #FCA5A5;
+  --cube-gray: #D1D5DB;
+
   /* Terminal/hacking colors */
   --terminal-green: #22c55e;
   --matrix-green: #33ff33;
@@ -527,6 +538,15 @@ body::before {
 .character-glados { color: var(--glados-yellow); }
 .character-wheatley { color: var(--wheatley-blue); }
 .character-cave { color: var(--cave-amber); }
+.character-space-core { color: var(--space-core-purple); }
+.character-adventure-core { color: var(--adventure-core-green); }
+.character-fact-core { color: var(--fact-core-blue); }
+.character-curiosity-core { color: var(--curiosity-core-pink); }
+.character-anger-core { color: var(--anger-core-red); }
+.character-morality-core { color: var(--morality-core-lime); }
+.character-turret { color: var(--turret-red); }
+.character-defective-turret { color: var(--defective-turret-pink); }
+.character-companion-cube { color: var(--cube-gray); }
 
 /* ============================================
    POST CONTENT
@@ -630,17 +650,18 @@ body::before {
   background: var(--bg-secondary);
 }
 
-.dialogue.glados {
-  border-color: var(--glados-yellow);
-}
-
-.dialogue.wheatley {
-  border-color: var(--wheatley-blue);
-}
-
-.dialogue.cave {
-  border-color: var(--cave-amber);
-}
+.dialogue.glados { border-color: var(--glados-yellow); }
+.dialogue.wheatley { border-color: var(--wheatley-blue); }
+.dialogue.cave { border-color: var(--cave-amber); }
+.dialogue.space-core { border-color: var(--space-core-purple); }
+.dialogue.adventure-core { border-color: var(--adventure-core-green); }
+.dialogue.fact-core { border-color: var(--fact-core-blue); }
+.dialogue.curiosity-core { border-color: var(--curiosity-core-pink); }
+.dialogue.anger-core { border-color: var(--anger-core-red); }
+.dialogue.morality-core { border-color: var(--morality-core-lime); }
+.dialogue.turret { border-color: var(--turret-red); }
+.dialogue.defective-turret { border-color: var(--defective-turret-pink); }
+.dialogue.companion-cube { border-color: var(--cube-gray); font-style: italic; }
 
 .dialogue-speaker {
   font-family: var(--font-pixel);
@@ -652,6 +673,15 @@ body::before {
 .dialogue.glados .dialogue-speaker { color: var(--glados-yellow); }
 .dialogue.wheatley .dialogue-speaker { color: var(--wheatley-blue); }
 .dialogue.cave .dialogue-speaker { color: var(--cave-amber); }
+.dialogue.space-core .dialogue-speaker { color: var(--space-core-purple); }
+.dialogue.adventure-core .dialogue-speaker { color: var(--adventure-core-green); }
+.dialogue.fact-core .dialogue-speaker { color: var(--fact-core-blue); }
+.dialogue.curiosity-core .dialogue-speaker { color: var(--curiosity-core-pink); }
+.dialogue.anger-core .dialogue-speaker { color: var(--anger-core-red); }
+.dialogue.morality-core .dialogue-speaker { color: var(--morality-core-lime); }
+.dialogue.turret .dialogue-speaker { color: var(--turret-red); }
+.dialogue.defective-turret .dialogue-speaker { color: var(--defective-turret-pink); }
+.dialogue.companion-cube .dialogue-speaker { color: var(--cube-gray); }
 
 .dialogue-text {
   color: var(--text-primary);
