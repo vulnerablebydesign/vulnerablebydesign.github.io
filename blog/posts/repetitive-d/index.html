@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A 3D printing server, a path traversal encoded with backslashes, and a password hash cracked in six seconds. Chell traces an attacker's steps from curl reconnaissance through WinRM compromise in this DFIR Sherlock.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Repetitive-D | Hack the Cube</title>
+
+  <meta property="og:title" content="Repetitive-D - Hack the Cube">
+  <meta property="og:description" content="DFIR forensics: tracing a 3D printer server compromise through path traversal, credential theft, and WinRM lateral movement. For science.">
+  <meta property="og:image" content="/blog/posts/repetitive-d/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-18T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Repetitive-D</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 18, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>N/A (Sherlock)</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:28:00</span>
+        </div>
+      </div>
+
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/repetitive-d/images/header-800w.webp 800w,
+                 /blog/posts/repetitive-d/images/header-1200w.webp 1200w,
+                 /blog/posts/repetitive-d/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/repetitive-d/images/header.png"
+          alt="Repetitive-D - DFIR analysis of a compromised 3D printing server"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/sherlock.html" class="tag">sherlock</a>
+        <a href="/blog/tags/dfir.html" class="tag">dfir</a>
+        <a href="/blog/tags/easy.html" class="tag">easy</a>
+        <a href="/blog/tags/path-traversal.html" class="tag">path-traversal</a>
+        <a href="/blog/tags/winrm.html" class="tag">winrm</a>
+        <a href="/blog/tags/pcap.html" class="tag">pcap</a>
+        <a href="/blog/tags/ntlm.html" class="tag">ntlm</a>
+        <a href="/blog/tags/glados.html" class="tag glados">glados</a>
+        <a href="/blog/tags/fact-sphere.html" class="tag fact-sphere">fact-sphere</a>
+        <a href="/blog/tags/curiosity-core.html" class="tag curiosity-core">curiosity-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+        <span class="character-fact-sphere">Fact Sphere</span>
+        <span class="character-curiosity-core">Curiosity Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>A 3D printing server. Not exactly the first thing you think of when someone says "critical infrastructure," but here we were. An alert had fired for a malicious file on a Repetier-Server instance — the kind of machine that quietly hums in the corner of an engineering department, printing prototypes and absolutely not expecting to be the entry point for a network compromise.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A 3D printer. Exposed to the network. Running a web interface. With an admin panel. I'm sure whoever set this up had a very compelling reason not to segment it. Probably something about 'convenience.' The word humans use when they mean 'negligence.'"</div>
+      </div>
+
+      <p>The scenario was straightforward: we believe an attacker has compromised a 3D printing server vital to business operations. We had two evidence files — a network capture (PCAP) and Nginx access logs. Ten questions. Twenty-eight minutes on the clock. Time to reconstruct what happened.</p>
+
+      <h2>Reading the Access Logs</h2>
+
+      <p>I started where any forensic investigation should start: the logs. The Nginx access logs for the printing server told a clean, brutal story. One IP address — <strong>10.255.254.3</strong> — stood out immediately, using a user agent that screamed "I am not a normal user."</p>
+
+      <div class="terminal-log">grep curl /home/c0ur4ge/htb/repetitive-d/repetitive/nginx/access.log
+
+10.255.254.3 [11/May/2023:10:01:38] GET / — 200 (recon)
+10.255.254.3 [11/May/2023:10:01:48] POST path traversal boot.ini — 404
+10.255.254.3 [11/May/2023:10:03:01] POST path traversal eula.txt — 404
+10.255.254.3 [11/May/2023:10:05:28] POST path traversal win.ini — 200 (confirmed traversal works)
+10.255.254.3 [11/May/2023:10:06:41] POST path traversal user.sql — 200 20493 bytes
+10.255.254.3 [11/May/2023:10:10:15] POST path traversal user.sql — 200 20508 bytes (second retrieval)</div>
+
+      <p>The user agent: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">curl/7.88.1</span></span>. Not a browser. Not a legitimate monitoring tool. Just raw curl, hitting the server at 09:01 UTC (the logs show BST, one hour ahead).</p>
+
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"Repetier-Server is a 3D printer management platform with an embedded web interface, typically accessible on port 80 or 3344. The path traversal vulnerability uses URL-encoded backslashes — specifically <code>..%5c</code> — to escape the web root. The %5c character is a backslash in URL encoding. This technique dates back to the IIS Unicode vulnerability of 2001, making it a classic that refuses to stay retired."</div>
+      </div>
+
+      <p>The timeline told a clear story. At 09:01:38, the attacker hit the root page — basic reconnaissance. Ten seconds later, the first exploitation attempt: a path traversal trying to read <strong>boot.ini</strong>. That returned a 404. They tried <strong>eula.txt</strong> next — another 404. But at 09:05:28, <strong>win.ini</strong> came back with a 200 and 103 bytes of content. The traversal worked.</p>
+
+      <p>One minute later, they knew exactly where to go. The attacker pulled <strong>user.sql</strong> — the Repetier-Server user database — weighing in at <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">20480</span></span> bytes.</p>
+
+      <h2>Inside the Database</h2>
+
+      <p>The access logs told me what was taken. The PCAP would tell me what was inside it. I followed the TCP stream containing the user.sql response.</p>
+
+      <div class="terminal-log">tshark -r help.pcap -q -z "follow,tcp,ascii,224"
+
+User table schema: id, login, password, permissions, apikey, uuid, managedBy, name
+Record: Administrator | 3b3f51e91a93447f14249762f07fd384 | bd03a7a4-91b6-4306-a594-832148e2d070</div>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"Ooh! A database! What's inside? Is that a password hash? And an API key? And a username? All in one table? That's like finding the keys, the alarm code, AND the floor plan all in the same envelope! Can we crack it? Can we?"</div>
+      </div>
+
+      <p>There it was. The <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">Administrator</span></span> account, complete with an MD5 password hash (<code>3b3f51e91a93447f14249762f07fd384</code>) and an API key. The attacker had everything they needed to own the Repetier-Server application. But they weren't done.</p>
+
+      <h2>From Application to Operating System</h2>
+
+      <p>Having the Repetier-Server admin credentials is one thing. Getting onto the underlying Windows host is another. The PCAP showed what came next: traffic on ports <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">80, 5985</span></span> — HTTP for the initial exploitation, and port 5985 for what followed.</p>
+
+      <p>Port 5985 is <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">WinRM</span></span> — Windows Remote Management. The attacker used <strong>Evil-WinRM</strong> (identified by the Ruby WinRM Client 2.8.3 user agent in the PCAP) to authenticate with NTLM credentials.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The attacker extracted the application database, obtained the Administrator password hash, and then used it to authenticate to WinRM. A perfectly logical escalation path. One might even call it... elegant. If one were inclined to compliment threat actors. Which I am not."</div>
+      </div>
+
+      <p>I extracted the NTLM authentication exchange from the PCAP — the Type 2 server challenge and Type 3 client response — to reconstruct the NetNTLMv2 hash.</p>
+
+      <div class="terminal-log">python3 # decode NTLM Type 2 (server challenge) and Type 3 (client response)
+
+Server Challenge: f7869996a90a07e3
+NTProofStr: 787c57009328f1dc87aff4484fa98000
+Username: Administrator
+Domain: (empty)
+Hash: Administrator:::f7869996a90a07e3:787c57009328f1dc87aff4484fa98000:0101...</div>
+
+      <p>With the NetNTLMv2 hash extracted, the final step was cracking it.</p>
+
+      <div class="terminal-log">hashcat -m 5600 /tmp/ntlmv2.txt /tmp/rockyou.txt --force
+
+Status: Cracked
+ADMINISTRATOR:::f7869996a90a07e3:...  :HUgo##123
+Time: 6 seconds</div>
+
+      <p>Six seconds. The Administrator password was <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">HUgo##123</span></span>, cracked from the rockyou wordlist in the time it takes to blink. The attacker would have had this password instantly — either cracked offline or potentially reused from the Repetier-Server MD5 hash.</p>
+
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"NetNTLMv2, hashcat mode 5600, uses the server challenge and client response to verify the password offline. The hash format is Username::Domain:ServerChallenge:NTProofStr:BlobData. A six-second crack time against rockyou indicates the password, while containing special characters, was still within a common wordlist. Approximately 80% of cracked passwords in breach datasets appear in the top 10 wordlists."</div>
+      </div>
+
+      <h2>The Complete Timeline</h2>
+
+      <p>Stepping back, the full attack chain snapped into focus. All times UTC (the original logs were in BST, one hour ahead):</p>
+
+      <ul>
+        <li><strong>09:01:38</strong> — Reconnaissance: GET / against printing.repetetive.htb with curl/7.88.1</li>
+        <li><strong>09:01:48</strong> — First exploitation attempt: path traversal for <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">boot.ini</span></span> (404 — failed)</li>
+        <li><strong>09:03:01</strong> — Second attempt: eula.txt (404 — failed)</li>
+        <li><strong>09:05:28</strong> — First successful read: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">win.ini</span></span> (200 — traversal confirmed)</li>
+        <li><strong>09:06:41</strong> — Exfiltration: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">user.sql</span></span> (200, 20480 bytes)</li>
+        <li><strong>09:10:00</strong> — WinRM authentication as Administrator via NTLM</li>
+        <li><strong>09:10:15</strong> — Second user.sql retrieval (confirming access)</li>
+      </ul>
+
+      <p>From first contact to full compromise: under nine minutes. The attacker knew exactly what they were looking for.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Nine minutes. Reconnaissance, exploitation, credential theft, and remote access. All because a 3D printing server had a web interface with a path traversal vulnerability and an Administrator password in a SQLite database. The attacker didn't need to be clever. They just needed the server to be... as it was."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <ul>
+        <li><strong>Path traversal with URL-encoded characters</strong> — The <code>..%5c</code> technique (URL-encoded backslash) is a classic Windows path traversal. Attackers probe with known files like boot.ini, eula.txt, and win.ini to confirm the vulnerability before targeting sensitive data.</li>
+        <li><strong>Repetier-Server stores credentials in a SQLite database</strong> — The user.sql file at <code>ProgramData\Repetier-Server\database\user.sql</code> contains usernames, MD5 password hashes, and API keys. If an attacker can read arbitrary files, this is a high-value target.</li>
+        <li><strong>WinRM (port 5985) enables remote code execution</strong> — With valid credentials, Evil-WinRM provides a full PowerShell session on the target. Network segmentation and strong authentication are critical to prevent lateral movement.</li>
+        <li><strong>NTLM authentication can be extracted from PCAPs</strong> — The Type 2 (server challenge) and Type 3 (client response) messages in NTLM authentication contain enough information to crack the password offline with hashcat.</li>
+        <li><strong>Nginx access logs are forensic gold</strong> — The user agent string, timestamp patterns, and HTTP response codes tell the entire story of an attack when you know what to look for.</li>
+        <li><strong>IoT and specialty devices need segmentation</strong> — A 3D printer doesn't need to be on the same network segment as domain controllers. Isolating specialty hardware limits blast radius.</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Ten questions answered in twenty-eight minutes. A complete forensic reconstruction from two evidence files. The data suggests you're developing a reasonable understanding of incident response methodology. Don't let it go to your head. The next test chamber will be... more demanding."</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>Attacker performed reconnaissance against <strong>printing.repetetive.htb</strong> using <strong>curl/7.88.1</strong></li>
+        <li>Exploited <strong>path traversal vulnerability</strong> (..%5c URL-encoded backslash) in the <strong>Repetier-Server</strong> web interface</li>
+        <li>Probed for <strong>boot.ini</strong> and <strong>eula.txt</strong> (failed), then confirmed traversal with <strong>win.ini</strong></li>
+        <li>Exfiltrated <strong>user.sql</strong> containing <strong>Administrator</strong> credentials and API key from <strong>ProgramData\Repetier-Server\database\</strong></li>
+        <li>Used cracked Administrator password (<strong>HUgo##123</strong>) to authenticate via <strong>WinRM</strong> (port 5985) with <strong>Evil-WinRM</strong></li>
+        <li>Gained remote code execution on the printing server via <strong>NTLM-authenticated PowerShell session</strong></li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/meerkat/" class="post-nav-link prev">Meerkat</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
