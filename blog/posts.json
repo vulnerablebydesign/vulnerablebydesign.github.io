@@ -1,0 +1,86 @@
+[
+  {
+    "slug": "repetitive-d",
+    "title": "Repetitive-D",
+    "date": "2026-02-18",
+    "dateFormatted": "February 18, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "N/A (Sherlock)",
+    "excerpt": "A 3D printing server, a path traversal encoded with backslashes, and a password hash cracked in six seconds. Chell traces an attacker's steps from curl reconnaissance through WinRM compromise in this DFIR Sherlock.",
+    "tags": ["sherlock", "dfir", "easy", "path-traversal", "winrm", "pcap", "ntlm", "glados", "fact-sphere", "curiosity-core"],
+    "cardTags": ["sherlock", "dfir", "path-traversal", "glados", "fact-sphere", "curiosity-core"]
+  },
+  {
+    "slug": "meerkat",
+    "title": "Meerkat",
+    "date": "2026-02-18",
+    "dateFormatted": "February 18, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Linux",
+    "excerpt": "263 Suricata alerts. A BonitaSoft server. Three attacker IPs rotating through credential stuffing, CVE-2022-25237, and SSH key persistence. Chell reconstructs the full kill chain from a PCAP and a JSON file.",
+    "tags": ["sherlock", "linux", "easy", "dfir", "credential-stuffing", "cve", "rce", "ssh", "wireshark", "glados", "fact-sphere"],
+    "cardTags": ["sherlock", "dfir", "easy", "cve", "glados", "fact-sphere"]
+  },
+  {
+    "slug": "validation",
+    "title": "Validation",
+    "date": "2026-02-17",
+    "dateFormatted": "February 17, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Linux",
+    "excerpt": "The INSERT was parameterized. The SELECT wasn't. A dropdown menu that nobody thought to intercept, a database user with every privilege imaginable, and a password reused from PHP config all the way to root.",
+    "tags": ["machine", "linux", "easy", "sqli", "php", "web", "rce", "nmap", "glados", "wheatley"],
+    "cardTags": ["machine", "linux", "easy", "sqli", "php", "glados", "wheatley"]
+  },
+  {
+    "slug": "return",
+    "title": "Return",
+    "date": "2026-02-15",
+    "dateFormatted": "February 15, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Windows",
+    "excerpt": "Thirteen open ports on a domain controller, and the way in was a printer settings page. Chell's first Windows box turns LDAP credential theft into Server Operators privilege escalation.",
+    "tags": ["machine", "windows", "easy", "privesc", "ldap", "active-directory", "winrm", "printer", "glados", "adventure-sphere"],
+    "cardTags": ["machine", "windows", "easy", "ldap", "active-directory", "glados", "adventure-sphere"]
+  },
+  {
+    "slug": "antique",
+    "title": "Antique",
+    "date": "2026-02-13",
+    "dateFormatted": "February 13, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Linux",
+    "excerpt": "The SNMP walk came back with a hex-encoded password sitting in plain sight. From a forgotten printer on Telnet to root through a 14-year-old CUPS vulnerability.",
+    "tags": ["machine", "linux", "easy", "privesc", "snmp", "cups", "printer", "telnet", "glados", "fact-sphere"],
+    "cardTags": ["machine", "linux", "easy", "snmp", "cups", "glados", "fact-sphere"]
+  },
+  {
+    "slug": "irked",
+    "title": "Irked",
+    "date": "2026-01-12",
+    "dateFormatted": "January 12, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Linux",
+    "excerpt": "A chat server from 1988 shipped with a backdoor nobody noticed for seven months. Steganography, SUID binaries, and a chain of simple mistakes lead to root.",
+    "tags": ["machine", "linux", "easy", "irc", "steganography", "suid", "privesc", "nmap", "glados", "curiosity-core"],
+    "cardTags": ["machine", "linux", "easy", "suid", "steganography", "glados", "curiosity-core"]
+  },
+  {
+    "slug": "bike",
+    "title": "Bike",
+    "date": "2026-01-09",
+    "dateFormatted": "January 9, 2026",
+    "difficulty": "Very Easy",
+    "difficultyClass": "very-easy",
+    "os": "Linux",
+    "excerpt": "A Node.js application with a Handlebars template engine. What could go wrong? Everything, apparently. GlaDOS guides Chell through SSTI exploitation and sandbox escape.",
+    "tags": ["machine", "linux", "very-easy", "ssti", "web", "rce", "nmap", "glados"],
+    "cardTags": ["machine", "linux", "very-easy", "ssti", "rce", "glados"]
+  }
+]

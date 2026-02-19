@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hack the Cube posts by tag">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Tag | Hack the Cube</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/blog/assets/images/favicon.png">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <!-- Header -->
+    <header class="blog-header" style="padding: 2rem 0;">
+      <a href="/blog/">
+        <img
+          src="/blog/assets/images/hack-the-cube-header.png"
+          alt="Hack the Cube"
+          class="header-image"
+          style="max-height: 150px; width: auto;"
+        >
+      </a>
+    </header>
+
+    <!-- Tag Title -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1 id="tag-title" style="font-family: var(--font-pixel); font-size: 1.2rem; color: var(--terminal-green);">
+        Loading...
+      </h1>
+      <p id="tag-count" style="color: var(--text-secondary);"></p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="blog-nav" aria-label="Blog navigation">
+      <a href="/blog/" class="nav-link">All Posts</a>
+      <a href="/blog/tags/" class="nav-link active">Tags</a>
+      <a href="/" class="nav-link">Main Terminal</a>
+    </nav>
+
+    <!-- Posts Grid -->
+    <main>
+      <section id="posts-grid" class="posts-grid" aria-label="Tagged posts">
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/tags/" class="footer-link">View All Tags</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    const CHARACTER_TAGS = new Set([
+      'glados', 'wheatley', 'fact-sphere', 'curiosity-core', 'adventure-sphere'
+    ]);
+
+    function getTagClass(tag) {
+      return CHARACTER_TAGS.has(tag) ? `tag ${tag}` : 'tag';
+    }
+
+    function renderPostCard(post) {
+      const tagsHtml = post.tags
+        .map(t => `<a href="/blog/tags/tag.html?tag=${encodeURIComponent(t)}" class="${getTagClass(t)}">${t}</a>`)
+        .join('\n              ');
+
+      return `
+        <article class="post-card">
+          <a href="/blog/posts/${post.slug}/" class="post-card-image-link" aria-label="${post.title}">
+            <picture>
+              <source type="image/webp" srcset="/blog/posts/${post.slug}/images/header-800w.webp">
+              <img src="/blog/posts/${post.slug}/images/header.png" alt="${post.title}" class="post-card-image" loading="lazy">
+            </picture>
+          </a>
+          <div class="post-card-content">
+            <a href="/blog/posts/${post.slug}/" class="post-card-link">Enter Test Chamber</a>
+            <div class="post-card-meta">
+              <span class="post-date">${post.dateFormatted}</span>
+              <span class="post-difficulty ${post.difficultyClass}">${post.difficulty}</span>
+              <span class="post-os">${post.os}</span>
+            </div>
+            <p class="post-card-excerpt">${post.excerpt}</p>
+            <div class="tags-container">
+              ${tagsHtml}
+            </div>
+          </div>
+        </article>`;
+    }
+
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const tag = params.get('tag');
+
+      if (!tag) {
+        window.location.href = '/blog/tags/';
+        return;
+      }
+
+      // Update page title and meta
+      document.title = `#${tag} | Hack the Cube`;
+      document.querySelector('meta[name="description"]')?.setAttribute('content',
+        `Hack the Cube posts tagged with #${tag}`);
+      const titleEl = document.getElementById('tag-title');
+      titleEl.textContent = `#${tag}`;
+
+      // Apply character tag color to title if applicable
+      if (CHARACTER_TAGS.has(tag)) {
+        titleEl.style.color = `var(--${tag === 'glados' ? 'glados-yellow' :
+          tag === 'wheatley' ? 'wheatley-blue' :
+          tag === 'fact-sphere' ? 'fact-sphere-blue' :
+          tag === 'curiosity-core' ? 'curiosity-core-pink' :
+          'adventure-sphere-green'})`;
+      }
+
+      try {
+        const response = await fetch('/blog/posts.json');
+        const posts = await response.json();
+
+        const filtered = posts.filter(p => p.tags.includes(tag));
+        const grid = document.getElementById('posts-grid');
+        const countEl = document.getElementById('tag-count');
+
+        if (filtered.length === 0) {
+          countEl.textContent = '0 test chambers';
+          grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No test chambers found for this tag.</p>';
+          return;
+        }
+
+        countEl.textContent = `${filtered.length} test chamber${filtered.length !== 1 ? 's' : ''}`;
+        grid.setAttribute('aria-label', `Posts tagged ${tag}`);
+        grid.innerHTML = filtered.map(renderPostCard).join('');
+      } catch (err) {
+        document.getElementById('posts-grid').innerHTML =
+          '<p style="text-align: center; color: var(--error-red); padding: 2rem;">Failed to load posts.</p>';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
