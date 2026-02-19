@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Repetier-Server 1.4.10 stores its admin credentials in a SQLite database two directory traversals away from the web root. Twenty minutes, one CVE, zero shells needed.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Repetitive | Hack the Cube</title>
+
+  <meta property="og:title" content="Repetitive - Hack the Cube">
+  <meta property="og:description" content="Path traversal through a 3D printer web interface to read credentials and capture the flag. For science.">
+  <meta property="og:image" content="/blog/posts/repetitive/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-18T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Repetitive</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 18, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Windows</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:20:00</span>
+        </div>
+      </div>
+
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/repetitive/images/header-800w.webp 800w,
+                 /blog/posts/repetitive/images/header-1200w.webp 1200w,
+                 /blog/posts/repetitive/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/repetitive/images/header.png"
+          alt="Repetitive - Path traversal through a 3D printer server"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=machine" class="tag">machine</a>
+        <a href="/blog/tags/tag.html?tag=windows" class="tag">windows</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=path-traversal" class="tag">path-traversal</a>
+        <a href="/blog/tags/tag.html?tag=cve" class="tag">cve</a>
+        <a href="/blog/tags/tag.html?tag=3d-printer" class="tag">3d-printer</a>
+        <a href="/blog/tags/tag.html?tag=nmap" class="tag">nmap</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=wheatley" class="tag wheatley">wheatley</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+        <span class="character-wheatley">Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>Repetier-Server 1.4.10 stores its admin credentials in a SQLite database two directory traversals away from the web root. I know this because I read them. From my browser. Without logging in.</p>
+
+      <p>This was a guided box with seven questions, and the whole thing played out like a pop quiz on a single CVE. No shells, no reverse connections, no privilege escalation chain. Just one path traversal vulnerability, applied twice: once for credentials, once for the flag. The kind of box that teaches you how much damage a single unchecked file path can do.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A 3D printer management interface. Exposed on the network. With a directory traversal vulnerability that lets you read any file on the system. I suppose the only surprising thing is that it took until 2023 for someone to file the CVE."</div>
+      </div>
+
+      <h2>Reconnaissance</h2>
+
+      <p>The box had one port. One service. One question to start with: what runs on port 3344?</p>
+
+      <div class="terminal-log">nmap -sC -sV -p 3344 10.129.229.44
+
+PORT     STATE SERVICE VERSION
+3344/tcp open  rtsp
+Server: 1.4
+Content-Type: text/html; charset=utf-8
+&lt;meta name="description" content="Repetier-Server Free for 3d printer"&gt;
+ng-app="server"</div>
+
+      <p>Repetier-Server. A web-based 3D printer management application built on Node.js with an AngularJS frontend. The nmap output showed the server version header as 1.4, but the guided questions wanted the full version number. I pulled the landing page directly.</p>
+
+      <div class="terminal-log">curl -s http://10.129.229.44:3344/
+
+&lt;title&gt;... Repetier-Server Free 1.4.10&lt;/title&gt;
+&lt;link rel="stylesheet" href="../css/combined.css?v=1.4.10"&gt;
+About Repetier-Server Free 1.4.10</div>
+
+      <p>Version <strong>1.4.10</strong>. The HTML title, the CSS cache-busting parameter, the about text -- all three confirmed it. This was the exact version affected by CVE-2023-31059.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Right, so, a 3D printer. On the network. That's fine, yeah? I mean, what's the worst that could happen with a printer? It prints something rude? ...Oh. Oh no. It's got a web interface with file access. That's -- that's not great, is it."</div>
+      </div>
+
+      <h2>The Vulnerability</h2>
+
+      <p>CVE-2023-31059 is a directory traversal vulnerability in Repetier-Server versions up to and including 1.4.10. The <code>/views</code> endpoint doesn't properly sanitize URL-encoded backslashes (<code>..%5c</code>), allowing an attacker to escape the web root and read arbitrary files on the system.</p>
+
+      <p>The technique is ancient -- URL-encoded path traversal dates back to the IIS Unicode bug of 2001. But the implementation here is specific to Windows paths. The <code>%5c</code> is a URL-encoded backslash (<code>\</code>), which on Windows serves as the directory separator. The web server decodes it after the path validation check, and suddenly you're reading files from anywhere on the disk.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The password hashing scheme is equally inspiring. Repetier-Server computes MD5 of the concatenation of the login name and password. Not salted MD5. Not SHA-256. Not bcrypt. MD5. In 2023. One has to admire the commitment to tradition."</div>
+      </div>
+
+      <h2>Reading the Credentials Database</h2>
+
+      <p>With the CVE identified, I knew exactly where to aim. Repetier-Server stores its user database in a SQLite file at <code>ProgramData\Repetier-Server\database\user.sql</code>. The path traversal through the <code>/views</code> endpoint with enough <code>..%5c</code> sequences would reach it.</p>
+
+      <div class="terminal-log">curl -i -s -k -X GET -H 'Connection: close' "http://10.129.229.44:3344/views..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5cProgramData%5cRepetier-Server%5cdatabase%5cuser.sql%20/base/connectionLost.php"
+
+HTTP/1.1 200 OK
+SQLite format 3
+Tables: user, user_sessions, user_settings
+User record: login=Administrator, password=3b3f51e91a93447f14249762f07fd384, permissions=255, apikey=bd03a7a4-91b6-4306-a594-832148e2d070</div>
+
+      <p>There it was. The entire user database, served up over HTTP. The Administrator account with an MD5 password hash of <code>3b3f51e91a93447f14249762f07fd384</code>, full permissions (255), and an API key: <code>bd03a7a4-91b6-4306-a594-832148e2d070</code>.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Hang on -- you just... asked for the database file and it gave it to you? No login? No authentication? Just... 'here's the admin password, have a lovely day'? That can't be right. That's like leaving the vault door open and putting a sign on it that says 'please don't look.'"</div>
+      </div>
+
+      <p>The JavaScript analysis of the application revealed the hashing scheme: <code>MD5(login + password)</code>. So the hash <code>3b3f51e91a93447f14249762f07fd384</code> is the MD5 of "Administrator" concatenated with the plaintext password. Not that I needed to crack it for this box -- the path traversal gave me everything I needed without ever logging in.</p>
+
+      <h2>Capturing the Flag</h2>
+
+      <p>No shell required. No privilege escalation. No lateral movement. The same path traversal that read the credentials database could read any file on the system -- including the flag on the Administrator's desktop.</p>
+
+      <div class="terminal-log">curl -s "http://10.129.229.44:3344/views..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5cUsers%5cAdministrator%5cDesktop%5cflag.txt%20/base/connectionLost.php"
+
+e15312ffbbbba4f45f3ae10f421bc6c5</div>
+
+      <p>Root flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">e15312ffbbbba4f45f3ae10f421bc6c5</span></span></p>
+
+      <p>The file was <code>flag.txt</code>, not the usual <code>root.txt</code>. One flag, one vulnerability, no authentication required. The entire attack surface was a single HTTP GET request with enough backslashes.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"From reconnaissance to flag capture in four commands. Nmap, curl, curl, curl. I believe the technical term for this level of security is 'decorative.' The web interface existed not to protect the system, but to provide the illusion of protection. Like a screen door on a submarine."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <ul>
+        <li><strong>URL-encoded path traversal on Windows</strong> -- The <code>%5c</code> character (backslash) is the key to Windows-specific directory traversal. Web servers that decode URL encoding after path validation are vulnerable to this classic technique. Always test both forward slashes and URL-encoded backslashes when probing for traversal on Windows targets.</li>
+        <li><strong>CVE-2023-31059 in Repetier-Server</strong> -- Versions up to 1.4.10 allow unauthenticated file reads through the <code>/views</code> endpoint. The fix requires upgrading past 1.4.10. If you run a 3D printer server, check your version.</li>
+        <li><strong>SQLite credential databases are high-value targets</strong> -- When an application stores its user database in a predictable location (like <code>ProgramData\Repetier-Server\database\user.sql</code>), any file-read vulnerability becomes a credential-theft vulnerability. The credentials included not just the password hash but the API key -- full programmatic access.</li>
+        <li><strong>MD5(login + password) is not security</strong> -- Concatenating the username and password before hashing without a random salt means the same password for the same username always produces the same hash. Rainbow tables make this trivial to crack.</li>
+        <li><strong>Not every box requires a shell</strong> -- Sometimes the vulnerability gives you enough access to read what you need directly. Path traversal to arbitrary file read can be as devastating as remote code execution when the flag (or the sensitive data) is just a file on disk.</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Twenty minutes. Four commands. One CVE. The box was called Repetitive, and the lesson certainly was: the same path traversal technique, applied to different file paths, yields different secrets. Repetitive, perhaps. But effective. Your performance was... adequate. The data has been recorded. For science."</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li><strong>Nmap scan</strong> revealed <strong>Repetier-Server 1.4.10</strong> on port 3344</li>
+        <li>Identified <strong>CVE-2023-31059</strong> path traversal via the <strong>/views</strong> endpoint with URL-encoded backslashes (<strong>..%5c</strong>)</li>
+        <li>Read the credentials database (<strong>user.sql</strong>) containing <strong>Administrator</strong> MD5 hash and API key</li>
+        <li>JavaScript analysis revealed the <strong>MD5(login + password)</strong> hashing scheme</li>
+        <li>Used the same path traversal to read the flag from <strong>Administrator\Desktop\flag.txt</strong></li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/repetitive-d/" class="post-nav-link prev">Repetitive-D</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

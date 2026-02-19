@@ -1,5 +1,17 @@
 [
   {
+    "slug": "repetitive",
+    "title": "Repetitive",
+    "date": "2026-02-18",
+    "dateFormatted": "February 18, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Windows",
+    "excerpt": "Repetier-Server 1.4.10 stores its admin credentials in a SQLite database two directory traversals away from the web root. Twenty minutes, one CVE, zero shells needed.",
+    "tags": ["machine", "windows", "easy", "path-traversal", "cve", "3d-printer", "nmap", "glados", "wheatley"],
+    "cardTags": ["machine", "windows", "easy", "path-traversal", "cve", "glados", "wheatley"]
+  },
+  {
     "slug": "repetitive-d",
     "title": "Repetitive-D",
     "date": "2026-02-18",
