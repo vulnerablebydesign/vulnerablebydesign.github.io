@@ -215,7 +215,7 @@ Jan 19, 2023 09:39:18 CST  138.199.59.221  /bonita/API/extension/rce?p=0&c=1&cmd
         <li><code>bash bx5gcr0et8</code> &mdash; Executed it</li>
       </ol>
 
-      <p>Two IPs sharing the same exploit infrastructure suggests either the same attacker rotating through VPN exit nodes, or a team handing off after the initial proof of concept. Either way, the second IP did the damage.</p>
+      <p>Two IPs sharing the same exploit infrastructure points to deliberate operational separation &mdash; probe with one system, exploit with another, maintain persistent access from a third. It's a common attacker pattern: don't burn your offensive infrastructure by using the same IP for every phase. Could also be VPN node rotation or a team handoff, but the clean phase separation suggests intent, not convenience. Either way, the second IP did the damage.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
