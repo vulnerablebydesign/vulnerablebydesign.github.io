@@ -63,7 +63,7 @@
 
     const CATEGORIES = [
       { name: 'CHARACTERS', tags: ['glados', 'wheatley', 'fact-sphere', 'curiosity-core', 'adventure-sphere'] },
-      { name: 'TYPE', tags: ['machine', 'sherlock'] },
+      { name: 'TYPE', tags: ['machine', 'sherlock', 'purple'] },
       { name: 'OPERATING SYSTEMS', tags: ['linux', 'windows'] },
       { name: 'DIFFICULTY', tags: ['very-easy', 'easy', 'medium', 'hard', 'insane'] },
       { name: 'TECHNIQUES', tags: ['rce', 'ssti', 'privesc', 'suid', 'reverse-shell', 'steganography', 'irc', 'ssh', 'web', 'sqli', 'php', 'ldap', 'winrm', 'active-directory', 'credential-stuffing', 'cve', 'dfir', 'path-traversal', 'ntlm'] },
@@ -71,8 +71,10 @@
       { name: 'SERVICES', tags: ['printer', '3d-printer', 'telnet'] }
     ];
 
+    const STYLED_TAGS = new Set([...CHARACTER_TAGS, 'purple']);
+
     function getTagClass(tag) {
-      return CHARACTER_TAGS.has(tag) ? `tag ${tag}` : 'tag';
+      return STYLED_TAGS.has(tag) ? `tag ${tag}` : 'tag';
     }
 
     async function init() {

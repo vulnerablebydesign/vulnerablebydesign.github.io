@@ -466,6 +466,11 @@ body::before {
   background: rgba(52, 211, 153, 0.1);
   border-color: rgba(52, 211, 153, 0.3);
 }
+.tag.purple {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.1);
+  border-color: rgba(192, 132, 252, 0.3);
+}
 
 /* ============================================
    SINGLE POST LAYOUT

@@ -8,8 +8,8 @@
     "difficultyClass": "easy",
     "os": "Windows",
     "excerpt": "Repetier-Server 1.4.10 stores its admin credentials in a SQLite database two directory traversals away from the web root. Twenty minutes, one CVE, zero shells needed.",
-    "tags": ["machine", "windows", "easy", "path-traversal", "cve", "3d-printer", "nmap", "glados", "wheatley"],
-    "cardTags": ["machine", "windows", "easy", "path-traversal", "cve", "glados", "wheatley"]
+    "tags": ["machine", "purple", "windows", "easy", "path-traversal", "cve", "3d-printer", "nmap", "glados", "wheatley"],
+    "cardTags": ["machine", "purple", "windows", "path-traversal", "cve", "glados", "wheatley"]
   },
   {
     "slug": "repetitive-d",
@@ -20,8 +20,8 @@
     "difficultyClass": "easy",
     "os": "N/A (Sherlock)",
     "excerpt": "A 3D printing server, a path traversal encoded with backslashes, and a password hash cracked in six seconds. Chell traces an attacker's steps from curl reconnaissance through WinRM compromise in this DFIR Sherlock.",
-    "tags": ["sherlock", "dfir", "easy", "path-traversal", "winrm", "pcap", "ntlm", "glados", "fact-sphere", "curiosity-core"],
-    "cardTags": ["sherlock", "dfir", "path-traversal", "glados", "fact-sphere", "curiosity-core"]
+    "tags": ["sherlock", "purple", "dfir", "easy", "path-traversal", "winrm", "pcap", "ntlm", "glados", "fact-sphere", "curiosity-core"],
+    "cardTags": ["sherlock", "purple", "dfir", "path-traversal", "glados", "fact-sphere", "curiosity-core"]
   },
   {
     "slug": "meerkat",
