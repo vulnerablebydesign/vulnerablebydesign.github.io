@@ -640,6 +640,8 @@ body::before {
   font-family: var(--font-terminal);
   font-size: 0.95rem;
   color: var(--matrix-green);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
   box-shadow:
     0 0 20px rgba(51, 255, 51, 0.2),
     inset 0 0 40px rgba(0, 0, 0, 0.8);
