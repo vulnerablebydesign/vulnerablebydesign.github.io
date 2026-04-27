@@ -1,5 +1,17 @@
 [
   {
+    "slug": "unified",
+    "title": "Unified",
+    "date": "2026-04-27",
+    "dateFormatted": "April 27, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "Linux",
+    "excerpt": "Log4Shell turned a login form into a reverse shell. A UniFi controller running version 6.4.54, a JNDI callback that shouldn't have worked, and root credentials stored in MongoDB site settings.",
+    "tags": ["machine", "linux", "easy", "log4shell", "cve", "rce", "mongodb", "jndi", "metasploit", "nmap", "glados", "anger-core", "fact-sphere"],
+    "cardTags": ["machine", "linux", "log4shell", "cve", "rce", "glados", "anger-core"]
+  },
+  {
     "slug": "repetitive",
     "title": "Repetitive",
     "date": "2026-02-18",
