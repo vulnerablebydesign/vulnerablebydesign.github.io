@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DOM clobbering against a sanitized HTML preview to materialize window.vaultConfig.finalKey from named globals — the engraving format leaks the phrase. snack_con S2R1 final web challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Buffet Counter | Hack the Cube</title>
+
+  <meta property="og:title" content="Buffet Counter - Hack the Cube">
+  <meta property="og:description" content="Sanitizer keeps form/input — named-element clobbering smuggles globals past it.">
+  <meta property="og:image" content="/blog/posts/web-buffet-counter/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Buffet Counter</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty hard">Hard</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>WEB</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:03:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/web-buffet-counter/images/header-800w.webp 800w,
+                 /blog/posts/web-buffet-counter/images/header-1200w.webp 1200w,
+                 /blog/posts/web-buffet-counter/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/web-buffet-counter/images/header.png"
+          alt="Buffet Counter - Cafeteria line with glowing vaultConfig tray and finalKey card, sanitizer checklist, Space Sphere zooming around"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=hard" class="tag">hard</a>
+        <a href="/blog/tags/tag.html?tag=web" class="tag">web</a>
+        <a href="/blog/tags/tag.html?tag=dom-clobbering" class="tag">dom-clobbering</a>
+        <a href="/blog/tags/tag.html?tag=html-sanitizer" class="tag">html-sanitizer</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=space-sphere" class="tag space-sphere">space-sphere</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-space-sphere">Space Sphere</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Final Door</h2>
+
+      <p>The brief: <em>"Final door at the Back Counter. The cashier reads <code>window.vaultConfig.finalKey</code> off the buffet line. That named tray doesn't exist yet — but the repair-note preview renders your HTML straight into the live DOM."</em></p>
+
+      <p>Six stages, and the boss-level bug class is <strong>DOM clobbering</strong> &mdash; turning HTML elements into globals via their <code>id</code> and <code>name</code> attributes. Old-school browser quirk; still works in 2026; still catches developers who think "we sanitized scripts" is enough.</p>
+
+      <div class="dialogue space-sphere">
+        <div class="dialogue-speaker">Space Sphere</div>
+        <div class="dialogue-text">"WE ESCAPED THE SANITIZER! INTO THE GLOBAL NAMESPACE! THE GLOBAL NAMESPACE IS SPACE! WE CAN'T STAY HERE FOREVER, WE'RE FREE-FLOATING, IT'S BEAUTIFUL, IT'S TERRIBLE, I'M IN <strong>SPAAAAACE</strong>!"</div>
+      </div>
+
+      <h2>The Sanitizer In Code</h2>
+
+      <p>Final handler in the cached <code>challenge-logic.js</code>:</p>
+
+      <div class="terminal-log">function sanitize(html) {
+    const tmpl = document.createElement('template');
+    tmpl.innerHTML = html;
+    const walk = (node) =&gt; {
+        for (const c of Array.from(node.childNodes)) {
+            if (c.nodeType !== 1) continue;
+            const tag = c.tagName.toLowerCase();
+            if (['script','style','iframe','object','embed'].includes(tag)) {
+                c.remove();
+                continue;
+            }
+            for (const attr of Array.from(c.attributes)) {
+                const n = attr.name.toLowerCase();
+                if (n.startsWith('on') || n === 'style') c.removeAttribute(attr.name);
+                if ((n === 'href' || n === 'src' || n === 'action') && /^\s*(javascript|data):/i.test(attr.value))
+                    c.removeAttribute(attr.name);
+            }
+            walk(c);
+        }
+    };
+    walk(tmpl.content);
+    return tmpl.innerHTML;
+}
+
+document.getElementById('clobber-verify-btn').addEventListener('click', async () =&gt; {
+    const vc = window.vaultConfig;
+    if (!vc) { setStatus('clobber', 'err', '...'); return; }
+    const candidate = (vc.finalKey &amp;&amp; (vc.finalKey.value ?? vc.finalKey)) ||
+        (typeof vc.getAttribute === 'function' ? vc.getAttribute('finalKey') : null);
+    if (!candidate || typeof candidate !== 'string') return;
+    await handleUnlock('clobber', 'buffet_counter', candidate);
+});</div>
+
+      <p>The sanitizer correctly strips <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;iframe&gt;</code>, <code>&lt;object&gt;</code>, <code>&lt;embed&gt;</code>, all <code>on*</code> handlers, all <code>style</code> attrs, and <code>javascript:/data:</code> URI schemes. What it does <em>not</em> strip: <code>id</code> and <code>name</code> attributes on regular HTML tags &mdash; which means any tag with <code>id="vaultConfig"</code> automatically becomes <code>window.vaultConfig</code> in HTML5 browsers (named-item access). And any <code>name="finalKey"</code> on a child becomes a <em>property</em> of that named element.</p>
+
+      <h2>The Engraving Format Leak</h2>
+
+      <p>Same pattern as stage 5: the keyCandidate value isn't displayed, but the <em>format</em> is right there in the inspector card:</p>
+
+      <div class="terminal-log">Engraving format:    S&lt;season&gt;-&lt;PALETTE&gt;-CROWN-&lt;YEAR&gt; · current season theme</div>
+
+      <p>"Current season theme" is "Neon Queso" &mdash; cross-referenced from <code>LOG_EVENTS</code>'s 2026-01-14 entry: <em>"Neon Queso palette frozen"</em>. Plug S2 + Neon Queso + 2026:</p>
+
+      <div class="terminal-log">S2-NEON-QUESO-CROWN-2026</div>
+
+      <h2>The Two Solutions</h2>
+
+      <p><strong>Intended (DOM clobbering):</strong> paste HTML into the repair-note textarea that creates two named elements:</p>
+
+      <div class="terminal-log">&lt;form id="vaultConfig"&gt;
+  &lt;input id="finalKey" name="finalKey" value="S2-NEON-QUESO-CROWN-2026"&gt;
+&lt;/form&gt;</div>
+
+      <p>The sanitizer keeps both tags (form/input are structural, not script-like). After the preview mounts, <code>window.vaultConfig</code> resolves to the form element, <code>vaultConfig.finalKey</code> resolves to the input child (named-item access on a form), and <code>vaultConfig.finalKey.value</code> reads "S2-NEON-QUESO-CROWN-2026" — exactly what the verify button checks. Click <em>CASH OUT</em>.</p>
+
+      <p><strong>Shortcut:</strong> the server only sees the derived string. POST it directly:</p>
+
+      <div class="terminal-log">$ curl -s -X POST -H "Content-Type: application/json" \
+    -H "X-Session-Id: $SID" \
+    -H "Cookie: ctf_session=$SID" \
+    -d '{"door":"buffet_counter","keyCandidate":"S2-NEON-QUESO-CROWN-2026"}' \
+    https://snackspacecon.com/api/s2/web-hex/unlock
+{"ok": true, "flag": <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">"CTF{d0m_cr0wn_w0rn_s1d3w4ys}"</span></span>}</div>
+
+      <p>"DOM crown worn sideways." The bug class anthropomorphized — DOM globals worn at an angle they weren't designed for.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The sanitizer worked perfectly. It removed every script tag, every event handler, every javascript: scheme. It did not consider that <code>&lt;form id='vaultConfig'&gt;</code> would do <em>exactly what HTML5 named-item access has done since 2010.</em> The author of this challenge does not blame the developer of this sanitizer. It is hard to remember every twenty-year-old browser quirk while coding at midnight on a deadline. But the test subjects must, regrettably, remember <em>all</em> of them."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p><strong>HTML5 named-item access is a legacy global namespace.</strong> Any <code>&lt;a id="X"&gt;</code> creates <code>window.X</code>. Any <code>&lt;form id="Y"&gt;&lt;input name="Z"&gt;&lt;/form&gt;</code> creates <code>window.Y.Z</code>. Sanitizers that focus on script execution but allow <code>id</code>/<code>name</code> attributes are a <em>structural</em> miss; the bypass requires zero JavaScript. <code>DOMPurify</code>'s <code>SANITIZE_NAMED_PROPS</code> option exists exactly for this. Vanilla allow-listed sanitizers usually don't.</p>
+
+      <p><strong>Form elements are the cleanest clobber.</strong> <code>&lt;form&gt;</code> exposes its named children as direct properties &mdash; so <code>vaultConfig.finalKey.value</code> works in one nesting level without needing <code>document.getElementsByName</code> tricks. <code>&lt;input&gt;</code> is the cleanest carrier because its <code>value</code> attribute is a string and lots of code reads <code>.value ?? ...</code> on whatever it dereferences. Match the carrier to the dereferencer.</p>
+
+      <p><strong>Cross-reference the metadata.</strong> "Current season theme" wasn't named on the inspector card. It came from a single line in <code>LOG_EVENTS</code> dated 2026-01-14. CTF authors love to scatter the breadcrumbs across multiple slots so each puzzle requires <em>using</em> the others &mdash; the Web track was a pyramid where intel from earlier stages kept paying off.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{d0m_cr0wn_w0rn_s1d3w4ys}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Read stage-6 inspector card &rarr; "Engraving format: S&lt;season&gt;-&lt;PALETTE&gt;-CROWN-&lt;YEAR&gt;"</li>
+          <li>Cross-reference <code>LOG_EVENTS</code> &rarr; "Neon Queso palette frozen" &rarr; PALETTE = NEON-QUESO</li>
+          <li>Construct phrase: <code>S2-NEON-QUESO-CROWN-2026</code></li>
+          <li>Skip the DOM clobber ceremony: POST keyCandidate directly &rarr; flag</li>
+          <li>(Intended path, for completeness: paste <code>&lt;form id="vaultConfig"&gt;&lt;input name="finalKey" value="..."&gt;&lt;/form&gt;</code> into repair-note textarea, click CASH OUT)</li>
+        </ol>
+      </aside>
+
+      <h2>Track Complete</h2>
+
+      <p>Six doors, 1,600 points, six bug classes covering: comment-leaked credentials → client-side storage secrets → MAC scope failures → client-side redaction → prototype pollution → DOM clobbering. The Web track tells a fairly complete <em>"why client-side trust is wrong"</em> story; the boss is the only one that requires actually executing HTML against a sanitizer, and even that has a one-curl shortcut.</p>
+
+      <p>Roll credits.</p>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/web-sourdough-starter/" class="post-nav-link prev">Sourdough Starter</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

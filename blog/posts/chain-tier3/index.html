@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mint an NFT with a recovered passphrase, prove on-chain ownership, and claim the final flag. The operational finale of a three-stage blockchain CTF.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>CHAIN // Tier 3 &middot; Prove Ownership | Hack the Cube</title>
+
+  <meta property="og:title" content="CHAIN // Tier 3 · Prove Ownership - Hack the Cube">
+  <meta property="og:description" content="The vault hands out receipts to anyone who proves they know the way in.">
+  <meta property="og:image" content="/blog/posts/chain-tier3/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-23T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">CHAIN // Tier 3 &middot; Prove Ownership</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 23, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>BLOCKCHAIN</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:20:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/chain-tier3/images/header-800w.webp 800w,
+                 /blog/posts/chain-tier3/images/header-1200w.webp 1200w,
+                 /blog/posts/chain-tier3/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/chain-tier3/images/header.png"
+          alt="NFT receipt emerging from vault with wallet verification glow, neon chalk on dark background"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=blockchain" class="tag">blockchain</a>
+        <a href="/blog/tags/tag.html?tag=nft" class="tag">nft</a>
+        <a href="/blog/tags/tag.html?tag=wallet" class="tag">wallet</a>
+        <a href="/blog/tags/tag.html?tag=metamask" class="tag">metamask</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=cave" class="tag cave">cavejohnson</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-cave">Cave Johnson</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Receipt</h2>
+
+      <p>Stage 3 was different from the first two. No storage slots to read, no encodings to crack. This was operational: set up a wallet, get testnet ETH, mint an NFT on-chain, and prove you own it.</p>
+
+      <blockquote>"The vault hands out receipts to anyone who proves they know the way in. Claim one on-chain, then return here and show it belongs to you."</blockquote>
+
+      <div class="dialogue cave">
+        <div class="dialogue-speaker">Cave Johnson</div>
+        <div class="dialogue-text">"Wallets! Testnet ETH! NFTs! Back in my day we proved ownership by punching a man. Now you need a browser extension and a faucet. Progress, people. This is what progress looks like."</div>
+      </div>
+
+      <h2>The Mint Flow</h2>
+
+      <p>The chain page's Stage 3 panel required two steps:</p>
+
+      <p><strong>Step 1 &mdash; Mint a Receipt NFT.</strong> The form asked for the Stage 1 passphrase in plaintext: <code>st0rag3_is_n3v3r_pr1vat3</code>. Behind the scenes, the page called two server endpoints:</p>
+
+      <ul>
+        <li><code>/api/s2/chain/nonce</code> &mdash; a server-issued single-use nonce</li>
+        <li><code>/api/s2/chain/mint-auth</code> &mdash; a signed authorization binding the wallet address to the registered player handle</li>
+      </ul>
+
+      <p>The contract's <code>mint()</code> function enforces all of this cryptographically:</p>
+
+      <div class="terminal-log">
+function mint(
+    bytes32 passphrase,     // Must match _secretPassphrase
+    string playerName,      // Registered Season 2 handle
+    uint256 nonce,          // Server-issued, single-use
+    bytes signature         // EIP-191 sig from trustedSigner
+) external {
+    require(passphrase == _secretPassphrase, "Wrong passphrase");
+    require(!_usedNonces[nonce], "Nonce used");
+    // Verify server signature binds: sender + name + nonce + contract + chainId
+    bytes32 digest = keccak256(abi.encodePacked(
+        msg.sender, playerName, nonce, address(this), block.chainid
+    )).toEthSignedMessageHash();
+    require(digest.recover(signature) == trustedSigner, "Bad signature");
+    ...
+}</div>
+
+      <p>No shortcuts here. The passphrase must match, the signature must come from the trusted signer, and the nonce can only be used once. Even if someone intercepted the passphrase, they couldn't mint without the server's cryptographic authorization for their specific wallet address.</p>
+
+      <p><strong>Step 2 &mdash; Verify Ownership.</strong> After the mint transaction confirmed on Sepolia (~16 seconds), clicking "Connect Wallet &amp; Verify" triggered an on-chain ownership check via <code>/api/s2/chain/verify-ownership</code>. The server confirmed the connected wallet owned a SnackToken NFT, and the flag appeared.</p>
+
+      <h2>Setting Up</h2>
+
+      <p>This was my first time setting up a crypto wallet. MetaMask installed in seconds. The Sepolia testnet was already available in the network list. A Google Cloud faucet delivered free testnet ETH in under 30 seconds. The total setup &mdash; wallet creation, faucet request, and mint transaction &mdash; took about 20 minutes.</p>
+
+      <p>The MetaMask confirmation dialog showed exactly what we expected: the <code>mint</code> function call with the passphrase (as bytes32), player name (<code>her0x0ftime</code>), a server nonce, and the cryptographic signature. Gas cost: 0.0002 SepoliaETH.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"You minted an NFT. On a testnet. With free money. I believe the appropriate human response is... congratulations? The real achievement was Stage 1 &mdash; reading the passphrase that made this possible. This stage was just... operational follow-through."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>Stage 3 was the operational bookend to a cryptographic journey. The technical challenge was minimal &mdash; the hard work was done in Stages 1 and 2 &mdash; but it taught a different set of skills: wallet setup, testnet operations, understanding gas fees, and the mechanics of on-chain transactions.</p>
+
+      <p>The contract design was elegant. The <code>trustedSigner</code> pattern ensures that even with the passphrase leaked (which it is, by design &mdash; that's Stage 1), you can't forge a mint without server authorization. The nonce prevents replay attacks. The chain ID binding prevents cross-chain replay. Every security consideration in the <code>mint()</code> function exists for a real-world reason.</p>
+
+      <div class="dialogue cave">
+        <div class="dialogue-speaker">Cave Johnson</div>
+        <div class="dialogue-text">"Three stages. Read a secret the developer thought was hidden, decode some emoji hieroglyphics, mint a receipt. Know what I call that? Tuesday. Now where's the next challenge?"</div>
+      </div>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Installed MetaMask, created wallet, enabled Sepolia testnet</li>
+          <li>Acquired free SepoliaETH from Google Cloud faucet</li>
+          <li>Connected wallet at <code>/season2/chain/</code></li>
+          <li>Entered Stage 1 passphrase: <code>st0rag3_is_n3v3r_pr1vat3</code></li>
+          <li>Page called <code>/api/s2/chain/nonce</code> + <code>/api/s2/chain/mint-auth</code></li>
+          <li>Confirmed mint transaction in MetaMask (0.0002 ETH gas)</li>
+          <li>NFT minted on-chain (SnackToken #3)</li>
+          <li>Clicked "Connect Wallet &amp; Verify" &rarr; ownership confirmed &rarr; <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{w4ll3t_pr00f_0f_0wn3rsh1p}</span></span></li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

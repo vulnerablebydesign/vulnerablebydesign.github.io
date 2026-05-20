@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A Solidity contract hides a passphrase behind the private keyword. One RPC call proves that nothing is truly private on-chain. SWC-136 in action.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>CHAIN // Tier 1 &middot; SWC-136 | Hack the Cube</title>
+
+  <meta property="og:title" content="CHAIN // Tier 1 · SWC-136 - Hack the Cube">
+  <meta property="og:description" content="The vault door is closed but the walls are glass. Nothing is truly private on-chain.">
+  <meta property="og:image" content="/blog/posts/chain-tier1/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-23T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">CHAIN // Tier 1 &middot; SWC-136</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 23, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>BLOCKCHAIN</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:06:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/chain-tier1/images/header-800w.webp 800w,
+                 /blog/posts/chain-tier1/images/header-1200w.webp 1200w,
+                 /blog/posts/chain-tier1/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/chain-tier1/images/header.png"
+          alt="Ethereum vault with glass walls revealing private storage slots, neon chalk outline on dark background"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=blockchain" class="tag">blockchain</a>
+        <a href="/blog/tags/tag.html?tag=solidity" class="tag">solidity</a>
+        <a href="/blog/tags/tag.html?tag=swc-136" class="tag">swc-136</a>
+        <a href="/blog/tags/tag.html?tag=ethereum" class="tag">ethereum</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=wheatley" class="tag wheatley">wheatley</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-wheatley">Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Vault</h2>
+
+      <p>The challenge page was clean and sparse: a contract address on Sepolia testnet, a link to verified source on Etherscan, and a single sentence that told you everything you needed to know before you even started.</p>
+
+      <blockquote>"The vault door is closed but the walls are glass. Nothing is truly private on-chain."</blockquote>
+
+      <p>The challenge name gave the rest away: <strong>SWC-136</strong>. That's the Smart Contract Weakness Classification for "Unencrypted Private Data On-Chain" &mdash; a fundamental misunderstanding of what <code>private</code> means in Solidity. The developer chose a keyword they didn't fully understand, and we were here to prove it.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Private. A word that means 'this variable cannot be accessed by other contracts.' Not 'this data is hidden.' Not 'this is safe.' Just... 'other contracts can't call a getter for it.' The distinction matters. Though I suspect the developer who wrote this contract never learned that. Pity."</div>
+      </div>
+
+      <h2>Reading the Source</h2>
+
+      <p>The contract was verified on Etherscan and indexed by <a href="https://sourcify.dev" target="_blank" rel="noopener">Sourcify</a>, which meant I could pull the full Solidity source without an API key. The contract was called <code>SnackToken</code> &mdash; an ERC-721 NFT with Ownable access control.</p>
+
+      <div class="terminal-log">
+curl -sL "https://sourcify.dev/server/repository/contracts/full_match/
+  11155111/0x666fC17e064224E3026DdF31B431eA30dFc3A561/
+  sources/contracts/SnackToken.sol"</div>
+
+      <p>The state variables told the story immediately:</p>
+
+      <div class="terminal-log">
+contract SnackToken is ERC721, Ownable {
+
+    uint256 private _nextTokenId;
+
+    // STAGE 1 &mdash; SWC-136: "private" doesn't hide anything on-chain.
+    bytes32 private _secretPassphrase;
+
+    // STAGE 2 &mdash; The emoji path is split into shuffled fragments.
+    string private _metadataBaseURI;
+    Fragment[] private _fragments;
+
+    mapping(uint256 => string) public playerNames;
+    address public trustedSigner;
+    mapping(uint256 => bool) private _usedNonces;
+
+    ...
+}</div>
+
+      <p>There it was. Line 2 of the contract's own state: <code>bytes32 private _secretPassphrase</code>. The developer even left a comment admitting it: <em>"SWC-136: private doesn't hide anything on-chain."</em></p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Hang on, hang on &mdash; <code>private</code>. That means private, yeah? Like, nobody can see it. It's private. That's what private means. ...doesn't it? Oh. Oh no. You're telling me that every single variable I've ever marked private is just... sitting there? In the open? Like a post-it note on a glass door?"</div>
+      </div>
+
+      <h2>The Storage Layout</h2>
+
+      <p>In the EVM, every state variable lives in a numbered <strong>storage slot</strong>. Slots are assigned sequentially, starting from 0, following the contract's inheritance chain. For <code>SnackToken</code>, which inherits ERC721 and Ownable, the layout looks like this:</p>
+
+      <div class="terminal-log">
+Slot 0:  _name              (ERC721)
+Slot 1:  _symbol             (ERC721)
+Slot 2:  _owners             (ERC721, mapping)
+Slot 3:  _balances           (ERC721, mapping)
+Slot 4:  _tokenApprovals     (ERC721, mapping)
+Slot 5:  _operatorApprovals  (ERC721, mapping)
+Slot 6:  _owner              (Ownable)
+Slot 7:  _nextTokenId        (SnackToken)
+<strong>Slot 8:  _secretPassphrase   (SnackToken) &larr; TARGET</strong>
+Slot 9:  _metadataBaseURI    (SnackToken)
+Slot 10: _fragments          (SnackToken)</div>
+
+      <p>The <code>private</code> keyword controls <em>contract-level access</em> &mdash; whether other Solidity contracts can call a getter function for that variable. It has absolutely zero effect on whether the data is readable. Every byte stored on-chain is public. You just need to know which slot to ask for.</p>
+
+      <p>The contract's <code>mint</code> function even confirmed the slot number in its own documentation: <em>"bytes32 value read from slot 8 (Stage 1 solve)."</em></p>
+
+      <h2>The Exploit</h2>
+
+      <p>One call. That's all it takes. The JSON-RPC method <code>eth_getStorageAt</code> reads raw storage from any contract on any public blockchain. No authentication. No permissions. No special access. Just an address, a slot number, and a public RPC endpoint.</p>
+
+      <div class="terminal-log">
+curl -s -X POST "https://ethereum-sepolia-rpc.publicnode.com" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "eth_getStorageAt",
+    "params": [
+      "0x666fC17e064224E3026DdF31B431eA30dFc3A561",
+      "0x8",
+      "latest"
+    ],
+    "id": 1
+  }'</div>
+
+      <div class="terminal-log">
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x737430726167335f69735f6e337633725f707231766174330000000000000000"
+}</div>
+
+      <p>Raw bytes, straight from the blockchain. The <code>bytes32</code> value, right-padded with zeros. Decoding the non-zero hex bytes to ASCII:</p>
+
+      <div class="terminal-log">
+Hex:   73 74 30 72 61 67 33 5f 69 73 5f 6e 33 76 33 72 5f 70 72 31 76 61 74 33
+ASCII: s  t  0  r  a  g  3  _  i  s  _  n  3  v  3  r  _  p  r  1  v  a  t  3
+
+Passphrase: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">st0rag3_is_n3v3r_pr1vat3</span></span></div>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{st0rag3_is_n3v3r_pr1vat3}</span></span></p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"One RPC call. The developer's carefully chosen <code>private</code> keyword defeated by a single HTTP request to a public endpoint. I'd call it elegant, but that implies the defense was worth defeating. This was less 'picking a lock' and more 'noticing the wall was made of glass.'"</div>
+      </div>
+
+      <h2>Why This Matters</h2>
+
+      <p>SWC-136 is not academic. Real contracts have stored real secrets this way &mdash; passwords, private keys, configuration values &mdash; and real money has been lost because developers confused access modifiers with encryption. The Ethereum blockchain is a public ledger. Every transaction, every state change, every byte of storage is replicated across thousands of nodes worldwide. Marking something <code>private</code> is a visibility modifier for the Solidity compiler, not a security mechanism.</p>
+
+      <p>If you need to store a secret on-chain, you don't. You store a <em>commitment</em> &mdash; a hash of the secret combined with a salt. The actual secret never touches the blockchain until it needs to be revealed. This is the pattern behind commit-reveal schemes, sealed-bid auctions, and any on-chain mechanism that requires temporary secrecy.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Right, so, just to be absolutely clear for anyone listening &mdash; and I'm saying this for <em>them</em>, not me, because I definitely already knew this &mdash; <code>private</code> in Solidity means 'private from other contracts,' not 'private from humans with curl.' Very different things. Totally different. Won't make that mistake again. ...probably."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>This was a clean, focused teaching challenge. No tricks, no misdirection &mdash; just a fundamental concept delivered precisely. The passphrase itself was the lesson: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed"><strong>st0rag3_is_n3v3r_pr1vat3</strong></span></span>. Storage is never private.</p>
+
+      <p>The technical skills exercised here transfer directly to real-world smart contract auditing: reading verified source on Sourcify/Etherscan, tracing inheritance chains to build storage layouts, and using <code>eth_getStorageAt</code> to verify what's actually stored on-chain. These are the same tools professional auditors use when reviewing contracts that handle millions of dollars.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"For the record, this was Stage 1 of 3. The passphrase you just recovered is also the key to minting an NFT receipt in Stage 3. And Stage 2 involves following fragmented metadata hidden in the contract's storage &mdash; which, as we've just established, is about as hidden as a lighthouse. I'm sure you'll do... adequately."</div>
+      </div>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Located chain challenge page at <code>/season2/chain/</code> &mdash; identified Sepolia testnet, contract address from <code>/api/s2/chain/config</code></li>
+          <li>Retrieved verified source from Sourcify &mdash; <code>SnackToken.sol</code>, an ERC-721 with <code>bytes32 private _secretPassphrase</code></li>
+          <li>Mapped storage layout through inheritance chain: ERC721 (slots 0-5) &rarr; Ownable (slot 6) &rarr; SnackToken (slots 7+)</li>
+          <li>Identified <code>_secretPassphrase</code> at storage slot 8</li>
+          <li>Called <code>eth_getStorageAt</code> on slot 8 via public Sepolia RPC</li>
+          <li>Decoded hex to ASCII: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed"><code>st0rag3_is_n3v3r_pr1vat3</code></span></span></li>
+          <li>Submitted flag &rarr; <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{st0rag3_is_n3v3r_pr1vat3}</span></span></li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

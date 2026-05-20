@@ -1,5 +1,361 @@
 [
   {
+    "slug": "spicy-wand",
+    "title": "Spicy Wand",
+    "date": "2026-05-08",
+    "dateFormatted": "May 8, 2026",
+    "difficulty": "Hard",
+    "difficultyClass": "hard",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A 1000-point HARDWARE challenge: a sub-GHz lightwand that listens for the word 'snackattack' encoded in Morse cadence. Last year's .sub captures still work. snack_con S2R1.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "hard",
+      "hardware",
+      "sub-ghz",
+      "morse",
+      "flipper-zero",
+      "replay-attack",
+      "glados",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "hard",
+      "hardware",
+      "glados",
+      "fact-sphere"
+    ]
+  },
+  {
+    "slug": "kennedy-karaoke",
+    "title": "Lamp Post Tavern",
+    "date": "2026-05-08",
+    "dateFormatted": "May 8, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A 500-point MISC challenge that asked for a microphone, not a packet capture. The Lamp Post Tavern's karaoke night was the entire test chamber. snack_con S2R1.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "misc",
+      "in-person",
+      "participation",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "misc",
+      "glados",
+      "wheatley"
+    ]
+  },
+  {
+    "slug": "badge-flavors",
+    "title": "Four Flavors",
+    "date": "2026-05-08",
+    "dateFormatted": "May 8, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "An 800-point ENCODING challenge that turned the conference floor into the test chamber. Three attendees' badge-back emoji strings, fed through EmojiChef, yielded the flag. snack_con S2R1.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "encoding",
+      "emojichef",
+      "in-person",
+      "osint",
+      "social-recon",
+      "glados",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "encoding",
+      "osint",
+      "glados",
+      "curiosity-core"
+    ]
+  },
+  {
+    "slug": "web-buffet-counter",
+    "title": "Buffet Counter",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Hard",
+    "difficultyClass": "hard",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "DOM clobbering against a sanitized HTML preview to materialize window.vaultConfig.finalKey from named globals — the engraving format leaks the phrase. snack_con S2R1 final web challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "hard",
+      "web",
+      "dom-clobbering",
+      "html-sanitizer",
+      "glados",
+      "space-sphere"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "hard",
+      "web",
+      "glados",
+      "space-sphere"
+    ]
+  },
+  {
+    "slug": "web-sourdough-starter",
+    "title": "Sourdough Starter",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Hard",
+    "difficultyClass": "hard",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A prototype-pollution unlock against an empty cfg object — the phrase isn't in the UI, but the seal format is. snack_con S2R1 web challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "hard",
+      "web",
+      "prototype-pollution",
+      "metadata-leak",
+      "glados",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "hard",
+      "web",
+      "glados",
+      "fact-sphere"
+    ]
+  },
+  {
+    "slug": "web-shift-log",
+    "title": "Shift Log",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A client-side redactor strips entries containing 'keyphrase' before rendering — but the raw entries are already loaded into the page. snack_con S2R1 web challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "web",
+      "client-side-redaction",
+      "glados",
+      "morality-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "web",
+      "glados",
+      "morality-core"
+    ]
+  },
+  {
+    "slug": "web-loyalty-card",
+    "title": "Loyalty Card",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A JWT-style loyalty card whose MAC only signs handle|exp — the role field upgrade was deferred to a sprint that never happened. Forge it. snack_con S2R1 web challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "web",
+      "jwt",
+      "mac-scope",
+      "privilege-escalation",
+      "glados",
+      "adventure-sphere"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "web",
+      "glados",
+      "adventure-sphere"
+    ]
+  },
+  {
+    "slug": "web-pantry-poltergeist",
+    "title": "Pantry Poltergeist",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "Three vault-passphrase fragments scattered across localStorage, sessionStorage, and a cookie — but they're all hardcoded literals in the public JS bundle. snack_con S2R1 web challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "easy",
+      "web",
+      "storage",
+      "client-side-secrets",
+      "glados",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "easy",
+      "web",
+      "glados",
+      "curiosity-core"
+    ]
+  },
+  {
+    "slug": "web-freezer-aisle",
+    "title": "Freezer Aisle",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "An R1-era admin portal with the override key base64-encoded in an HTML comment. Decode the comment, POST the key, get the flag. snack_con S2R1 web challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "easy",
+      "web",
+      "recon",
+      "base64",
+      "admin-panel",
+      "glados",
+      "cavejohnson"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "easy",
+      "web",
+      "glados"
+    ]
+  },
+  {
+    "slug": "chipsweeper-tier3",
+    "title": "CHIPSWEEPER // Tier 3 · Nacho Supreme",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Hard",
+    "difficultyClass": "hard",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "The Nacho Supreme tier sat behind a golf-score gate, then a plating review, then a bounty for forging a tier clear without writing the engine. Three scoring events, four submissions, one engine that carried all of it.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "hard",
+      "coding",
+      "javascript",
+      "code-golf",
+      "vulnerability-research",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "hard",
+      "coding",
+      "glados",
+      "wheatley"
+    ]
+  },
+  {
+    "slug": "chipsweeper-tier2",
+    "title": "CHIPSWEEPER // Tier 2 · Queso",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "The Queso flag I never aimed for. The same submission that captured Tortilla also cleared the 9×9 / 10-mine tier — because the engine doesn't care how big the pan gets.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "coding",
+      "javascript",
+      "minesweeper",
+      "bonus-tier",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "coding",
+      "glados",
+      "wheatley"
+    ]
+  },
+  {
+    "slug": "chipsweeper-tier1",
+    "title": "CHIPSWEEPER // Tier 1 · Tortilla",
+    "date": "2026-05-01",
+    "dateFormatted": "May 1, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A coding challenge where the kitchen runs your minesweeper engine through eight taste tests. The hardest part wasn't the algorithm — it was a prompt-injection trap baked into the spec itself.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "coding",
+      "javascript",
+      "minesweeper",
+      "prompt-injection",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "coding",
+      "glados",
+      "wheatley"
+    ]
+  },
+  {
     "slug": "unified",
     "title": "Unified",
     "date": "2026-04-27",
@@ -8,8 +364,275 @@
     "difficultyClass": "easy",
     "os": "Linux",
     "excerpt": "Log4Shell turned a login form into a reverse shell. A UniFi controller running version 6.4.54, a JNDI callback that shouldn't have worked, and root credentials stored in MongoDB site settings.",
-    "tags": ["machine", "linux", "easy", "log4shell", "cve", "rce", "mongodb", "jndi", "metasploit", "nmap", "glados", "anger-core", "fact-sphere"],
-    "cardTags": ["machine", "linux", "log4shell", "cve", "rce", "glados", "anger-core"]
+    "tags": [
+      "machine",
+      "linux",
+      "easy",
+      "log4shell",
+      "cve",
+      "rce",
+      "mongodb",
+      "jndi",
+      "metasploit",
+      "nmap",
+      "glados",
+      "anger-core",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "machine",
+      "linux",
+      "log4shell",
+      "cve",
+      "rce",
+      "glados",
+      "anger-core"
+    ]
+  },
+  {
+    "slug": "chain-tier3",
+    "title": "CHAIN // Tier 3 · Prove Ownership",
+    "date": "2026-04-23",
+    "dateFormatted": "April 23, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "Mint an NFT with a recovered passphrase, prove on-chain ownership, and claim the final flag. The operational finale of a three-stage blockchain CTF.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "blockchain",
+      "nft",
+      "wallet",
+      "metamask",
+      "glados",
+      "cavejohnson"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "blockchain",
+      "glados"
+    ]
+  },
+  {
+    "slug": "chain-tier2",
+    "title": "CHAIN // Tier 2 · Fragmented Metadata",
+    "date": "2026-04-23",
+    "dateFormatted": "April 23, 2026",
+    "difficulty": "Hard",
+    "difficultyClass": "hard",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "Shuffled emoji fragments hidden in Solidity storage slots, decoded through an in-game codec, leading to a hidden NFT metadata directory. The hardest challenge in the chain.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "hard",
+      "blockchain",
+      "solidity",
+      "emojichef",
+      "nft-metadata",
+      "glados",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "hard",
+      "blockchain",
+      "glados",
+      "curiosity-core"
+    ]
+  },
+  {
+    "slug": "chain-tier1",
+    "title": "CHAIN // Tier 1 · SWC-136",
+    "date": "2026-04-23",
+    "dateFormatted": "April 23, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A Solidity contract hides a passphrase behind the private keyword. One RPC call proves that nothing is truly private on-chain. SWC-136 in action.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "blockchain",
+      "solidity",
+      "swc-136",
+      "ethereum",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "blockchain",
+      "glados",
+      "wheatley"
+    ]
+  },
+  {
+    "slug": "forensics-network",
+    "title": "Orbital Traffic Intercept",
+    "date": "2026-04-22",
+    "dateFormatted": "April 22, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "Two pcap files, one AES-256 encrypted zip, and a DNS exfiltration channel hiding the flag in base32-encoded subdomain labels. A two-stage network forensics challenge from snack_con S2R1.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "network",
+      "pcap",
+      "dns",
+      "tshark",
+      "base32",
+      "glados",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "network",
+      "glados",
+      "fact-sphere"
+    ]
+  },
+  {
+    "slug": "forensics-manifest",
+    "title": "Corrupted Cargo Manifest",
+    "date": "2026-04-22",
+    "dateFormatted": "April 22, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A corrupted PNG with four zeroed-out magic bytes. Patch the header, decode the barcode, recover the shipment code. snack_con S2R1 forensics challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "easy",
+      "forensics",
+      "png",
+      "barcode",
+      "glados",
+      "anger-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "easy",
+      "forensics",
+      "glados",
+      "anger-core"
+    ]
+  },
+  {
+    "slug": "atencion",
+    "title": "ATENCIÓN",
+    "date": "2026-04-22",
+    "dateFormatted": "April 22, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A Cuban-style numbers station broadcast on HF 6.840 MHz, half-swallowed by static. The missing groups were hiding on a real conference website. SIGINT meets OSINT in this snack_con S2R1 challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "sigint",
+      "osint",
+      "crypto",
+      "numbers-station",
+      "glados",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "sigint",
+      "osint",
+      "crypto",
+      "glados",
+      "curiosity-core"
+    ]
+  },
+  {
+    "slug": "prestage",
+    "title": "Signal Lost",
+    "date": "2026-02-04",
+    "dateFormatted": "February 4, 2026",
+    "difficulty": "Medium",
+    "difficultyClass": "medium",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "A signal hides in DNS TXT records, hex-decodes to a URL, and the final flag is invisibly styled CSS at the bottom of a fake 'PLEASE STAND BY' page. snack_con S2R1 OSINT challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "medium",
+      "osint",
+      "dns",
+      "txt-record",
+      "hex",
+      "retro",
+      "first-blood",
+      "glados",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "medium",
+      "osint",
+      "glados",
+      "curiosity-core"
+    ]
+  },
+  {
+    "slug": "opencomms",
+    "title": "Open Comms",
+    "date": "2026-02-04",
+    "dateFormatted": "February 4, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "N/A (snack_con CTF)",
+    "excerpt": "The terminal is hidden behind two console function calls; the link is hidden inside the terminal; the contact is hidden inside Discord. snack_con S2R1 entry-point challenge.",
+    "tags": [
+      "ctf",
+      "snack-con",
+      "s2r1",
+      "easy",
+      "misc",
+      "terminal",
+      "snackchat",
+      "discord",
+      "retro",
+      "first-blood",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "ctf",
+      "snack-con",
+      "easy",
+      "misc",
+      "glados",
+      "wheatley"
+    ]
   },
   {
     "slug": "repetitive",
@@ -20,8 +643,27 @@
     "difficultyClass": "easy",
     "os": "Windows",
     "excerpt": "Repetier-Server 1.4.10 stores its admin credentials in a SQLite database two directory traversals away from the web root. Twenty minutes, one CVE, zero shells needed.",
-    "tags": ["machine", "purple", "windows", "easy", "path-traversal", "cve", "3d-printer", "nmap", "glados", "wheatley"],
-    "cardTags": ["machine", "purple", "windows", "path-traversal", "cve", "glados", "wheatley"]
+    "tags": [
+      "machine",
+      "purple",
+      "windows",
+      "easy",
+      "path-traversal",
+      "cve",
+      "3d-printer",
+      "nmap",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "machine",
+      "purple",
+      "windows",
+      "path-traversal",
+      "cve",
+      "glados",
+      "wheatley"
+    ]
   },
   {
     "slug": "repetitive-d",
@@ -32,8 +674,28 @@
     "difficultyClass": "easy",
     "os": "N/A (Sherlock)",
     "excerpt": "A 3D printing server, a path traversal encoded with backslashes, and a password hash cracked in six seconds. Chell traces an attacker's steps from curl reconnaissance through WinRM compromise in this DFIR Sherlock.",
-    "tags": ["sherlock", "purple", "dfir", "easy", "path-traversal", "winrm", "pcap", "ntlm", "glados", "fact-sphere", "curiosity-core"],
-    "cardTags": ["sherlock", "purple", "dfir", "path-traversal", "glados", "fact-sphere", "curiosity-core"]
+    "tags": [
+      "sherlock",
+      "purple",
+      "dfir",
+      "easy",
+      "path-traversal",
+      "winrm",
+      "pcap",
+      "ntlm",
+      "glados",
+      "fact-sphere",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "sherlock",
+      "purple",
+      "dfir",
+      "path-traversal",
+      "glados",
+      "fact-sphere",
+      "curiosity-core"
+    ]
   },
   {
     "slug": "meerkat",
@@ -44,8 +706,27 @@
     "difficultyClass": "easy",
     "os": "Linux",
     "excerpt": "263 Suricata alerts. A BonitaSoft server. Three attacker IPs rotating through credential stuffing, CVE-2022-25237, and SSH key persistence. Chell reconstructs the full kill chain from a PCAP and a JSON file.",
-    "tags": ["sherlock", "linux", "easy", "dfir", "credential-stuffing", "cve", "rce", "ssh", "wireshark", "glados", "fact-sphere"],
-    "cardTags": ["sherlock", "dfir", "easy", "cve", "glados", "fact-sphere"]
+    "tags": [
+      "sherlock",
+      "linux",
+      "easy",
+      "dfir",
+      "credential-stuffing",
+      "cve",
+      "rce",
+      "ssh",
+      "wireshark",
+      "glados",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "sherlock",
+      "dfir",
+      "easy",
+      "cve",
+      "glados",
+      "fact-sphere"
+    ]
   },
   {
     "slug": "validation",
@@ -56,8 +737,27 @@
     "difficultyClass": "easy",
     "os": "Linux",
     "excerpt": "The INSERT was parameterized. The SELECT wasn't. A dropdown menu that nobody thought to intercept, a database user with every privilege imaginable, and a password reused from PHP config all the way to root.",
-    "tags": ["machine", "linux", "easy", "sqli", "php", "web", "rce", "nmap", "glados", "wheatley"],
-    "cardTags": ["machine", "linux", "easy", "sqli", "php", "glados", "wheatley"]
+    "tags": [
+      "machine",
+      "linux",
+      "easy",
+      "sqli",
+      "php",
+      "web",
+      "rce",
+      "nmap",
+      "glados",
+      "wheatley"
+    ],
+    "cardTags": [
+      "machine",
+      "linux",
+      "easy",
+      "sqli",
+      "php",
+      "glados",
+      "wheatley"
+    ]
   },
   {
     "slug": "return",
@@ -68,8 +768,27 @@
     "difficultyClass": "easy",
     "os": "Windows",
     "excerpt": "Thirteen open ports on a domain controller, and the way in was a printer settings page. Chell's first Windows box turns LDAP credential theft into Server Operators privilege escalation.",
-    "tags": ["machine", "windows", "easy", "privesc", "ldap", "active-directory", "winrm", "printer", "glados", "adventure-sphere"],
-    "cardTags": ["machine", "windows", "easy", "ldap", "active-directory", "glados", "adventure-sphere"]
+    "tags": [
+      "machine",
+      "windows",
+      "easy",
+      "privesc",
+      "ldap",
+      "active-directory",
+      "winrm",
+      "printer",
+      "glados",
+      "adventure-sphere"
+    ],
+    "cardTags": [
+      "machine",
+      "windows",
+      "easy",
+      "ldap",
+      "active-directory",
+      "glados",
+      "adventure-sphere"
+    ]
   },
   {
     "slug": "antique",
@@ -80,8 +799,27 @@
     "difficultyClass": "easy",
     "os": "Linux",
     "excerpt": "The SNMP walk came back with a hex-encoded password sitting in plain sight. From a forgotten printer on Telnet to root through a 14-year-old CUPS vulnerability.",
-    "tags": ["machine", "linux", "easy", "privesc", "snmp", "cups", "printer", "telnet", "glados", "fact-sphere"],
-    "cardTags": ["machine", "linux", "easy", "snmp", "cups", "glados", "fact-sphere"]
+    "tags": [
+      "machine",
+      "linux",
+      "easy",
+      "privesc",
+      "snmp",
+      "cups",
+      "printer",
+      "telnet",
+      "glados",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "machine",
+      "linux",
+      "easy",
+      "snmp",
+      "cups",
+      "glados",
+      "fact-sphere"
+    ]
   },
   {
     "slug": "irked",
@@ -92,8 +830,27 @@
     "difficultyClass": "easy",
     "os": "Linux",
     "excerpt": "A chat server from 1988 shipped with a backdoor nobody noticed for seven months. Steganography, SUID binaries, and a chain of simple mistakes lead to root.",
-    "tags": ["machine", "linux", "easy", "irc", "steganography", "suid", "privesc", "nmap", "glados", "curiosity-core"],
-    "cardTags": ["machine", "linux", "easy", "suid", "steganography", "glados", "curiosity-core"]
+    "tags": [
+      "machine",
+      "linux",
+      "easy",
+      "irc",
+      "steganography",
+      "suid",
+      "privesc",
+      "nmap",
+      "glados",
+      "curiosity-core"
+    ],
+    "cardTags": [
+      "machine",
+      "linux",
+      "easy",
+      "suid",
+      "steganography",
+      "glados",
+      "curiosity-core"
+    ]
   },
   {
     "slug": "bike",
@@ -104,7 +861,23 @@
     "difficultyClass": "very-easy",
     "os": "Linux",
     "excerpt": "A Node.js application with a Handlebars template engine. What could go wrong? Everything, apparently. GlaDOS guides Chell through SSTI exploitation and sandbox escape.",
-    "tags": ["machine", "linux", "very-easy", "ssti", "web", "rce", "nmap", "glados"],
-    "cardTags": ["machine", "linux", "very-easy", "ssti", "rce", "glados"]
+    "tags": [
+      "machine",
+      "linux",
+      "very-easy",
+      "ssti",
+      "web",
+      "rce",
+      "nmap",
+      "glados"
+    ],
+    "cardTags": [
+      "machine",
+      "linux",
+      "very-easy",
+      "ssti",
+      "rce",
+      "glados"
+    ]
   }
 ]

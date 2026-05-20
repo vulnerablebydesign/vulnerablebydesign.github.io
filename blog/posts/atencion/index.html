@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A Cuban-style numbers station broadcast on HF 6.840 MHz, half-swallowed by static. The missing groups were hiding on a real conference website. SIGINT meets OSINT in this snack_con S2R1 challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>ATENCIÓN | Hack the Cube</title>
+
+  <meta property="og:title" content="ATENCIÓN - Hack the Cube">
+  <meta property="og:description" content="A numbers station off the Florida coast. Half the broadcast is missing. The rest is hiding somewhere you haven't looked yet.">
+  <meta property="og:image" content="/blog/posts/atencion/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-22T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">ATENCIÓN</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 22, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>SIGINT</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:07:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/atencion/images/header-800w.webp 800w,
+                 /blog/posts/atencion/images/header-1200w.webp 1200w,
+                 /blog/posts/atencion/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/atencion/images/header.png"
+          alt="ATENCIÓN - Numbers station shortwave radio with floating cipher groups on dark cyberpunk background"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=sigint" class="tag">sigint</a>
+        <a href="/blog/tags/tag.html?tag=osint" class="tag">osint</a>
+        <a href="/blog/tags/tag.html?tag=crypto" class="tag">crypto</a>
+        <a href="/blog/tags/tag.html?tag=numbers-station" class="tag">numbers-station</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=curiosity-core" class="tag curiosity-core">curiosity-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-curiosity-core">Curiosity Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Broadcast</h2>
+
+      <p>Frequency 6.840 MHz. A shortwave burst off the Florida coast &mdash; a Spanish voice reading five-digit groups, the kind of transmission that haunted Cold War radio operators for decades. The challenge called it SIGINT. It was that, but it was also something else.</p>
+
+      <p>Half the broadcast was swallowed by static. Two of four number groups came through clean. The other two were gone. And the challenge description carried a line that would matter more than the numbers themselves: <em>"The missing groups are archived somewhere you haven't looked yet."</em></p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A numbers station. How charmingly retro. The Cubans used these to communicate with field agents for decades. I'm sure you'll decode this faster than the FBI did. They only needed... thirty years."</div>
+      </div>
+
+      <h2>What the Receiver Caught</h2>
+
+      <p>The challenge page simulated a shortwave receiver tuned to HF 6.840 MHz, complete with a waveform visualizer, signal meter, and an audio transmission. The transcript laid out what was captured:</p>
+
+      <div class="terminal-log">
+Atencion. Atencion. Atencion.
+
+Cuatro grupos. Cuatro grupos.
+Clave: seis. Clave: seis.
+
+Grupo uno:    siete ocho seis siete seis     → 78676
+Grupo dos:    uno siete cinco ocho seis      → 17586
+Grupo tres:   ██ ██ ██ ██ ██ [INTERFERENCIA]
+Grupo cuatro: [SEÑAL PERDIDA]
+
+Final. Final.</div>
+
+      <p>Four groups. Key is six. But only groups one and two came through. The receiver lost the signal for groups three and four. Whatever this transmission said, I only had half the message.</p>
+
+      <h2>The Breadcrumbs</h2>
+
+      <p>The challenge page had more to offer than the transcript. Three things caught my attention.</p>
+
+      <p>First: hidden text at the bottom of the page, CSS-colored to match the background &mdash; invisible unless you read the source:</p>
+
+      <div class="terminal-log">
+CALIBRACION DE SENAL // 28°31'27"N 080°40'52"W // MAY 6-9 2026
+// HACKSPACECON // RECEPTOR SECUNDARIO CONFIRMADO</div>
+
+      <p>Those coordinates pointed to Cape Canaveral. HackSpaceCon 2026 &mdash; a real cybersecurity conference happening at Kennedy Space Center in May. And the phrase <strong>"receptor secundario confirmado"</strong> &mdash; secondary receiver confirmed. Someone else had a receiver on this frequency.</p>
+
+      <p>Second: a reference card naming <strong>Dr. Ana Tención</strong>, Research Fellow at the <em>Caribbean Radio Intelligence Archive (CRIA)</em>, with a note about an "archival citation registered from Cape Canaveral, intercept 1981."</p>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"Ana Tención... A-ten-ción... ATENCIÓN! It's the name of the station! Is she real? Is the archive real? What's at Cape Canaveral? Can we go there?"</div>
+      </div>
+
+      <p>Third: the analysis section confirmed it plainly &mdash; <em>"Los grupos 3 y 4 fueron registrados por otro operador. Busque a la operadora asociada."</em> Groups 3 and 4 were recorded by another operator. Find the associated operator.</p>
+
+      <p>All three breadcrumbs pointed the same direction: HackSpaceCon.</p>
+
+      <h2>The OSINT Pivot</h2>
+
+      <p>HackSpaceCon's website runs on Zoho Backstage &mdash; an Ember.js single-page application. I pulled the raw HTML and searched the JSON-LD structured data for speakers. There she was:</p>
+
+      <div class="terminal-log">
+"name": "Dr. Ana Tención"
+"worksFor": "Caribbean Radio Intelligence Archive (CRIA)"
+"jobTitle": "Research Fellow"
+"speakerId": 145833000004207031</div>
+
+      <p>A fictional speaker, planted on a real conference website. The CTF organizers had actually added Dr. Ana Tención to HackSpaceCon's speaker roster. I needed her bio, but Zoho Backstage renders speaker profiles client-side with JavaScript. A raw curl wouldn't cut it &mdash; I needed a browser.</p>
+
+      <p>I spun up a headless Playwright instance, navigated to her speaker profile, and extracted the full biography. It was beautifully written cover story, complete with a doctorate from Florida International University and seven years at the "RF Signals Archive Project." And buried in the academic backstory were two five-digit numbers:</p>
+
+      <div class="terminal-log">
+...her dissertation, catalogued by the FIU library system
+under accession 67696, traced the operational lifespan of
+Spanish-language numbers stations...
+
+...A third receiver, operating independently from a site
+near Cape Canaveral the same night, logged a brief additional
+fragment — four seconds of clean signal before total carrier
+loss — entered into its monitoring record as observation 57170...</div>
+
+      <p>Accession <strong>67696</strong>. Observation <strong>57170</strong>. Groups three and four.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"They embedded the missing cipher groups in a fictional academic biography on a real conference website. I'll admit, that's... almost clever. The OSINT community would be proud. If they could find this writeup, which they can't, because you haven't published it yet."</div>
+      </div>
+
+      <h2>The Decode</h2>
+
+      <p>Now I had all four groups and the key:</p>
+
+      <div class="terminal-log">
+Key:   6
+Group 1: 78676
+Group 2: 17586
+Group 3: 67696
+Group 4: 57170</div>
+
+      <p>Numbers station ciphers of this type use a simple substitution: subtract the key from each digit modulo 10, then pair the resulting digits as letter indices (01=A, 02=B, ... 26=Z).</p>
+
+      <div class="terminal-log">
+Raw digits:   7 8 6 7 6  1 7 5 8 6  6 7 6 9 6  5 7 1 7 0
+Subtract 6:   1 2 0 1 0  5 1 9 2 0  0 1 0 3 0  9 1 5 1 4
+Paired:       12 01 05 19 20 01 03 09 15 14
+Letters:       L  A  E  S  T  A  C  I  O  N</div>
+
+      <p><strong>LAESTACION</strong> &mdash; "La Estación." The Station.</p>
+
+      <p>I submitted the decoded word to the verification endpoint:</p>
+
+      <div class="terminal-log">
+POST /api/s2/atencion/verify
+{"word": "LAESTACION"}
+
+{
+  "success": true,
+  "flag": "<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{NUM3R05_N0_M13NT3N}</span></span>",
+  "pointsAwarded": 500,
+  "solvePosition": 2
+}</div>
+
+      <p>Second solve. 500 points. The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{NUM3R05_N0_M13NT3N}</span></span></p>
+
+      <p>"Números no mienten." Numbers don't lie.</p>
+
+      <h2>What I Learned</h2>
+
+      <p>This challenge was a beautiful SIGINT/OSINT crossover. The signals intelligence part &mdash; understanding numbers stations, the cipher mechanics, the key system &mdash; was the framework. But the real challenge was the OSINT pivot: recognizing that "Dr. Ana Tención" was an anagram of "Atención," following the breadcrumbs from the challenge page to a real conference website, and extracting data from a JavaScript-rendered SPA.</p>
+
+      <p>The cipher itself was straightforward once you had all four groups. The hard part was finding them. The CTF organizers didn't just hide data in a file or encode it in a URL &mdash; they created an entire fictional academic identity and planted it on a third-party website. That's craft.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"For the record, you solved this in seven minutes. I've seen slower. I've also seen faster, but those test subjects had access to the answer key. So, adjusted for integrity, your performance was... adequate."</div>
+      </div>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Accessed challenge page with session auth &mdash; found numbers station transcript with 2 of 4 groups (78676, 17586), key = 6</li>
+          <li>Found hidden calibration text pointing to HackSpaceCon as secondary receiver</li>
+          <li>Identified "Dr. Ana Tención" reference &mdash; anagram of Atención, fictional CRIA researcher</li>
+          <li>Located Dr. Ana Tención in HackSpaceCon's Zoho Backstage speaker data</li>
+          <li>Rendered speaker bio with headless browser &mdash; extracted accession 67696 (Group 3) and observation 57170 (Group 4)</li>
+          <li>Decoded all 4 groups: subtract key 6 from each digit mod 10, pair as letter indices &rarr; LAESTACION</li>
+          <li>Submitted to verify endpoint &rarr; flag captured, 2nd solve</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

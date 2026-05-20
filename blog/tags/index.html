@@ -57,24 +57,67 @@
   </div>
 
   <script>
+    // Character tags also exist as colored CSS variants in blog.css; keep this list
+    // in sync with character classes used in post bodies.
     const CHARACTER_TAGS = new Set([
-      'glados', 'wheatley', 'fact-sphere', 'curiosity-core', 'adventure-sphere', 'anger-core'
+      'glados', 'wheatley', 'fact-sphere', 'curiosity-core', 'adventure-sphere', 'anger-core',
+      // CTF-introduced cameos
+      'cave', 'cavejohnson', 'morality-core', 'space-sphere', 'curiosity'
     ]);
 
     const CATEGORIES = [
-      { name: 'CHARACTERS', tags: ['glados', 'wheatley', 'fact-sphere', 'curiosity-core', 'adventure-sphere', 'anger-core'] },
+      { name: 'CHARACTERS', tags: [
+          'glados', 'wheatley', 'fact-sphere', 'curiosity-core', 'adventure-sphere', 'anger-core',
+          'cave', 'cavejohnson', 'morality-core', 'space-sphere'
+      ] },
       { name: 'TYPE', tags: ['machine', 'sherlock', 'purple'] },
       { name: 'OPERATING SYSTEMS', tags: ['linux', 'windows'] },
-      { name: 'DIFFICULTY', tags: ['very-easy', 'easy', 'medium', 'hard', 'insane'] },
-      { name: 'TECHNIQUES', tags: ['rce', 'ssti', 'privesc', 'suid', 'reverse-shell', 'steganography', 'irc', 'ssh', 'web', 'sqli', 'php', 'ldap', 'winrm', 'active-directory', 'credential-stuffing', 'cve', 'dfir', 'path-traversal', 'ntlm', 'log4shell', 'jndi'] },
-      { name: 'TOOLS', tags: ['nmap', 'burpsuite', 'snmp', 'cups', 'wireshark', 'pcap', 'metasploit'] },
-      { name: 'SERVICES', tags: ['printer', '3d-printer', 'telnet', 'mongodb'] }
+      { name: 'DIFFICULTY', tags: ['very-easy', 'easy', 'medium', 'hard', 'insane', 'hidden'] },
+
+      // CTF-specific groupings — distinguishing platform, category, and achievements.
+      // Posts on the local server can also be filtered to a single platform via these tags.
+      { name: 'CTF PLATFORM', tags: [
+          'ctf', 'snack-con', 'htb', 's2r1', 's2', 's1r2', 'retro'
+      ] },
+      { name: 'CTF CATEGORY', tags: [
+          'osint', 'sigint', 'forensics', 'network', 'blockchain', 'coding', 'misc', 'crypto'
+      ] },
+      { name: 'CTF ACHIEVEMENTS', tags: [
+          'first-blood', 'bug-bounty', 'incomplete', 'bonus-tier', 'code-golf', 'vulnerability-research'
+      ] },
+
+      { name: 'TECHNIQUES', tags: [
+          'rce', 'ssti', 'privesc', 'suid', 'reverse-shell', 'steganography', 'irc', 'ssh',
+          'web', 'sqli', 'php', 'ldap', 'winrm', 'active-directory', 'credential-stuffing',
+          'cve', 'dfir', 'path-traversal', 'ntlm', 'log4shell', 'jndi',
+          // CTF-introduced web/crypto techniques
+          'jwt', 'mac-scope', 'dom-clobbering', 'prototype-pollution', 'html-sanitizer',
+          'client-side-secrets', 'client-side-redaction', 'admin-panel', 'recon', 'storage',
+          'privilege-escalation', 'metadata-leak', 'base64', 'base32', 'hex', 'png', 'barcode',
+          // Languages and other technique tags
+          'javascript', 'solidity', 'swc-136', 'prompt-injection', 'nft-metadata'
+      ] },
+      { name: 'TOOLS', tags: [
+          'nmap', 'burpsuite', 'snmp', 'cups', 'wireshark', 'pcap', 'metasploit', 'tshark',
+          // CTF-introduced
+          'dns', 'txt-record', 'terminal', 'snackchat', 'discord', 'emojichef', 'metamask'
+      ] },
+      { name: 'SERVICES', tags: ['printer', '3d-printer', 'telnet', 'mongodb', 'ethereum', 'wallet'] }
     ];
 
-    const STYLED_TAGS = new Set([...CHARACTER_TAGS, 'purple']);
+    const STYLED_TAGS = new Set([...CHARACTER_TAGS, 'purple', 'first-blood']);
 
     function getTagClass(tag) {
+      if (tag === 'first-blood') return 'tag first-blood-tag';
       return STYLED_TAGS.has(tag) ? `tag ${tag}` : 'tag';
+    }
+
+    function tagInlineStyle(tag) {
+      // Special inline styling for first-blood (matches the per-post header callout)
+      if (tag === 'first-blood') {
+        return 'background: linear-gradient(90deg, rgba(231,29,54,0.4), rgba(255,159,28,0.4)); color: white; font-weight: 700;';
+      }
+      return '';
     }
 
     async function init() {
@@ -90,11 +133,15 @@
           });
         });
 
+        // Track which tags belong to a named category so we know what's "Other"
+        const categorized = new Set();
+        CATEGORIES.forEach(c => c.tags.forEach(t => categorized.add(t)));
+
         const container = document.getElementById('tags-content');
         let html = '';
 
+        // Render the named categories in their declared order
         CATEGORIES.forEach(category => {
-          // Only show tags that have posts
           const activeTags = category.tags.filter(t => tagCounts[t]);
           if (activeTags.length === 0) return;
 
@@ -104,12 +151,33 @@
           ${category.name}
         </h2>
         <div class="tags-container" style="gap: 1rem;">
-          ${activeTags.map(t =>
-            `<a href="/blog/tags/tag.html?tag=${encodeURIComponent(t)}" class="${getTagClass(t)}" style="font-size: 1rem; padding: 0.5rem 1rem;">${t} <span style="opacity: 0.6; font-size: 0.8em;">(${tagCounts[t]})</span></a>`
-          ).join('\n          ')}
+          ${activeTags.map(t => {
+            const style = tagInlineStyle(t);
+            const styleAttr = style ? ` ${style}` : '';
+            return `<a href="/blog/tags/tag.html?tag=${encodeURIComponent(t)}" class="${getTagClass(t)}" style="font-size: 1rem; padding: 0.5rem 1rem;${styleAttr}">${t} <span style="opacity: 0.7; font-size: 0.8em;">(${tagCounts[t]})</span></a>`;
+          }).join('\n          ')}
         </div>
       </section>`;
         });
+
+        // OTHER — anything that has posts but didn't land in a named category.
+        // Sorted alphabetically. Guarantees zero orphans on the index.
+        const other = Object.keys(tagCounts)
+          .filter(t => !categorized.has(t))
+          .sort();
+        if (other.length > 0) {
+          html += `
+      <section style="margin-bottom: 3rem;">
+        <h2 style="font-family: var(--font-pixel); font-size: 0.9rem; color: var(--text-primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-dim);">
+          OTHER
+        </h2>
+        <div class="tags-container" style="gap: 1rem;">
+          ${other.map(t =>
+            `<a href="/blog/tags/tag.html?tag=${encodeURIComponent(t)}" class="${getTagClass(t)}" style="font-size: 1rem; padding: 0.5rem 1rem;">${t} <span style="opacity: 0.7; font-size: 0.8em;">(${tagCounts[t]})</span></a>`
+          ).join('\n          ')}
+        </div>
+      </section>`;
+        }
 
         container.innerHTML = html;
       } catch (err) {

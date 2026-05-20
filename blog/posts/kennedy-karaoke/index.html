@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A 500-point MISC challenge that asked for a microphone, not a packet capture. The Lamp Post Tavern's karaoke night was the entire test chamber. snack_con S2R1.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Lamp Post Tavern | Hack the Cube</title>
+
+  <meta property="og:title" content="Lamp Post Tavern - Hack the Cube">
+  <meta property="og:description" content="The challenge brief said 'show up, take the mic.' The host had the flag. Karaoke as a test chamber.">
+  <meta property="og:image" content="/blog/posts/kennedy-karaoke/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-08T23:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Lamp Post Tavern</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 8, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>MISC</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~one set</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/kennedy-karaoke/images/header-800w.webp 800w,
+                 /blog/posts/kennedy-karaoke/images/header-1200w.webp 1200w,
+                 /blog/posts/kennedy-karaoke/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/kennedy-karaoke/images/header.png"
+          alt="Lamp Post Tavern - silhouetted band on a dive-bar stage, vintage lamp post off-stage, Wheatley sphere hovering near the mic"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=misc" class="tag">misc</a>
+        <a href="/blog/tags/tag.html?tag=in-person" class="tag">in-person</a>
+        <a href="/blog/tags/tag.html?tag=participation" class="tag">participation</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=wheatley" class="tag">wheatley</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span>Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Brief That Wasn't a Brief</h2>
+
+      <p>Most CTF challenges hand you a file, a URL, or a binary. This one handed me a venue: <em>"Karaoke night at the Kennedy Lamp Post Tavern, just off the main floor. Show up, take the mic, and the host can confirm the flag for those who play their part."</em> 500 points. MISC. Medium difficulty.</p>
+
+      <p>There was no download link. There was no API endpoint. There was no decoder ring. The challenge brief was the entire challenge: be physically present, take the microphone, and perform.</p>
+
+      <p>One small bit of geography first &mdash; the brief's "just off the main floor" wording was creative licensing on the venue side. The Kennedy Lamp Post Tavern is not literally adjacent to the HackSpaceCon main floor. It's a drive down the street, in a separate building. Anyone planning to chase this challenge live should budget travel time, not walk-to-the-next-room time.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The Enrichment Center has classified this as a MISC challenge. Translation: I cannot fit it into any of the proper categories, and I have given up trying. Some test chambers contain mazes. Some contain turrets. This one contains a microphone, a karaoke catalogue, and an audience. The Enrichment Center reminds you that science is rarely this loud."</div>
+      </div>
+
+      <h2>Forming the Band</h2>
+
+      <p>Karaoke is a solo activity by default. This solve was not solo. The Lamp Post Tavern stage that night was a four-piece &mdash; an impromptu band assembled from snack_con players who'd chased the challenge hint into the tavern and were, at that hour, still awake. snack_con is a semi-secret CTF that runs within HackSpaceCon &mdash; there's no snack_con badge, no separate registration line; the only credential to be recruited into the band was that you were playing the CTF and saw the same hint everyone else did. We named ourselves on the spot, rotated through stage personas the way someone might rotate through aliases at a packet-capture, and put together a single-song setlist before stepping up to the mic.</p>
+
+      <p>The band, for the record, was <strong>Titty Kaka</strong>. The roster:</p>
+
+      <div class="terminal-log">BAND:    Titty Kaka
+LINEUP:
+  &mdash; Long Dong Silver        (pirate hat)
+  &mdash; Channing Potatum        (french fry hat)
+  &mdash; Prince Albert           (crown)
+  &mdash; Girth the Raffe         (giraffe hat)
+SET LENGTH: 1 song</div>
+
+      <p>The lineup needs context. snack_con runs an impromptu <strong>hat ceremony</strong> at the con &mdash; players who've completed at least one CTF challenge by ceremony time get a snack_con hat, randomly assigned from a shared pile. The hats are absurd by design: pirate, french fry, crown, giraffe, and a few others. Players' snack_con user handles are themselves derived from their hat assignments, so the hats anchor a player's identity inside the CTF.</p>
+
+      <p>For karaoke we recycled the bit but made it crude on purpose &mdash; the band's stage names were brand-new pseudonyms riffing on the same four hats, decided amongst ourselves <em>before</em> stepping out. I went on stage as <strong>Long Dong Silver</strong> (pirate). The other three personas mapped to the other three hats: Channing Potatum (french fry), Prince Albert (crown), Girth the Raffe (giraffe). Names locked in advance, vocals split democratically once the music started.</p>
+
+      <p>The song-selection decision tree from there was simple. Pick a song. Pick a song everyone has heard. Pick a song everyone can fake their way through if they haven't heard it. Pick a song the audience will let you finish.</p>
+
+      <div class="terminal-log">$ song = "Kryptonite" (3 Doors Down, 2000)
+$ tempo = "moderate, you can talk-sing the verses if needed"
+$ chorus_recognition_factor = "very high"
+$ stage_fright_compatibility = "yes — chorus carries you"</div>
+
+      <p>"Kryptonite" because the chorus is a load-bearing structural element &mdash; you can wing the verses and the audience will join in for "if I go crazy then will you still call me Superman." The chorus is the foundation. The verses are negotiable.</p>
+
+      <h2>The Set</h2>
+
+      <p>One song. Full performance. The "right cadence" of the challenge was simply finishing the set without bailing. The host watched from the floor with a knowing smile &mdash; the same kind of smile a TA wears when they've already graded your exam but won't tell you the score until you've turned it in officially.</p>
+
+      <div class="dialogue">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Right then, that's how participation gates work. You can't curl your way past a karaoke night. You can't grep for a chorus. The host is the API. The mic is the auth header. The audience is &mdash; well, mostly the audience is just there to clap. That part might be optional. Probably best not to test it though."</div>
+      </div>
+
+      <p>The set ended. Polite cheering. The host walked the band over to a quiet corner of the tavern after we cleared the stage and confirmed the flag in person to each performer.</p>
+
+      <div class="terminal-log">FLAG: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">CTF{lamp_post_lullaby}</span></span></div>
+
+      <p>The flag string itself is a venue tribute &mdash; <code>lamp_post_lullaby</code> &mdash; the Tavern's signature lamp post turned soft-coded into the flag. Kennedy Space Center's lamp-post-tavern fixture is the kind of in-joke that only registers if you've actually been there.</p>
+
+      <h2>The First-Blood Wrinkle</h2>
+
+      <p>Four people performed. Four people received the same flag string from the host. The platform recorded one first-blood. The submission timestamp was the deciding factor &mdash; whoever opened their phone fastest after the host's confirmation and POSTed to <code>/api/s2/submit-flag</code> got the +100 first-blood bonus. Everyone else got the base 500.</p>
+
+      <p>This is a useful precedent for participation-gated challenges with multiple recipients. The race is not the puzzle. The race is the submit. If first-blood matters and you're sharing a delivery moment with other players, have the submit form pre-filled and your finger over the button before the host says "go."</p>
+
+      <h2>What I Learned</h2>
+
+      <p><strong>Some test chambers don't have terminals.</strong> A challenge that says "show up and take the mic" is not metaphor. It is the literal instruction. The natural impulse for a CTF player is to look for the technical loophole &mdash; can I record someone else singing and submit the audio? Can I argue with the host? Can I find the flag in a posters-on-the-wall photo? &mdash; and the answer in this case was: no, you have to actually do the karaoke. The lock is on the activity, not on a system.</p>
+
+      <p><strong>Group solves race the submit, not the find.</strong> If the host confirms a flag in person to N players simultaneously, only one player gets first-blood. The race starts the instant the host stops talking. Have the submit endpoint open and the flag string in your clipboard before that moment if first-blood is the goal.</p>
+
+      <p><strong>Kennedy Space Center has a karaoke bar.</strong> This is not load-bearing intelligence for any future CTF, but it is genuinely worth knowing.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{lamp_post_lullaby}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Read challenge brief &mdash; explicit instruction to attend a venue and perform</li>
+          <li>Located the Kennedy Lamp Post Tavern &mdash; the brief said "just off the main floor" but the venue was a drive down the street in a separate building; budgeted travel time accordingly</li>
+          <li>Formed an impromptu four-piece band with three other con attendees</li>
+          <li>Selected a chorus-recognizable song ("Kryptonite", 3 Doors Down)</li>
+          <li>Performed the full set on stage</li>
+          <li>Host confirmed the flag in person to all four performers</li>
+          <li>Submitted <code>CTF{lamp_post_lullaby}</code> to <code>/api/s2/submit-flag</code> &rarr; accepted, +500 pts</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/bonus-mp3-carrier/" class="post-nav-link prev">Bonus MP3 Carrier</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

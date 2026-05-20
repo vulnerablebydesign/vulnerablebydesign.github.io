@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shuffled emoji fragments hidden in Solidity storage slots, decoded through an in-game codec, leading to a hidden NFT metadata directory. The hardest challenge in the chain.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>CHAIN // Tier 2 &middot; Fragmented Metadata | Hack the Cube</title>
+
+  <meta property="og:title" content="CHAIN // Tier 2 · Fragmented Metadata - Hack the Cube">
+  <meta property="og:description" content="Ask the vault where its metadata lives. Follow the answer. The whole URL isn't there.">
+  <meta property="og:image" content="/blog/posts/chain-tier2/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-23T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">CHAIN // Tier 2 &middot; Fragmented Metadata</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 23, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty hard">Hard</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>BLOCKCHAIN</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~01:10:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/chain-tier2/images/header-800w.webp 800w,
+                 /blog/posts/chain-tier2/images/header-1200w.webp 1200w,
+                 /blog/posts/chain-tier2/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/chain-tier2/images/header.png"
+          alt="Shattered mirror reflecting emoji fragments reassembling into a URL path, neon chalk on dark background"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=hard" class="tag">hard</a>
+        <a href="/blog/tags/tag.html?tag=blockchain" class="tag">blockchain</a>
+        <a href="/blog/tags/tag.html?tag=solidity" class="tag">solidity</a>
+        <a href="/blog/tags/tag.html?tag=emojichef" class="tag">emojichef</a>
+        <a href="/blog/tags/tag.html?tag=nft-metadata" class="tag">nft-metadata</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=curiosity-core" class="tag curiosity-core">curiosity-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-curiosity-core">Curiosity Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Broken Mirror</h2>
+
+      <p>Stage 2 of the chain was the hardest challenge in the vault. The description was deceptively simple:</p>
+
+      <blockquote>"Ask the vault where its metadata lives. Follow the answer. The whole URL isn't there &mdash; the rest is kept somewhere less obvious, not in one piece."</blockquote>
+
+      <p>From Stage 1 we already had the contract source. We knew the storage layout. But Stage 2 required four distinct skills: understanding dynamic array storage in the EVM, recognizing an emoji encoding scheme, using an in-game codec, and &mdash; critically &mdash; understanding how ERC-721 metadata URLs are constructed.</p>
+
+      <p>That last one is where we nearly failed.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The contract has a <code>Fragment[]</code> array. A struct with <code>order</code>, <code>dataLength</code>, and <code>data</code> fields. Shuffled, of course. Because storing things in order would be far too courteous."</div>
+      </div>
+
+      <h2>Reading Dynamic Arrays from Storage</h2>
+
+      <p>The <code>_fragments</code> array lives at storage slot 10. But dynamic arrays in Solidity don't store their elements at the declared slot &mdash; that slot holds only the <strong>array length</strong>. The actual elements begin at <code>keccak256(slot)</code>, packed sequentially.</p>
+
+      <p>Calling <code>getFragmentCount()</code> confirmed 3 fragments. Each <code>Fragment</code> struct occupies 2 storage slots (34 bytes padded to 64). So the data spans 6 consecutive slots starting at <code>keccak256(10)</code>.</p>
+
+      <div class="terminal-log">
+# Compute array base slot
+keccak256(uint256(10)) = 0xc65a7bb8...f9d2a8
+
+# Read 6 slots (2 per fragment)
+Slot base+0: 0x...0e01  (order=1, dataLength=14)
+Slot base+1: 0x99a7f09f98adf09f99b6f09f98b4...
+Slot base+2: 0x...0e00  (order=0, dataLength=14)
+Slot base+3: 0xf09f99a6f09f99acf09f98b4f09f...
+Slot base+4: 0x...0c02  (order=2, dataLength=12)
+Slot base+5: 0xf09f99b5f09f99acf09f99b4...</div>
+
+      <p>The <code>order</code> field tells us how to reassemble: fragment at storage index 1 goes first (order=0), then index 0 (order=1), then index 2 (order=2). The fragments were deliberately shuffled in storage.</p>
+
+      <h2>Recognizing the Encoding</h2>
+
+      <p>Once reassembled and decoded as UTF-8, the combined bytes produced a sequence of 10 emoji characters:</p>
+
+      <div class="terminal-log">
+Combined: f09f99a6 f09f99ac f09f98b4 f09f99a7
+          f09f98ad f09f99b6 f09f98b4 f09f99b5
+          f09f99ac f09f99b4
+
+Decoded: &#x1F666;&#x1F66C;&#x1F634;&#x1F667;&#x1F62D;&#x1F676;&#x1F634;&#x1F675;&#x1F66C;&#x1F674;</div>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"Ooh! Emojis! Those aren't just emojis though, are they? They're FOOD emojis! Like a recipe! Is it a recipe? It IS a recipe! EmojiChef! The thing from Season 1! Can we decode it? Can we decode it can we decode it?!"</div>
+      </div>
+
+      <p>EmojiChef &mdash; a custom emoji-to-text codec built into the snack_con platform &mdash; was the key. Available both locally and in the in-game SNACK_SHELL terminal, it decodes food emoji sequences back to ASCII text.</p>
+
+      <div class="terminal-log">
+snacker@snacknet:~$ emojichef-beta decode &#x1F666;&#x1F66C;&#x1F634;&#x1F667;&#x1F62D;&#x1F676;&#x1F634;&#x1F675;&#x1F66C;&#x1F674;
+Input: &#x1F666;&#x1F66C;&#x1F634;&#x1F667;&#x1F62D;&#x1F676;&#x1F634;&#x1F675;&#x1F66C;&#x1F674;
+Output: fl4g-v4ult
+&check; Decoded 10 classic emojis into "fl4g-v4ult"</div>
+
+      <p>The fragments decode to <code>fl4g-v4ult</code>. A hidden path segment for the metadata URL.</p>
+
+      <h2>The Metadata URL &mdash; Where We Got Stuck</h2>
+
+      <p>We had two pieces: the metadata base URI from storage slot 9 (<code>https://chain.snackspacecon.com/api/metadata/</code>) and the decoded fragment (<code>fl4g-v4ult</code>). The obvious URL &mdash; <code>/api/metadata/fl4g-v4ult</code> &mdash; returned a 404 with a hint: <em>"The URL seems incomplete."</em></p>
+
+      <p>We tried everything. Decoded text, raw emojis, URL-encoded emojis, the passphrase as a prefix, contract address as a path segment, token IDs, file extensions, POST requests, different domains. Every variation returned the same 126-byte error.</p>
+
+      <p>The answer was embarrassingly simple, and the contract had been telling us the whole time.</p>
+
+      <h2>The tokenURI Pattern</h2>
+
+      <p>The <code>tokenURI</code> function in the contract:</p>
+
+      <div class="terminal-log">
+function tokenURI(uint256 tokenId) public view override
+    returns (string memory) {
+    _requireOwned(tokenId);
+    return string.concat(_metadataBaseURI, Strings.toString(tokenId));
+}
+
+// tokenURI(0) = "https://chain.snackspacecon.com/api/metadata/0"
+// tokenURI(1) = "https://chain.snackspacecon.com/api/metadata/1"</div>
+
+      <p>The pattern is always: <strong>base URI + token ID</strong>. The decoded fragments (<code>fl4g-v4ult</code>) are a hidden <em>directory</em> in the metadata path, not the final segment. A token ID still needs to go at the end.</p>
+
+      <p>But the server doesn't accept the decoded text. It matches on the <strong>raw emoji bytes</strong> as the path segment. The working URL:</p>
+
+      <div class="terminal-log">
+https://snackspacecon.com/api/metadata/&#x1F666;&#x1F66C;&#x1F634;&#x1F667;&#x1F62D;&#x1F676;&#x1F634;&#x1F675;&#x1F66C;&#x1F674;/1</div>
+
+      <div class="terminal-log">
+{
+  "name": "snack_con flag #1",
+  "description": "You found the hidden metadata!
+                   Here is your second flag.",
+  "attributes": [
+    { "trait_type": "Flag",
+      "value": "<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{em0ji_ch3f_m3tadata_hunt3r}</span></span>" }
+  ]
+}</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The <code>tokenURI</code> function literally concatenates the base with a number. It was always going to end with a number. We tried every possible path except the one the contract told us to use. I'm recalibrating my expectations of your pattern recognition to account for this... oversight."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>This challenge tested four layers of skill, and we cleared three quickly before getting stuck on the fourth:</p>
+
+      <ol>
+        <li><strong>EVM storage for dynamic arrays</strong> &mdash; computing <code>keccak256(slot)</code> for the array base, reading struct fields from packed slots, handling the shuffled order.</li>
+        <li><strong>Encoding recognition</strong> &mdash; seeing emoji bytes and connecting them to EmojiChef, a platform-specific codec.</li>
+        <li><strong>Cross-tool verification</strong> &mdash; confirming the decode both locally and in SNACK_SHELL.</li>
+        <li><strong>URL construction from contract patterns</strong> &mdash; the <code>tokenURI</code> function tells you the metadata URL always ends with a number. The emojis are a hidden directory, not a terminal segment. We missed this for over an hour.</li>
+      </ol>
+
+      <p>The lesson: when a smart contract function shows you a URL pattern, trust it completely. The pattern doesn't change just because part of the path is hidden &mdash; it changes what goes <em>before</em> the token ID, not whether a token ID exists.</p>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"So the emojis were a secret FOLDER! And the folder had NFT metadata INSIDE it! And the metadata had the FLAG! That's like a secret inside a secret inside a secret! THREE LAYERS!"</div>
+      </div>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Called <code>getFragmentCount()</code> &rarr; 3 fragments in the array</li>
+          <li>Computed array base slot: <code>keccak256(uint256(10))</code></li>
+          <li>Read 6 storage slots (2 per struct), extracted order/dataLength/data</li>
+          <li>Sorted fragments by <code>order</code> field (0, 1, 2) and concatenated data</li>
+          <li>Decoded combined bytes as UTF-8 &rarr; 10 emoji characters</li>
+          <li>Decoded emojis via EmojiChef (SNACK_SHELL + local) &rarr; <code>fl4g-v4ult</code></li>
+          <li>Constructed URL: <code>/api/metadata/[raw_emojis]/[tokenId]</code></li>
+          <li>Fetched metadata JSON &rarr; flag in attributes &rarr; <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{em0ji_ch3f_m3tadata_hunt3r}</span></span></li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

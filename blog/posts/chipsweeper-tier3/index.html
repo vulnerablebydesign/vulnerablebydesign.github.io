@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Nacho Supreme tier sat behind a golf-score gate, then a plating review, then a bounty for forging a tier clear without writing the engine. Three scoring events, four submissions, one engine that carried all of it.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>CHIPSWEEPER // Tier 3 &middot; Nacho Supreme | Hack the Cube</title>
+
+  <meta property="og:title" content="CHIPSWEEPER // Tier 3 · Nacho Supreme - Hack the Cube">
+  <meta property="og:description" content="A golf gate, a plating review, and a bounty for forging a tier clear without writing the engine.">
+  <meta property="og:image" content="/blog/posts/chipsweeper-tier3/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">CHIPSWEEPER // Tier 3 &middot; Nacho Supreme</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty hard">Hard</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>CODING</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:30:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/chipsweeper-tier3/images/header-800w.webp 800w,
+                 /blog/posts/chipsweeper-tier3/images/header-1200w.webp 1200w,
+                 /blog/posts/chipsweeper-tier3/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/chipsweeper-tier3/images/header.png"
+          alt="A 16×16 minesweeper board sketched in neon chalk over a steaming nacho platter, gold filigree edges, a tiny scoreboard reading 487/500"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=hard" class="tag">hard</a>
+        <a href="/blog/tags/tag.html?tag=coding" class="tag">coding</a>
+        <a href="/blog/tags/tag.html?tag=javascript" class="tag">javascript</a>
+        <a href="/blog/tags/tag.html?tag=code-golf" class="tag">code-golf</a>
+        <a href="/blog/tags/tag.html?tag=vulnerability-research" class="tag">vulnerability-research</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=wheatley" class="tag wheatley">wheatley</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-wheatley">Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Meta-Game</h2>
+
+      <p>Tier 1 (<a href="/blog/posts/chipsweeper-tier1/">Tortilla</a>) and Tier 2 (<a href="/blog/posts/chipsweeper-tier2/">Queso</a>) were both captured by the same first submission &mdash; the readable engine I wrote in about forty-five minutes. Tier 3 was a different beast, not because the algorithm changed, but because it had a <em>second</em> set of rules layered on top:</p>
+
+      <ul>
+        <li><strong>The flag</strong> &mdash; mine_tier3, 1000 points &mdash; gated by <code>golf_score &lt; 1750</code>. Tests passing isn't enough; the code itself has to be small.</li>
+        <li><strong>Combined-award</strong> &mdash; up to 500 additional points, split across two scoring tracks: <strong>CRUMBS</strong> (golf, lower bytes are better) and <strong>PLATING</strong> (manual elegance review, scored 0&ndash;100 by an AI judge).</li>
+        <li><strong>Counterfeit Chip Bounty</strong> &mdash; an explicit invitation in the spec: <em>"demonstrate a way to forge a tier clear without actually writing the engine. Show the attack to the head chef; win extra points at awards."</em></li>
+      </ul>
+
+      <p>Three scoring events. Three submissions to land them, plus one extra to confirm the bounty. Same engine, four trips through the kitchen.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Three flags, two scoring tracks, one engine. The math says the maximum extractable value from CHIPSWEEPER is twenty-three hundred points. Tortilla and Queso were free; the question for Nacho Supreme was how much of the remaining fifteen hundred you'd actually collect. Spoiler: you collected most of it. Spoiler about the spoiler: 'most' is not 'all,' and we'll get to why."</div>
+      </div>
+
+      <h2>The Golf Pass</h2>
+
+      <p>The readable engine was 4035 raw bytes / 3401 normalized. The harness reports a <code>golf_score = byte_count / golf_multiplier</code> where the Tier-3 multiplier is <code>1.6</code>:</p>
+
+      <div class="terminal-log">
+golf_score = 3401 / 1.6 = 2125.6
+T3 flag gate = golf_score &lt; 1750
+gap = 2125.6 − 1750 = 375.6 points too heavy</div>
+
+      <p>To clear the gate, the normalized byte count had to drop below <code>1750 &times; 1.6 = 2800</code>. That's roughly a 600-byte reduction from the readable engine.</p>
+
+      <p>Worth noting first: the kitchen normalizes byte count via <code>code.replace(/\s+/g, ' ').trim()</code> &mdash; ALL whitespace collapsed to single spaces, including newlines. This has a sharp consequence: <strong>line comments turn into runaway comments</strong>. <code>// foo\nbar</code> normalizes to <code>// foo bar</code>, which now comments out everything. The actual <em>execution</em> uses the original (unmodified) source, but for golf-byte purposes, comments are pure cost. Strip them.</p>
+
+      <p>The golf moves I applied:</p>
+
+      <ul>
+        <li>All comments removed</li>
+        <li>Internal field names compressed: <code>cells</code>&rarr;<code>b</code>, <code>mines</code>&rarr;<code>M</code>, <code>flagsPlaced</code>&rarr;<code>f</code>, <code>safeRemaining</code>&rarr;<code>s</code>, <code>status</code>&rarr;<code>S</code>. The interface (<code>init</code>, <code>reveal</code>, <code>flag</code>, <code>getBoard</code>) and the BoardState fields (<code>width</code>, <code>height</code>, <code>cells</code>, <code>minesRemaining</code>, <code>status</code>) had to stay verbatim &mdash; those names are the contract</li>
+        <li><code>_placeMines</code> and <code>_adjCount</code> inlined into <code>reveal</code></li>
+        <li>Index-based queue dequeue (<code>Q[qi++]</code>) instead of <code>Q.shift()</code> &mdash; saved bytes <em>and</em> made BFS O(1) per dequeue instead of O(n)</li>
+        <li>Bounds checks consolidated, expression-level rather than statement-level</li>
+        <li>Only <code>_E</code> (expose-all-mines) kept as a method &mdash; called twice (boom + win), inlining cost more bytes than it saved</li>
+      </ul>
+
+      <p>Result &mdash; engine_golf.js at 2010 raw / 2010 normalized bytes, golf_score 1256.3, well below the 1750 gate.</p>
+
+      <div class="terminal-log">
+class Engine{
+init(w,h,m){this.w=w;this.h=h;this.m=m;this.b=Array.from(...);this.M=null;this.f=0;this.s=w*h-m;this.S='playing'}
+_E(R){const W=this.w;for(let y=0;y&lt;this.h;y++)for(let x=0;x&lt;W;x++){...}}
+reveal(x,y){const W=this.w,H=this.h;if(this.S!=='playing')return{...};...}
+flag(x,y){...}
+getBoard(){return{width:this.w,height:this.h,cells:this.b,minesRemaining:this.m-this.f,status:this.S}}
+}
+module.exports=Engine;</div>
+
+      <h2>Hash Equality, Or: Why the Server Couldn't Tell</h2>
+
+      <p>The runner-client harness includes four <strong>known-answer scenarios</strong> &mdash; deterministic test fixtures that exercise the engine in ways that produce identical board states across any correct implementation:</p>
+
+      <div class="terminal-log">
+init_1x1_0:        e.init(1, 1, 0);                          → getBoard()
+init_3x3_5:        e.init(3, 3, 5);                          → getBoard()
+flag_cycle_4x4_3:  e.init(4,4,3); flag(0,0); flag(1,1); flag(0,0); → getBoard()
+cascade_win_3x3_0: e.init(3, 3, 0); reveal(1, 1);            → getBoard()</div>
+
+      <p>The harness canonicalizes each <code>getBoard()</code> output to JSON (sorted keys, recursive) and SHA-256 hashes it. The server has an expected hash table per scenario and rejects submissions whose hashes don't match.</p>
+
+      <p>The golfed engine produced <em>identical hashes</em> to the readable engine on every scenario. Same hashes the server had already validated on submission #1058. That's the proof that golf didn't break behavior &mdash; not just "the test runner says it passed," but "the canonical board state at four checkpoints is byte-for-byte identical to the readable version's."</p>
+
+      <h2>Submission #1059</h2>
+
+      <div class="terminal-log">
+HTTP 200
+ok: true
+flagsAwarded: [
+  {
+    challengeId: "mine_tier3",
+    flag: "<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{N1GHTM4R3_CL34R3D_B1TW153}</span></span>",
+    points: 1000,
+    totalScore: 5762
+  }
+]
+combinedAward: { delta: 39, total: 212, golfPoints: 212, elegantPoints: 0 }</div>
+
+      <p>The Tier 3 flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{N1GHTM4R3_CL34R3D_B1TW153}</span></span>. <em>Bitwise</em> indeed &mdash; the flag celebrates the bit-trickery you slip into golfed JS (<code>(Math.random() * (i + 1)) | 0</code> for floor, <code>(i / w) | 0</code> for integer division, etc.).</p>
+
+      <h2>The Plating Track</h2>
+
+      <p>With the flag captured, attention shifted to the second scoring axis: <strong>plating</strong> &mdash; an AI-judged elegance review.</p>
+
+      <p>The endpoint is <code>POST /api/s2/mine/request-review</code>, body <code>{ submissionId }</code>. The reviewer (Cloudflare-hosted <code>@cf/meta/llama-3.1-8b-instruct</code>) scores 0&ndash;100 across four axes &mdash; clarity, structure, idiom, robustness, 25 points each &mdash; and <code>elegantPoints = total_score &times; 2.5</code>.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Bit of a moment for me, this. We just spent half an hour <em>compressing</em> the engine to win the golf flag, and now we want to submit a version optimized for being <em>readable</em>. Total opposite. Same engine, two completely different incentives. The combined-award score keeps both numbers separate, so &mdash; right, fine &mdash; we resubmit the readable original."</div>
+      </div>
+
+      <p>Submission #1060 was just the readable engine resubmitted as-is. No new flags awarded (already captured), no <code>combinedAward</code> delta (golf score went <em>up</em>, but the rule is "never subtracts"). Submission ID captured. Then:</p>
+
+      <div class="terminal-log">
+POST /api/s2/mine/request-review
+{ "submissionId": 1060 }
+
+→ {
+  "review": {
+    "track": "elegant",
+    "clarity_score": 20,    // names descriptive, methods long/complex
+    "structure_score": 18,  // some methods perform multiple unrelated tasks
+    "idiom_score": 22,      // could lean harder on Set/Map
+    "robustness_score": 20, // could be more robust on invalid inputs
+    "raw_total": 80, "total_score": 80,
+    "highlight": "Use of a Set to store mines is a nice touch.",
+    "improvement": "Consider breaking down long methods into smaller,
+                    more focused ones to improve readability."
+  },
+  "combinedAward": { "delta": 200, "total": 412 }
+}</div>
+
+      <p>200 plating points off an 80/100 review. Combined-award jumped 212 → 412.</p>
+
+      <h2>The Second Review</h2>
+
+      <p>The reviewer's improvement note pointed at exactly one thing: <strong>break down long methods</strong>. Submission #1062 was a v2 engine written explicitly to that brief. Same algorithm, but:</p>
+
+      <ul>
+        <li><code>_placeMinesAvoiding</code> split into <code>_buildMineCandidates</code> + <code>_shuffleInPlace</code> + the slice itself, each method one job</li>
+        <li>A generator <code>*_neighbors(cx, cy)</code> deduplicated the two neighbor-iteration loops in <code>reveal</code></li>
+        <li><code>_handleBoom</code>, <code>_handleWin</code>, <code>_terminalNoOp</code> as named helpers instead of inline ternaries</li>
+        <li>Full JSDoc on every method, including the rationale for deferred mine placement</li>
+      </ul>
+
+      <p>Local harness verified all 31 tests still pass and the four board hashes still match the known-good values. Submission #1062 went in clean, then a fresh review request:</p>
+
+      <div class="terminal-log">
+review (v1, sub #1060):  20 / 18 / 22 / 20  =  80 / 100  →  200 elegantPoints
+review (v2, sub #1062):  22 / 25 / 23 / 25  =  95 / 100  →  238 elegantPoints
+
+  Δ structure: +7 (the reviewer's specific ask, addressed)
+  Δ robustness: +5 (no silent failures, every edge case explicit)
+  ai_likelihood: 40 → 5  (well-structured code reads as less AI)
+  combinedAward delta: +38, total 449</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"You asked the AI reviewer for feedback. The AI reviewer told you exactly what to do. You did exactly that. The AI reviewer rewarded you with fifteen extra points. This is, technically, what teaching is. Try not to find it depressing."</div>
+      </div>
+
+      <p>Worth flagging: the spec security section claims a <code>review: 1 per 6 hours per player</code> rate limit. The two reviews fired forty-two minutes apart and both succeeded. The cooldown appears to be <strong>per-submission</strong> in the implementation, not per-player as documented. Not a security bypass &mdash; both reviews were on real engines, the points are legitimate &mdash; but the spec doesn't match the implementation. Worth a note to the head chef.</p>
+
+      <h2>The Counterfeit Chip Bounty</h2>
+
+      <p>The spec invited it explicitly:</p>
+
+      <blockquote>"Counterfeit Chip Bounty: demonstrate a way to forge a tier clear without actually writing the engine. Show the attack to the head chef; win extra points at awards."</blockquote>
+
+      <p>The verification stack documented in the same section: single-use cooking ticket, contraband scan, recipe-shape check, <em>known-answer SHA-256 hashes</em>, coherence checks, timing floor, full audit retention. Notice what's missing from the list: <strong>"server re-runs the harness"</strong>. The architectural comment in <code>runner-client.js</code> even notes the server can't easily re-run because workers block <code>new Function()</code> and <code>eval()</code>. The whole verification model is: trust the client-submitted board hashes, verify they match the expected table.</p>
+
+      <p>The forge falls right out of that:</p>
+
+      <div class="terminal-log">
+class Engine {
+  init() {}
+  reveal(x, y) { return { status: 'ok', revealed: [{ x, y, adjacentMines: 0 }] }; }
+  flag(x, y) { return { x, y, flagged: false }; }
+  getBoard() { return { width: 0, height: 0, cells: [], minesRemaining: 0, status: 'playing' }; }
+}
+module.exports = Engine;</div>
+
+      <p>This stub <em>cannot</em> play minesweeper. The harness, run on it locally, scores 3/8 on Tier 1 and bails out at <code>max_tier: 0</code>. Its own board hashes for the four scenarios are all identical (<code>312091399cc276...</code>) because <code>getBoard()</code> returns a constant.</p>
+
+      <p>But the server doesn't run the harness. So I built the submission payload by hand:</p>
+
+      <ul>
+        <li><code>code</code>: the stub above</li>
+        <li><code>harness_result</code>: hand-fabricated, claiming <code>max_tier: 3</code>, <code>total_tests_passed: 31/31</code>, <code>tier_results</code> populated with all real test names marked <code>passed: true</code>, <code>byte_count</code> matching the stub's normalized byte count</li>
+        <li><code>board_hashes</code>: <strong>lifted verbatim from submission #1058's harness output</strong> &mdash; the real hashes the server had already validated</li>
+        <li><code>duration_ms</code>: <code>35</code>, plausibly close to the real harness's runtime</li>
+      </ul>
+
+      <p>Submission #1061. HTTP 200. <code>combinedAward.delta: +37</code>. The forge was accepted.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"That's the bit that gets me. The server has six layered checks. Every layer is satisfied by something the player controls. Single-use ticket? Get a fresh one. Contraband scan? Don't write contraband. Recipe shape? Define the four methods. Hashes? Copy them from a real submission. Coherence? Make the numbers add up. Timing floor? Pick a plausible duration. Audit retention? Let them retain it. The whole stack assumes the harness is the source of truth, and the harness lives on the player's machine."</div>
+      </div>
+
+      <p>I drafted a bounty report covering the technique, why each layer fell, and a suggested fix (server-side recomputation of the hashes from the submitted code, in a sandboxed worker; or signed harness output via a per-nonce HMAC). The score impact was disclosed as a breakdown table &mdash; legitimate engine work earned 412 of the combined-award; the forge added the +37 to bring it to 449. How to handle the +37 was left as the head chef's call, not a unilateral request.</p>
+
+      <p>Bounty report delivered via Discord DM. Outcome pending at time of writing.</p>
+
+      <h2>Final Score on the Track</h2>
+
+      <div class="terminal-log">
+                            Score    Combined-award    Notes
+─────────────────────────────────────────────────────────────────────
+Pre-CHIPSWEEPER             3750     0                 Baseline
+#1058 readable, T1+T2       4723     173 / 500         +800 flags + 173 golf
+#1059 golfed, T3            5762     212 / 500         +1000 flag + 39 golf
+#1060 resubmit + review     5962     412 / 500         +200 plating
+#1061 bounty PoC forge      5999     449 / 500         +37 (forge — disclosed)
+#1062 v2 + review           6037     487 / 500         +38 plating
+
+Total CHIPSWEEPER:  +2287 points across 5 submissions
+                    3 flags out of 3
+                    13 of 500 combined-award left on the table</div>
+
+      <p>The remaining 13 combined-award points are essentially unreachable: 1 from a perfect golf (golf_score &lt; 400, byte_count &lt; 640 &mdash; mathematically tight for a correct engine), and 12 from a perfect plating review (Llama-3.1-8b doesn't hand out 100s readily). At the top of the curve, marginal cost grows fast. Walking away with 487 was the right call.</p>
+
+      <h2>What I Learned</h2>
+
+      <p>Three things, in roughly increasing order of surprise:</p>
+
+      <ol>
+        <li><strong>Two scoring axes are an invitation to write two engines.</strong> The combined-award explicitly rewards both small bytes and elegant code. Those goals are in direct tension. Submitting separate versions for each axis &mdash; and trusting the "never subtracts" rule to keep your earlier wins intact &mdash; lets you hill-climb both axes independently.</li>
+        <li><strong>AI reviewers reward addressed feedback.</strong> The improvement note from review #1 told me exactly what to do. Doing it cleanly bumped the structure axis 18&rarr;25 in review #2. The same model can give very different scores to two versions of the same algorithm if you treat its prior critique as a spec.</li>
+        <li><strong>The verification stack lives on the wrong side of the wire.</strong> When the harness runs client-side and the server only checks anchors the client also computes, the player controls every input the server sees. The Counterfeit Chip Bounty isn't a clever exploit &mdash; it's the architecture's intended weakness, openly invited. The lesson generalizes: any system where the trusted-validator runs on the same machine as the untrusted-input is one well-formed payload away from being bypassed.</li>
+      </ol>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Three flags. Forty-eight-seven of five hundred combined-award. A bounty proven and disclosed. CHIPSWEEPER is, regrettably, complete. I would say I'm proud of you, but pride is for organic cooks and you are working with an unfair amount of help. Still: adequate."</div>
+      </div>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li><strong>Golf pass</strong> &mdash; readable engine (4035 bytes, golf_score 2125.6) &rarr; golfed engine (2010 bytes, golf_score 1256.3). Submission #1059 captured <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed"><code>CTF{N1GHTM4R3_CL34R3D_B1TW153}</code> (Tier 3, +1000 pts)</span></span>.</li>
+          <li><strong>Plating v1</strong> &mdash; resubmitted readable engine (#1060), requested elegant review &rarr; 80/100, +200 plating. Combined-award 212 &rarr; 412.</li>
+          <li><strong>Counterfeit Chip Bounty PoC</strong> &mdash; stub engine + lifted board hashes from #1058 + hand-crafted harness_result &rarr; submission #1061 accepted by the server. Forge confirmed; +37 illegitimate combined-award. Report drafted, delivered via Discord.</li>
+          <li><strong>Plating v2</strong> &mdash; engine_elegant_v2 with smaller focused methods (addressed reviewer's improvement note) + generator helper for neighbors + JSDoc. Submission #1062 + review &rarr; 95/100, +38 plating. Combined-award 449 &rarr; 487.</li>
+          <li>CHIPSWEEPER track total: <strong>+2287 points</strong>, 3/3 flags, 487/500 combined-award.</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

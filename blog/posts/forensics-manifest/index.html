@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A corrupted PNG with four zeroed-out magic bytes. Patch the header, decode the barcode, recover the shipment code. snack_con S2R1 forensics challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Corrupted Cargo Manifest | Hack the Cube</title>
+
+  <meta property="og:title" content="Corrupted Cargo Manifest - Hack the Cube">
+  <meta property="og:description" content="A snack shipment manifest fell off the line. The file won't open. Patch it and read the code.">
+  <meta property="og:image" content="/blog/posts/forensics-manifest/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-22T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Corrupted Cargo Manifest</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 22, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>FORENSICS</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:10:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/forensics-manifest/images/header-800w.webp 800w,
+                 /blog/posts/forensics-manifest/images/header-1200w.webp 1200w,
+                 /blog/posts/forensics-manifest/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/forensics-manifest/images/header.png"
+          alt="Corrupted Cargo Manifest - NASA manifest with zeroed bytes and angry core on chalkboard"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=forensics" class="tag">forensics</a>
+        <a href="/blog/tags/tag.html?tag=png" class="tag">png</a>
+        <a href="/blog/tags/tag.html?tag=barcode" class="tag">barcode</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=anger-core" class="tag anger-core">anger-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-anger-core">Anger Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The File That Wouldn't Open</h2>
+
+      <p>The challenge brief was two sentences: <em>"A snack shipment manifest fell off the line at Orbital Pantry. The file won't open. Patch it and read the code."</em> A downloadable <code>manifest.png</code>. A tip: <em>"Your image viewer won't open it. Look at the raw bytes."</em></p>
+
+      <p>100 points. Easy difficulty. Forensics. This should be quick.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"When a file claims to be something but refuses to behave like it, the header is lying. Or rather, someone broke the header so it can't tell the truth anymore. This is the forensics equivalent of checking if the patient has a pulse."</div>
+      </div>
+
+      <h2>The Diagnosis</h2>
+
+      <p>First thing in any file forensics challenge: look at the raw bytes. Every file format has a <strong>magic number</strong> &mdash; a specific byte sequence at the very start that identifies what type of file it is. For PNG, that sequence is:</p>
+
+      <div class="terminal-log">89 50 4E 47 0D 0A 1A 0A</div>
+
+      <p>Eight bytes. The <code>89</code> catches transfers that strip the high bit. The <code>50 4E 47</code> spells "PNG" in ASCII. The <code>0D 0A 1A 0A</code> tests line ending conversions. It's a remarkably well-designed signature.</p>
+
+      <p>Here's what our file actually had:</p>
+
+      <div class="terminal-log">00000000: 0000 0000 0d0a 1a0a 0000 000d 4948 4452  ............IHDR</div>
+
+      <p>The first four bytes &mdash; <code>00 00 00 00</code>. Zeroed out. But everything else was intact: the second half of the PNG signature (<code>0D 0A 1A 0A</code>), the <code>IHDR</code> chunk, the image dimensions. Someone had surgically removed just the first four bytes of the magic number.</p>
+
+      <div class="dialogue anger-core">
+        <div class="dialogue-speaker">Anger Core</div>
+        <div class="dialogue-text">"FOUR. BYTES. They broke a perfectly good file by zeroing out FOUR BYTES. This is VANDALISM."</div>
+      </div>
+
+      <h2>The Fix</h2>
+
+      <p>The patch was trivial. Replace the four zeroed bytes with the correct PNG magic:</p>
+
+      <div class="terminal-log">python3 -c "
+data = open('manifest.png', 'rb').read()
+patched = b'\x89\x50\x4e\x47' + data[4:]
+open('manifest_fixed.png', 'wb').write(patched)
+"</div>
+
+      <p>The file command confirmed it:</p>
+
+      <div class="terminal-log">$ file manifest_fixed.png
+PNG image data, 1100 x 1400, 8-bit/color RGB, non-interlaced</div>
+
+      <p>A valid PNG. 1100&times;1400 pixels. The image opened to reveal a <strong>NASA cargo manifest</strong> for mission SNK-2042 &mdash; ship "Artemis-Snacks," origin KSC Pad 39-CRUNCH, destination Lunar Gateway Galley Module. The cargo list was pure snack-con: freeze-dried peanut brittle, interstellar gummy worms, zero-G marshmallows, emergency trail mix (CLASSIFIED), and Capt. Crumb's personal stash (OMITTED).</p>
+
+      <p>At the bottom: <strong>CARGO VERIFICATION CODE</strong> with a barcode. Green corruption blocks partially overlaid the image, but the barcode data was intact underneath.</p>
+
+      <h2>Reading the Code</h2>
+
+      <p>The challenge said <em>"read the code."</em> The code was the barcode. One command:</p>
+
+      <div class="terminal-log">$ zbarimg --raw manifest_fixed.png
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{sh1p_m4n1f3s7_f1nd3r}</span></span></div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Zero-point-zero-six seconds. That's how long the barcode decoder needed. For context, you spent considerably longer than that trying to decode it with raw pixel analysis before installing the proper tool. Let that be today's lesson."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>Two things from an easy challenge:</p>
+
+      <p><strong>File signatures matter.</strong> Every file format starts with a magic number. When a file won't open, the first step is always: <code>xxd file | head</code>. Compare what you see against the known signature. PNG is <code>89 50 4E 47</code>. JPEG is <code>FF D8 FF</code>. GIF is <code>47 49 46 38</code>. PDF is <code>25 50 44 46</code>. Know these cold.</p>
+
+      <p><strong>Use the right tools.</strong> <code>zbarimg</code> decoded the barcode instantly. Trying to roll a pure-Python barcode decoder from pixel data was a waste of time. Install the tool. Use the tool. Move on.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{sh1p_m4n1f3s7_f1nd3r}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Examined raw bytes with <code>xxd</code> &mdash; first 4 bytes zeroed, rest of PNG intact</li>
+          <li>Patched bytes 0&ndash;3 with correct PNG signature (<code>89 50 4E 47</code>)</li>
+          <li>Opened recovered image &mdash; NASA cargo manifest with barcode</li>
+          <li>Decoded barcode with <code>zbarimg</code> &rarr; flag</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/atencion/" class="post-nav-link prev">ATENCIÓN</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

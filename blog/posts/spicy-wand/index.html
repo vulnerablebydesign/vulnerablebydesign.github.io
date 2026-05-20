@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A 1000-point HARDWARE challenge: a sub-GHz lightwand that listens for the word 'snackattack' encoded in Morse cadence. Last year's .sub captures still work. snack_con S2R1.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Spicy Wand | Hack the Cube</title>
+
+  <meta property="og:title" content="Spicy Wand - Hack the Cube">
+  <meta property="og:description" content="The wand listens for one word. The word has to be sent in the wand's native tongue, with the right cadence. Sub-GHz Morse on a Flipper Zero.">
+  <meta property="og:image" content="/blog/posts/spicy-wand/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-08T22:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Spicy Wand</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 8, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty hard">Hard</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>HARDWARE</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~one .sub authoring session</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/spicy-wand/images/header-800w.webp 800w,
+                 /blog/posts/spicy-wand/images/header-1200w.webp 1200w,
+                 /blog/posts/spicy-wand/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/spicy-wand/images/header.png"
+          alt="Spicy Wand - Flipper Zero on a workbench transmitting sub-GHz Morse code to a glowing lightwand, with a chalk cardinal singing musical notes back. Fact Sphere observing analytically."
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=hard" class="tag">hard</a>
+        <a href="/blog/tags/tag.html?tag=hardware" class="tag">hardware</a>
+        <a href="/blog/tags/tag.html?tag=sub-ghz" class="tag">sub-ghz</a>
+        <a href="/blog/tags/tag.html?tag=morse" class="tag">morse</a>
+        <a href="/blog/tags/tag.html?tag=flipper-zero" class="tag">flipper-zero</a>
+        <a href="/blog/tags/tag.html?tag=replay-attack" class="tag">replay-attack</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=fact-sphere" class="tag">fact-sphere</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span>Fact Sphere</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Wand That Only Listens for One Word</h2>
+
+      <p>The brief was almost a haiku: <em>"Somewhere in the kitchen, a wand listens &mdash; and it only listens for one word: <code>snackattack</code>. Find the wand. Send that word in the wand's native tongue, with the right cadence, or it stays silent. The bird sings back."</em> 1000 points. HARDWARE. Hard.</p>
+
+      <p>Three pieces of language to unpack before any tool comes out of the bag. <strong>Native tongue</strong> &mdash; the wand has a protocol, not a vocabulary. Words are how we describe it; the actual transmission has to match what the device parses. <strong>Right cadence</strong> &mdash; rhythm matters. The protocol is timing-sensitive, not just symbol-sensitive. And <strong>the bird sings back</strong> &mdash; the device is supposed to respond when correctly addressed, which means there's a feedback channel and we'll know when we've got it right.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"This is the part of the science where we acknowledge that the test subject already owns the answer. The wand on display this year is, structurally, last year's wand. The same chassis. The same radio. The same unhelpful documentation. The Enrichment Center applauds this commitment to budget discipline. The Enrichment Center also notes that this means your old reconnaissance is not waste &mdash; it is investment."</div>
+      </div>
+
+      <h2>Recognizing the Lineage</h2>
+
+      <p>The wand on the con floor was the same physical artifact from last year's snack_con &mdash; a brand of LED novelty wand sold by a sub-GHz remote-controlled lighting vendor. Last year's challenge required hours of OSINT to identify the brand, then trial-and-error captures with a Flipper Zero to lock the protocol. The output of that work was a small pile of <code>.sub</code> files representing each button on the wand's controller.</p>
+
+      <p>I had those <code>.sub</code> files. They were sitting on the Flipper Zero exactly where I'd left them. Step one was just: load them up, point the Flipper at the wand, and confirm that the protocol hadn't rotated.</p>
+
+      <div class="terminal-log">flipper > sub-ghz > saved
+  &mdash; spicy_wand/on.sub        (433.92 MHz, OOK Princeton)
+  &mdash; spicy_wand/off.sub       (433.92 MHz, OOK Princeton)
+  &mdash; spicy_wand/color_red.sub
+  &mdash; spicy_wand/color_blue.sub
+  &mdash; spicy_wand/color_white.sub
+  &mdash; ...
+
+flipper > Send  &rarr;  on.sub
+[wand glows. last year's keys still work.]</div>
+
+      <p>One transmission, one response. The wand turned on. That single confirmation collapsed about eighty percent of last year's work into "still valid." The 2026 challenge was not going to require fresh protocol identification &mdash; it was going to require something built on top of the existing controls.</p>
+
+      <h2>Translating "snackattack" to Morse on Sub-GHz</h2>
+
+      <p>The puzzle's "right cadence" framing pointed at one thing only: Morse code. The wand listens for a word; the word has to arrive in a rhythm. Morse turns letters into dots and dashes; the dots and dashes are timing units. If you turn the wand on and off in Morse rhythm, the wand sees an envelope of pulses that it can decode as text.</p>
+
+      <p>Encoding "snackattack" by hand:</p>
+
+      <div class="terminal-log">s = ...
+n = -.
+a = .-
+c = -.-.
+k = -.-
+t = -
+
+snackattack = ... -. .- -.-. -.- .- - - .- -.-. -.-
+
+Morse timing units (PARIS standard):
+  dot         = 1 unit
+  dash        = 3 units
+  intra-letter gap = 1 unit
+  inter-letter gap = 3 units
+  inter-word gap   = 7 units (n/a here, single word)</div>
+
+      <div class="dialogue">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"FACT: Morse code dot-to-dash ratio has been standardized at 1:3 since the late 1840s. FACT: a 'unit' in Morse code can be set to anything &mdash; the ratios matter, not the absolute milliseconds. FACT: the word 'PARIS' was selected as the standard timing reference because it contains exactly 50 units when sent at perfect timing. FACT: the Fact Sphere is the most handsome sphere. That is also a fact."</div>
+      </div>
+
+      <h2>Authoring the Payload</h2>
+
+      <p>The Flipper Zero supports two relevant primitives here: it can play back a saved <code>.sub</code> file, and it can issue raw on/off transmissions at any specified frequency. To send Morse, I needed to alternate the wand's "on" and "off" sub-GHz signals with the dot/dash timing of the encoded word.</p>
+
+      <p>Two implementation paths existed. <strong>Path A:</strong> author a single composite <code>.sub</code> file that encodes the entire Morse-timed envelope as a sequence of raw pulse durations. <strong>Path B:</strong> use a small script (or the Flipper's built-in scripting) to alternate <code>on.sub</code> and <code>off.sub</code> playback with sleep delays matching Morse units.</p>
+
+      <p>Path A is cleaner once authored, but more error-prone to assemble by hand. Path B is faster to iterate. I went with Path B for the first attempt &mdash; using a simple shell loop driving the Flipper's send-and-wait, with each character as a script generated from the Morse table. Once the first transmission proved the cadence was being parsed, I locked in the timing and committed it to a single <code>.sub</code> for clean replay.</p>
+
+      <h2>The Bird Sings Back</h2>
+
+      <p>First attempt: timing was too fast. The wand stayed dark. Second attempt: dot-unit dialed up to ~120ms; the wand flashed an unrecognized-pattern blink. Third attempt: dot-unit at ~150ms with the inter-letter gap properly enforced &mdash; the wand began to flash a deliberate sequence back at me, mirroring the pattern I'd transmitted. The "bird" of the brief was the wand itself, echoing the decoded word in light.</p>
+
+      <p>The host confirmed the solve at the demo table, handed over the flag string in person:</p>
+
+      <div class="terminal-log">FLAG: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">CTF{the_5p1cy_b1rd_speaks}</span></span></div>
+
+      <p>The "5p1cy b1rd" of the flag is the same SpicyChicken / corvid-courier / "bird" vocabulary cluster that has bracketed the snack_con investigation since the first season. The carrier-creator persona's branding shows up everywhere this RF challenge would touch &mdash; the wand may or may not be canonically that persona's merch, but the framing is unmistakably theirs.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Last year's keys still open this year's door. The Spicy Chicken's pantry hasn't been re-keyed; only the password has rotated. A satisfying outcome &mdash; though I would prefer if the test subjects demonstrated more disgust at having to dust off old <code>.sub</code> files. Tidiness matters, even in HARDWARE chambers."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p><strong>Save your <code>.sub</code> files.</strong> Sub-GHz protocols at consumer-electronics price points do not rotate annually. The vendor that built last year's wand built this year's wand on the same radio. Your captures from a year ago will work on this year's device. They are investments, not single-use.</p>
+
+      <p><strong>Wake-words are protocols, not strings.</strong> A device that "listens for a word" is doing pattern matching on whatever envelope the device's radio + decoder produces. Send the right protocol with the right cadence and the word arrives correctly framed. Ignore the cadence and the wake-word never finishes assembling on the device side.</p>
+
+      <p><strong>Feedback channels make timing work tractable.</strong> The hardest part of Morse-cadence work is calibrating the dot-unit. The wand's "bird sings back" feedback turned three attempts into a tight calibration loop &mdash; you don't have to guess the right tempo, you just iterate until the wand starts mirroring you.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{the_5p1cy_b1rd_speaks}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Recognized the wand as the same physical artifact from last year's challenge</li>
+          <li>Loaded last year's saved <code>.sub</code> captures on Flipper Zero (433.92 MHz, OOK Princeton)</li>
+          <li>Verified existing on/off captures still control the wand &mdash; protocol unchanged year-over-year</li>
+          <li>Encoded "snackattack" in Morse code: <code>... -. .- -.-. -.- .- - - .- -.-. -.-</code></li>
+          <li>Built a transmission script alternating on/off <code>.sub</code> playback with Morse timing units</li>
+          <li>Calibrated dot-unit to ~150ms after the wand started mirroring the input pattern</li>
+          <li>Wand flashed back the decoded word &rarr; host confirmed solve &rarr; flag delivered</li>
+          <li>Submitted <code>CTF{the_5p1cy_b1rd_speaks}</code> to <code>/api/s2/submit-flag</code> &rarr; accepted, +1000 pts</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/kennedy-karaoke/" class="post-nav-link prev">Lamp Post Tavern</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

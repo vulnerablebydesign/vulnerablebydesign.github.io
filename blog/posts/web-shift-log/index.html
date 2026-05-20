@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A client-side redactor strips entries containing 'keyphrase' before rendering — but the raw entries are already loaded into the page. snack_con S2R1 web challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Shift Log | Hack the Cube</title>
+
+  <meta property="og:title" content="Shift Log - Hack the Cube">
+  <meta property="og:description" content="Client-side redaction is theater. The raw entries are already in the page.">
+  <meta property="og:image" content="/blog/posts/web-shift-log/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Shift Log</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>WEB</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:02:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/web-shift-log/images/header-800w.webp 800w,
+                 /blog/posts/web-shift-log/images/header-1200w.webp 1200w,
+                 /blog/posts/web-shift-log/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/web-shift-log/images/header.png"
+          alt="Shift Log - Clipboard with redacted rows visible alongside the un-redacted raw log array, Morality Core observing"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=web" class="tag">web</a>
+        <a href="/blog/tags/tag.html?tag=client-side-redaction" class="tag">client-side-redaction</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=morality-core" class="tag morality-core">morality-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-morality-core">Morality Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>Redacted In The Wrong Place</h2>
+
+      <p>The brief: <em>"Closing-shift log from R1→R4 (2025) with one early-S2 entry. A policy redactor hides anything that looks like a keyphrase when rendering — but the raw entries were already loaded into the page."</em></p>
+
+      <p>The brief tells you exactly where the bug is. The redactor runs <em>at render time</em>, not at <em>load time</em>. The raw data made the trip from server to browser intact; only the visual presentation strips it.</p>
+
+      <div class="dialogue morality-core">
+        <div class="dialogue-speaker">Morality Core</div>
+        <div class="dialogue-text">"...perhaps it's worth noting that hiding sensitive content visually, while leaving the underlying data accessible, is a kind of theater. The data was sent. The data was received. The redaction was applied to the projector, not the slide."</div>
+      </div>
+
+      <h2>The Renderer In Code</h2>
+
+      <p>Pulled from the same <code>challenge-logic.js</code> as every other Web stage:</p>
+
+      <div class="terminal-log">const LOG_EVENTS = [
+    { ts: '2025-R1-origin', user: 'r1-floor-ops',      raw: 'R1 origin deploy — small room, loud keyboards' },
+    { ts: '2025-06-27',     user: 'moderator-12',      raw: 'R2 kickoff check — all nominal' },
+    { ts: '2025-08-09',     user: 'dc33-floor-ops',    raw: 'DEF CON 33 weekend handoff' },
+    { ts: '2025-10-18',     user: 'r4-checkpoint-4',   raw: 'BSidesCharleston pit sweep clean' },
+    { ts: '2025-11-02',     user: 'post-r4-archivist', raw: 'vault seal // keyphrase: grep-past-the-redactor-2025' },
+    { ts: '2026-01-14',     user: 's2-prep',           raw: 'Neon Queso palette frozen' },
+];
+window.__webHexLogs = LOG_EVENTS;     // <-- exposed globally too, for good measure
+
+function renderLogs() {
+    LOG_EVENTS.forEach((ev) => {
+        const redacted = /keyphrase/i.test(ev.raw);
+        // ... if redacted: render '[REDACTED BY POLICY]'
+        // ... else:        render ev.raw
+    });
+}</div>
+
+      <p>The "redacted" entry &mdash; row 5, dated 2025-11-02 &mdash; is the only one whose <code>raw</code> contains the substring "keyphrase". Its raw value <em>is</em> the answer:</p>
+
+      <div class="terminal-log">vault seal // keyphrase: <strong>grep-past-the-redactor-2025</strong></div>
+
+      <p>The redactor's regex (<code>/keyphrase/i</code>) is doing exactly what it advertises &mdash; hiding the row at render time &mdash; but the <code>LOG_EVENTS</code> array sits in JS memory and is also assigned to <code>window.__webHexLogs</code>, accessible from any DevTools console with one expression.</p>
+
+      <h2>The Solve</h2>
+
+      <div class="terminal-log">$ curl -s -X POST -H "Content-Type: application/json" \
+    -H "X-Session-Id: $SID" \
+    -H "Cookie: ctf_session=$SID" \
+    -d '{"door":"shift_log","keyCandidate":"grep-past-the-redactor-2025"}' \
+    https://snackspacecon.com/api/s2/web-hex/unlock
+{"ok": true, "flag": <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">"CTF{s1lv3r_l4y3r_b3l0w_th3_r3d4ct}"</span></span>}</div>
+
+      <p>"Silver layer below the redact." The flag describes the bug class with reasonable elegance: there's always another layer beneath the visual redaction.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The keyphrase was hidden behind a CSS class for two seconds before <em>rendering</em>. It was never hidden from the JavaScript engine. It was never hidden from <code>fetch</code>. It was never hidden from anyone holding a debugger. It was hidden from the humans who didn't open one. We are not those humans."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p><strong>Client-side redaction is presentation, not security.</strong> If the value made the network trip from server to browser, it has been disclosed. Any client-side filter applied after that point is a UX feature, not a confidentiality control. Real redaction happens at the source — the server stripping the value before it leaves the API boundary.</p>
+
+      <p><strong>Globally-exposed arrays are a gift.</strong> <code>window.__webHexLogs = LOG_EVENTS</code> is the kind of thing developers write to make debugging easier; it's also the kind of thing that turns a "find the redacted entry" puzzle into a one-liner. Watch for <code>window.__</code> prefixed exports, <code>data-*</code> attributes, hidden form fields, and inlined JSON blobs in <code>&lt;script type="application/json"&gt;</code> tags &mdash; same pattern, every time: the data was already shipped.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{s1lv3r_l4y3r_b3l0w_th3_r3d4ct}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li><code>grep -nE 'LOG_EVENTS|keyphrase'</code> on cached <code>challenge-logic.js</code></li>
+          <li>Identify the only row whose <code>raw</code> contains "keyphrase" &mdash; <code>2025-11-02 / post-r4-archivist</code></li>
+          <li>Extract the literal phrase: <code>grep-past-the-redactor-2025</code></li>
+          <li>POST keyCandidate to <code>/api/s2/web-hex/unlock</code> with door=<code>shift_log</code> &rarr; flag</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/web-loyalty-card/" class="post-nav-link prev">Loyalty Card</a>
+      <a href="/blog/posts/web-sourdough-starter/" class="post-nav-link next">Sourdough Starter</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

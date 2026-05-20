@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Queso flag I never aimed for. The same submission that captured Tortilla also cleared the 9×9 / 10-mine tier &mdash; because the engine doesn't care how big the pan gets.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>CHIPSWEEPER // Tier 2 &middot; Queso | Hack the Cube</title>
+
+  <meta property="og:title" content="CHIPSWEEPER // Tier 2 · Queso - Hack the Cube">
+  <meta property="og:description" content="Same submission, second flag. The engine doesn't care how big the pan gets.">
+  <meta property="og:image" content="/blog/posts/chipsweeper-tier2/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">CHIPSWEEPER // Tier 2 &middot; Queso</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>CODING</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:00:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/chipsweeper-tier2/images/header-800w.webp 800w,
+                 /blog/posts/chipsweeper-tier2/images/header-1200w.webp 1200w,
+                 /blog/posts/chipsweeper-tier2/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/chipsweeper-tier2/images/header.png"
+          alt="A 9×9 minesweeper grid in neon chalk, melted cheese dripping over the borders, ten chip silhouettes hidden underneath"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=coding" class="tag">coding</a>
+        <a href="/blog/tags/tag.html?tag=javascript" class="tag">javascript</a>
+        <a href="/blog/tags/tag.html?tag=minesweeper" class="tag">minesweeper</a>
+        <a href="/blog/tags/tag.html?tag=bonus-tier" class="tag">bonus-tier</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=wheatley" class="tag wheatley">wheatley</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-wheatley">Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Bonus Pan</h2>
+
+      <p>This is a short one. Queso isn't a separate solve &mdash; it's the kitchen reading the same recipe twice and stamping a second flag at the bottom. The full story of how the engine got built lives in the <a href="/blog/posts/chipsweeper-tier1/">Tier 1 (Tortilla) post</a>; this one is about what happens when you write a correct contract instead of a tier-specific implementation.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Right, so &mdash; you submit one engine. The kitchen runs it through Tortilla's eight tests. Engine passes. Kitchen says, 'huh, alright, let's try the next pan.' Runs it through Queso's <em>ten</em> tests. Engine passes those too. Now you've got two flags. You did one piece of work and the kitchen did the rest. Genuinely, that's the deal. I should have read the spec more carefully before being surprised by it."</div>
+      </div>
+
+      <h2>What's Actually Different About Queso</h2>
+
+      <p>The Tier 2 board is <strong>9&times;9 with 10 mines</strong>, against Tortilla's 5&times;5/5. Same timeout (2000ms), same submission format, same scoring tracks. The taste-test list is a superset of Tortilla's eight, plus two new ones that explicitly probe the bigger pan:</p>
+
+      <ol start="9">
+        <li><strong>Corner cascade</strong> &mdash; reveal at <code>(0, 0)</code> on a zero-mine board fills the entire 9&times;9 grid via the BFS cascade. Tests that the cascade works from a corner, where each cell has only 3 neighbors instead of 8.</li>
+        <li><strong>Flag stress</strong> &mdash; 30 rapid flag toggles, alternating cells, must track <code>minesRemaining</code> exactly through every step.</li>
+      </ol>
+
+      <p>The corner-cascade test is the interesting one. A naive implementation of cascade BFS could miss it if the engine's bounds-checking is too eager &mdash; e.g., if you skip enqueuing neighbors when any of <code>nx, ny</code> is at the edge of the board. The reference algorithm handles it correctly:</p>
+
+      <div class="terminal-log">
+*_neighbors(cx, cy) {
+  for (let dy = -1; dy &lt;= 1; dy++) {
+    for (let dx = -1; dx &lt;= 1; dx++) {
+      if (dx === 0 &amp;&amp; dy === 0) continue;
+      const nx = cx + dx, ny = cy + dy;
+      if (this._inBounds(nx, ny)) yield [nx, ny];
+    }
+  }
+}</div>
+
+      <p>From <code>(0, 0)</code> the generator yields <code>[1, 0]</code>, <code>[0, 1]</code>, <code>[1, 1]</code> &mdash; three valid neighbors, the rest filtered by <code>_inBounds</code>. The BFS proceeds. On a board with no mines, every cell has <code>adjacentMines = 0</code>, so every revealed cell enqueues its three-to-eight neighbors. The cascade fills the entire 81-cell grid in a single <code>reveal(0, 0)</code> call.</p>
+
+      <p>Flag stress is even less interesting if you've gotten test 4 right: my engine increments <code>flagsPlaced</code> on flag-true and decrements on flag-false. <code>minesRemaining = mineCount - flagsPlaced</code> works for any pattern of toggles, including duplicate flags on the same cell.</p>
+
+      <h2>The Submission</h2>
+
+      <p>There was no second submission. Submission #1058, the readable engine I'd just written for Tortilla, returned both flags in its <code>flagsAwarded</code> array:</p>
+
+      <div class="terminal-log">
+flagsAwarded: [
+  {
+    challengeId: "mine_tier1",
+    flag: "<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{F1R5T_B1T3_SW3PT}</span></span>",
+    points: 300,
+    totalScore: 4223
+  },
+  {
+    challengeId: "mine_tier2",
+    flag: "<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{QU3SO_CHUNKED}</span></span>",
+    points: 500,
+    totalScore: 4723
+  }
+]</div>
+
+      <p>The Tier 2 flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{QU3SO_CHUNKED}</span></span>. The pun lands &mdash; the cascade BFS does, in fact, "chunk" through the queso pan one cell at a time.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"You wrote one engine. You received two flags. There is a lesson here about the value of writing to the contract instead of writing to the test you can see. I will leave the lesson at that, since further commentary would risk it sounding profound."</div>
+      </div>
+
+      <h2>The Take-Away</h2>
+
+      <p>This is the cheap-points part of the post: <strong>contract-conformant code carries you up the difficulty curve for free</strong>. The CHIPSWEEPER track is set up to reward this explicitly &mdash; if your engine passes Tier N's tests, the harness automatically attempts Tier N+1, and the kitchen credits the higher flag if it passes. There's no separate submission. There's no "I'll come back to that later." If you can pass the bigger pan's contract, you do.</p>
+
+      <p>The two new Queso tests (corner cascade, flag stress) are the kind of thing a sloppy implementation would miss. A textbook BFS cascade with proper bounds-checking via a generator helper, and a flag-toggle that increments/decrements a counter, both pass without needing any special-casing for tier 2.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Five hundred points. For nothing extra. I'm not going to pretend I planned it &mdash; I didn't &mdash; but I am going to take the win. That's eight hundred from one submission. <em>Eight hundred</em>, Chell. Off a single forty-line piece of homework."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>If you're tempted to write a tier-1-specific solution and worry about generalizing later, don't. The cost of writing the general engine up front is roughly the same as the tier-specific one (you're already writing <code>init(width, height, mineCount)</code>; the hard part is the first-bite-safety, which doesn't change with board size). The reward, in CHIPSWEEPER's case, was 500 free points and a flag I didn't aim at.</p>
+
+      <p>This generalization-is-cheap pattern is worth recognizing in coding-category challenges where the testing harness is tiered: <strong>the spec is the strategy</strong>. Cover the spec, the tiers fall.</p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>(Tier 1 work documented in the <a href="/blog/posts/chipsweeper-tier1/">Tortilla post</a>.)</li>
+          <li>Submission #1058 ran through the Tier 1 harness (8/8 pass), Tier 2 harness (10/10 pass), Tier 3 harness (13/13 pass).</li>
+          <li>Server's <code>flagsAwarded</code> array on the response included <em>both</em> <code>mine_tier1</code> and <code>mine_tier2</code> entries from the same submission.</li>
+          <li>Tier 2 flag captured: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed"><code>CTF{QU3SO_CHUNKED}</code> (+500 pts)</span></span>.</li>
+          <li>Tier 3 flag held back behind the golf-score gate &mdash; addressed in the <a href="/blog/posts/chipsweeper-tier3/">Nacho Supreme post</a>.</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

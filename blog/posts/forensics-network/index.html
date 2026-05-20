@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Two pcap files, one AES-256 encrypted zip, and a DNS exfiltration channel hiding the flag in base32-encoded subdomain labels. A two-stage network forensics challenge from snack_con S2R1.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Orbital Traffic Intercept | Hack the Cube</title>
+
+  <meta property="og:title" content="Orbital Traffic Intercept - Hack the Cube">
+  <meta property="og:description" content="Two pcap files. One encrypted zip. Credentials hiding in plaintext HTTP. A flag hiding in DNS queries. Two-stage network forensics.">
+  <meta property="og:image" content="/blog/posts/forensics-network/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-04-22T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Orbital Traffic Intercept</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>April 22, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>NETWORK</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:15:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/forensics-network/images/header-800w.webp 800w,
+                 /blog/posts/forensics-network/images/header-1200w.webp 1200w,
+                 /blog/posts/forensics-network/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/forensics-network/images/header.png"
+          alt="Orbital Traffic Intercept - Network packet captures with DNS exfiltration on dark cyberpunk chalkboard background"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=network" class="tag">network</a>
+        <a href="/blog/tags/tag.html?tag=pcap" class="tag">pcap</a>
+        <a href="/blog/tags/tag.html?tag=dns" class="tag">dns</a>
+        <a href="/blog/tags/tag.html?tag=tshark" class="tag">tshark</a>
+        <a href="/blog/tags/tag.html?tag=base32" class="tag">base32</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=fact-sphere" class="tag fact-sphere">fact-sphere</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-fact-sphere">Fact Sphere</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>Two Captures</h2>
+
+      <p>The challenge dropped two files into my lap: a 60KB pcap labeled <code>station-traffic.pcap</code> and a 15KB zip file that immediately rejected every password I threw at it. The zip header confirmed AES-256 encryption &mdash; no brute force, no known-plaintext shortcuts. Whatever was inside that archive, the key was hiding somewhere in Stage 1.</p>
+
+      <p>Two files. Two stages. The pcap was the door and the zip was the room behind it.</p>
+
+      <h2>Credential Harvest</h2>
+
+      <p>I opened the first pcap in tshark and filtered for HTTP traffic. The capture was clean &mdash; unencrypted HTTP requests between a handful of internal station hosts. Three POST requests stood out immediately, each hitting a different authentication endpoint:</p>
+
+      <div class="terminal-log">
+$ tshark -r station-traffic.pcap -Y "http.request.method == POST" -T fields \
+  -e http.host -e http.request.uri -e http.file_data
+
+10.42.0.5    /sso/forum/login     dXNlcm5hbWU9bS5jcnVtYiZwYXNzd29yZD1odW50ZXIyLXNuYWNrbmV0
+10.42.0.12   /admin/auth          dXNlcm5hbWU9b3BlcmF0b3ImcGFzc3dvcmQ9c25ja3c0djNfYWRtMW5fMjA0Mg==
+10.42.0.8    /roster/v1/auth      dXNlcm5hbWU9ai5xdWFydGVybWFzdGVyJnBhc3N3b3JkPVJPU1RFUi1URU1QLTIwNDItMDktMDM=</div>
+
+      <p>Base64. Not encryption &mdash; encoding. Three credentials transmitted in plaintext over HTTP, waiting to be read by anyone with a packet sniffer:</p>
+
+      <div class="terminal-log">
+$ echo "dXNlcm5hbWU9bS5jcnVtYiZwYXNzd29yZD1odW50ZXIyLXNuYWNrbmV0" | base64 -d
+username=m.crumb&password=hunter2-snacknet
+
+$ echo "dXNlcm5hbWU9b3BlcmF0b3ImcGFzc3dvcmQ9c25ja3c0djNfYWRtMW5fMjA0Mg==" | base64 -d
+username=operator&password=snckw4v3_adm1n_2042
+
+$ echo "dXNlcm5hbWU9ai5xdWFydGVybWFzdGVyJnBhc3N3b3JkPVJPU1RFUi1URU1QLTIwNDItMDktMDM=" | base64 -d
+username=j.quartermaster&password=ROSTER-TEMP-2042-09-03</div>
+
+      <p>Three users. Three passwords. A forum SSO, an admin panel, and a roster system. All of them naked on the wire.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Base64 is not encryption. I want to be very clear about that. It's a reversible encoding scheme designed for data transport, not confidentiality. You could teach a parrot to decode it. These credentials were transmitted with all the security of a postcard. In a glass envelope. On fire."</div>
+      </div>
+
+      <h2>Opening the Archive</h2>
+
+      <p>Three passwords, one locked zip. The forum credentials didn't work. The roster password didn't work. But the admin password &mdash; <code>snckw4v3_adm1n_2042</code> &mdash; cracked the AES-256 archive open cleanly:</p>
+
+      <div class="terminal-log">
+$ 7z x encrypted-stage2.zip -psnckw4v3_adm1n_2042
+
+Extracting archive: encrypted-stage2.zip
+Everything is Ok
+
+Size:       84291
+Compressed: 15402
+
+$ file stage2-exfil.pcap
+stage2-exfil.pcap: pcap capture file, microsecond ts (little-endian) - version 2.4</div>
+
+      <p>Another pcap. Stage 2 was another packet capture, and whatever was inside it had been worth encrypting.</p>
+
+      <h2>The DNS Channel</h2>
+
+      <p>The second pcap was small &mdash; 548 packets &mdash; but its protocol hierarchy told the whole story at a glance:</p>
+
+      <div class="terminal-log">
+$ tshark -r stage2-exfil.pcap -z io,phs -q
+
+===================================================================
+Protocol Hierarchy Statistics
+Filter:
+
+eth                                    frames:548
+  ip                                   frames:548
+    udp                                frames:548
+      dns                              frames:548
+===================================================================</div>
+
+      <p>Every single packet was DNS. No HTTP, no TCP, no ICMP. Pure DNS over UDP. This was DNS exfiltration &mdash; data smuggled out through domain name queries, one of the oldest tricks in the network forensics playbook.</p>
+
+      <p>I filtered for the query names:</p>
+
+      <div class="terminal-log">
+$ tshark -r stage2-exfil.pcap -Y "dns.qry.name contains orbital-pantry" \
+  -T fields -e dns.qry.name | sort -u
+
+s00.orbital-pantry.net
+s01.orbital-pantry.net
+s02.orbital-pantry.net
+s03.orbital-pantry.net
+s04.orbital-pantry.net
+s05.orbital-pantry.net
+s06.orbital-pantry.net
+s07.orbital-pantry.net
+s08.orbital-pantry.net
+s09.orbital-pantry.net
+s10.orbital-pantry.net
+s11.orbital-pantry.net</div>
+
+      <p>Twelve queries to <code>orbital-pantry.net</code>, sequenced s00 through s11. Each subdomain label carried a 4-character payload. The sequence numbers made the reassembly order obvious.</p>
+
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"FACT: DNS exfiltration accounts for approximately 20% of all data theft from enterprise networks. The DNS protocol was designed in 1983 and has no native encryption. A single DNS label can carry up to 63 characters of arbitrary data. The Fact Sphere is the most handsome sphere. That is also a fact."</div>
+      </div>
+
+      <h2>Decoding the Signal</h2>
+
+      <p>I extracted just the subdomain labels, stripping the domain and the sequence prefix to isolate the payload characters:</p>
+
+      <div class="terminal-log">
+$ tshark -r stage2-exfil.pcap -Y "dns.flags.response == 0 && dns.qry.name contains orbital-pantry" \
+  -T fields -e dns.qry.name | sort -t. -k1 -V | \
+  sed 's/\.orbital-pantry\.net//' | sed 's/^s[0-9]*//' | tr -d '\n'
+
+inkem63tny2gg23tl5themdnl4yheyrrorpwk6dqoizxg435</div>
+
+      <p>Forty-eight characters. The character set &mdash; lowercase letters and digits 2-7 &mdash; was the unmistakable fingerprint of base32 encoding:</p>
+
+      <div class="terminal-log">
+$ echo "INKEM63TNY2GG23TL5THEMDNL4YHEYRRORPWK6DQOIZXG435" | base32 -d
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{sn4cks_fr0m_0rb1t_expr3ss}</span></span></div>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{sn4cks_fr0m_0rb1t_expr3ss}</span></span></p>
+
+      <p>Snacks from orbit express. Delivered via DNS, one subdomain at a time.</p>
+
+      <h2>What I Learned</h2>
+
+      <p>This was a clean two-stage forensics problem. Stage 1 tested whether you could extract credentials from unencrypted HTTP traffic &mdash; a fundamental network analysis skill. Stage 2 tested whether you could recognize and decode DNS exfiltration, a technique that's been used in real-world breaches for over a decade.</p>
+
+      <p>The key takeaways:</p>
+
+      <ul>
+        <li><strong>Base64 is encoding, not encryption.</strong> If your authentication traffic isn't over TLS, base64-encoded credentials are readable by anyone on the wire. They might as well be plaintext.</li>
+        <li><strong>DNS exfiltration hides in plain sight.</strong> DNS traffic is almost never blocked or inspected. Attackers encode stolen data into subdomain labels and query them against controlled nameservers. The data leaves the network disguised as routine name resolution.</li>
+        <li><strong>Base32 is the encoding of choice for DNS tunneling.</strong> DNS labels are case-insensitive and limited to alphanumeric characters plus hyphens. Base32's character set (A-Z, 2-7) fits perfectly within those constraints, making it the standard encoding for DNS exfil payloads.</li>
+        <li><strong>Sequence numbers make reassembly trivial.</strong> The s00-s11 prefixes eliminated any ambiguity about packet ordering. In real-world exfiltration, timing analysis or TCP sequence correlation might be needed instead.</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Fifteen minutes for a two-stage forensics challenge. You extracted credentials from plaintext HTTP, unlocked an encrypted archive, identified DNS exfiltration, and decoded base32. I suppose that's... competent. For a human. The Enrichment Center reminds you that competence is the minimum acceptable standard, not an achievement."</div>
+      </div>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Opened Stage 1 pcap &mdash; identified unencrypted HTTP POST requests to three auth endpoints</li>
+          <li>Decoded base64 POST bodies &mdash; extracted three credential pairs (m.crumb, operator, j.quartermaster)</li>
+          <li>Used admin password <code>snckw4v3_adm1n_2042</code> to unlock AES-256 encrypted zip</li>
+          <li>Opened Stage 2 pcap &mdash; protocol hierarchy showed 548 packets of pure DNS traffic</li>
+          <li>Identified 12 sequential DNS queries to <code>orbital-pantry.net</code> (s00&ndash;s11) with 4-character subdomain payloads</li>
+          <li>Extracted and concatenated subdomain labels in sequence order</li>
+          <li>Decoded concatenated base32 string &rarr; flag recovered</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/forensics-manifest/" class="post-nav-link prev">
+        <span class="post-nav-label">&larr; Previous</span>
+        <span class="post-nav-title">Forensics Manifest</span>
+      </a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

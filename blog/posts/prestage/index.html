@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A signal hides in DNS TXT records, hex-decodes to a URL, and the final flag is invisibly styled CSS at the bottom of a fake 'PLEASE STAND BY' page. snack_con S2R1 OSINT challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Signal Lost | Hack the Cube</title>
+
+  <meta property="og:title" content="Signal Lost - Hack the Cube">
+  <meta property="og:description" content="DNS → hex → invisible CSS. A multi-stage OSINT pivot through three encodings.">
+  <meta property="og:image" content="/blog/posts/prestage/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-04T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Signal Lost</h1>
+
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem; margin: 0.5rem auto 1rem; background: linear-gradient(90deg, rgba(231,29,54,0.15), rgba(255,159,28,0.15)); border: 1px solid var(--terminal-green, #06d6a0); border-radius: 4px; font-family: var(--font-pixel, monospace); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--terminal-green, #06d6a0);">
+        🩸 FIRST BLOOD &middot; her0x0ftime &middot; +100 pts bonus
+      </div>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 4, 2026 <em style="color:var(--text-dim);font-size:0.85em">(retroactive log written May 1, 2026)</em></span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty medium">Medium</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>OSINT</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~retro</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/prestage/images/header-800w.webp 800w,
+                 /blog/posts/prestage/images/header-1200w.webp 1200w,
+                 /blog/posts/prestage/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/prestage/images/header.png"
+          alt="Signal Lost - SMPTE color bar test pattern with hex-flag hidden in dark text, Curiosity Core peeking at the screen"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=medium" class="tag">medium</a>
+        <a href="/blog/tags/tag.html?tag=osint" class="tag">osint</a>
+        <a href="/blog/tags/tag.html?tag=dns" class="tag">dns</a>
+        <a href="/blog/tags/tag.html?tag=txt-record" class="tag">txt-record</a>
+        <a href="/blog/tags/tag.html?tag=hex" class="tag">hex</a>
+        <a href="/blog/tags/tag.html?tag=retro" class="tag">retro</a>
+        <a href="/blog/tags/tag.html?tag=first-blood" class="tag" style="background: linear-gradient(90deg, rgba(231,29,54,0.4), rgba(255,159,28,0.4)); color: white; font-weight: 700;">🩸 first-blood</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=curiosity-core" class="tag curiosity-core">curiosity-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-curiosity-core">Curiosity Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <aside class="attack-path" style="border-color: var(--text-dim); background: rgba(0,0,0,0.2);">
+        <p style="margin:0;font-size:0.9rem;color:var(--text-dim);"><strong>Retro disclaimer:</strong> This challenge was solved in pre-season (Feb 2026), before the writeup pipeline existed. The path here was reconstructed by re-recon of the still-live challenge surface in May 2026. Original solve commands are not preserved; the path documented is the verified working path.</p>
+      </aside>
+
+      <h2>The Subdomain That Wouldn't Stay Loaded</h2>
+
+      <p>The challenge brief: <em>"Ground control has detected a rogue transmission on the SnackCon deep-space relay. Something is broadcasting from prestage.snackspacecon.com — but the signal is encoded and the payload is dark. Intercept the signal, decode the frequency, and find what is hiding in the static. Not everything is visible to the naked eye."</em></p>
+
+      <p>The hostname was the entire opening move. Visit <code>https://prestage.snackspacecon.com/</code> and the page immediately JS-redirects to <code>/signal-lost</code> — a noise-textured CRT mockup with a floating glitchy "SIGNAL LOST" header and scrambled coordinates pinned at <code>28°31'27"N&nbsp;080°40'52"W</code>. (Those coordinates are Kennedy Space Center, FL — the home of HackSpaceCon, which snack_con runs alongside.)</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A page that loudly proclaims its own brokenness. How dramatic. The actual broken thing is, of course, you, for spending more than thirty seconds looking at the noise terrain instead of looking <em>past</em> it."</div>
+      </div>
+
+      <h2>The Status Bar Was Talking</h2>
+
+      <p>The "SIGNAL LOST" page has a status bar at the bottom that cycles through 14 garbled diagnostic strings — <code>BUFFER OVERFLOW AT 0x4E554C4C</code>, <code>HANDSHAKE TIMEOUT</code>, <code>CARRIER DETECT: NEGATIVE</code> — plus, with ~15% probability per cycle, a single legible <strong>breadcrumb</strong> in red. Five breadcrumbs in rotation:</p>
+
+      <div class="terminal-log">QUERY TYPE: TXT
+RESOLVE TRANSMISSION SOURCE
+TXT RECORD — UNREAD
+DIG DEEPER
+CHECK THE DOMAIN RECORDS</div>
+
+      <p>The signal isn't in HTTP. It's in DNS.</p>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"Ooh ooh ooh! What's hiding in the static? Is it a DNS record? Is it a TXT record? Can we look? Can we look can we look?!"</div>
+      </div>
+
+      <h2>The TXT Record Sang</h2>
+
+      <div class="terminal-log">$ dig +short TXT prestage.snackspacecon.com
+"SIGNAL INTERCEPT // FREQ: 66.33.63.39.61.37.62.32 // BAND: /season2/ // PROTOCOL:HEX-ASCII // STATUS: AWAITING DECODE"</div>
+
+      <p>Three useful fields in one record: a FREQ (the encoded payload), a BAND (the URL prefix to mount it under), and an explicit PROTOCOL hint (<code>HEX-ASCII</code>). The puzzle was <em>over-specified on purpose</em> — it wanted the player to verify they understood the encoding as they decoded.</p>
+
+      <p>Hex-ASCII bytes <code>66 33 63 39 61 37 62 32</code> decode to:</p>
+
+      <div class="terminal-log">$ python3 -c "print(bytes.fromhex('66336339613762 32'.replace(' ','')).decode())"
+f3c9a7b2</div>
+
+      <p>Mounting under the BAND: <code>https://snackspacecon.com/season2/f3c9a7b2/</code>. That URL returns <code>HTTP 200</code> with a 3.2KB HTML page rendering an SMPTE color bar test pattern (white/yellow/cyan/green/magenta/red/blue) and the words <strong>"PLEASE STAND BY"</strong> in big chalky text.</p>
+
+      <h2>The Flag Was On The Screen The Whole Time</h2>
+
+      <p>The "PLEASE STAND BY" page has nothing visibly interesting. Color bars, a sub-row of small bars, the standby text. That is, until you look at the source — or, equivalently, hit <kbd>Cmd+A</kbd> to select-all on the rendered page and watch a hidden text element light up:</p>
+
+      <div class="terminal-log">&lt;div class="cal"&gt;NTSC-J SIGNAL CALIBRATION // 43 54 46 7b 50 4c 33 34 35 33 5f 53 54 34 4e 44 5f 42 59 7d&lt;/div&gt;</div>
+
+      <p>That <code>.cal</code> class is styled <code>color:#0a0a0a</code> against a body background of <code>#000</code> — virtually black-on-black, invisible to the eye but trivially copyable. The description had warned: <em>"Not everything is visible to the naked eye."</em></p>
+
+      <p>One more hex decode:</p>
+
+      <div class="terminal-log">$ python3 -c "print(bytes.fromhex('43 54 46 7b 50 4c 33 34 35 33 5f 53 54 34 4e 44 5f 42 59 7d'.replace(' ','')).decode())"
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{PL3453_ST4ND_BY}</span></span></div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"The flag spelled out the same phrase the page was already shouting at you in fifty-point chalk text. The challenge was to verify that you could decode 'PLEASE STAND BY' three times — once visually, once via DNS, once via hex. Twenty-eight bytes of leetspeak smugness. Five hundred points and a first-blood ribbon for someone with a slow afternoon and a working <code>dig</code> binary."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>Three habits to keep:</p>
+
+      <p><strong>The page that screams loudest is rarely where the signal lives.</strong> Heavily-decorated CTF pages — CRT effects, glitch animations, garbled status bars — are nearly always camouflage for content that's elsewhere. In this case, on a different protocol entirely.</p>
+
+      <p><strong>DNS is a content channel.</strong> TXT records, CNAME chains, and even subdomain naming patterns can carry payloads. <code>dig TXT &lt;target&gt;</code> belongs in every OSINT-flavored opening recon, not just the ones that "feel DNS-y."</p>
+
+      <p><strong>Black-on-black text is a real exfil pattern.</strong> If a page renders mostly empty space, hit <kbd>Cmd+A</kbd>. Selection inverts the colors and any same-color-as-background text lights up. Equivalently: <code>view-source:</code>. CSS-camouflaged content shows up immediately. The challenge prompt explicitly hinted at this with "naked eye" — it was the third encoding layer, deliberately the simplest.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{PL3453_ST4ND_BY}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Visit <code>prestage.snackspacecon.com</code> &rarr; redirected to <code>/signal-lost</code></li>
+          <li>Read the rotating status bar &rarr; breadcrumbs point at DNS TXT records</li>
+          <li><code>dig TXT prestage.snackspacecon.com</code> &rarr; FREQ + BAND + PROTOCOL</li>
+          <li>Hex-ASCII decode the FREQ &rarr; <code>f3c9a7b2</code></li>
+          <li>Mount under BAND &rarr; <code>/season2/f3c9a7b2/</code> "PLEASE STAND BY" page</li>
+          <li>Select-all or view-source &rarr; hex-encoded flag in <code>.cal</code> div (color matches background)</li>
+          <li>Hex-decode the flag &rarr; <code>CTF{PL3453_ST4ND_BY}</code></li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/opencomms/" class="post-nav-link prev">Open Comms</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

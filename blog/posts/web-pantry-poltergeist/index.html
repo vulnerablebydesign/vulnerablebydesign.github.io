@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Three vault-passphrase fragments scattered across localStorage, sessionStorage, and a cookie — but they're all hardcoded literals in the public JS bundle. snack_con S2R1 web challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Pantry Poltergeist | Hack the Cube</title>
+
+  <meta property="og:title" content="Pantry Poltergeist - Hack the Cube">
+  <meta property="og:description" content="Three storage tiers. Three fragments. Zero need to load the page.">
+  <meta property="og:image" content="/blog/posts/web-pantry-poltergeist/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Pantry Poltergeist</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>WEB</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:05:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/web-pantry-poltergeist/images/header-800w.webp 800w,
+                 /blog/posts/web-pantry-poltergeist/images/header-1200w.webp 1200w,
+                 /blog/posts/web-pantry-poltergeist/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/web-pantry-poltergeist/images/header.png"
+          alt="Pantry Poltergeist - Three glowing storage drawers with paper fragments, Curiosity Core peeking around the corner"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=web" class="tag">web</a>
+        <a href="/blog/tags/tag.html?tag=storage" class="tag">storage</a>
+        <a href="/blog/tags/tag.html?tag=client-side-secrets" class="tag">client-side-secrets</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=curiosity-core" class="tag curiosity-core">curiosity-core</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-curiosity-core">Curiosity Core</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>Three Drawers, One Trick</h2>
+
+      <p>The brief: <em>"Legacy ops bookkeeping scattered three fragments of the vault passphrase across browser storage tiers when the page loaded. Reassemble them in order."</em></p>
+
+      <p>"Storage tiers" is the puzzle's marketing copy. The challenge wants you to inspect <strong>localStorage</strong>, <strong>sessionStorage</strong>, and <strong>cookies</strong> and assemble three pieces in order. That's the textbook walkthrough.</p>
+
+      <p>The actual exploit is one <code>grep</code>.</p>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"Three drawers? What's in EACH ONE?! Can we look in localStorage?! Can we look in sessionStorage?! Can we ALSO look in cookies?! Wait — what if all three drawers are the SAME drawer?!"</div>
+      </div>
+
+      <h2>The Three Drawers Are The Same JS File</h2>
+
+      <p>I had already pulled <code>/admin/challenge-logic.js</code> for the Freezer Aisle (stage 01) recon — same file holds the handlers for all six Web stages. The Pantry Poltergeist handler is staring at you in plain text:</p>
+
+      <div class="terminal-log">// 02 Pantry Poltergeist
+// Three fragments written to localStorage, sessionStorage, and cookies
+// on page load. Player reassembles and submits.
+try {
+    localStorage.setItem('vault.part1', 'R2-MUNCHIES-');
+    sessionStorage.setItem('vault.part2', '2025-HRC-');
+    document.cookie = 'vault_part3=LOUISVILLE; path=/admin/; SameSite=Strict';
+} catch (e) { ... }</div>
+
+      <p>The "secret" the storage tiers were "hiding" is <strong>literal string content of the JavaScript file the server is happy to hand any visitor</strong>. Concatenated in declared order:</p>
+
+      <div class="terminal-log">R2-MUNCHIES-  +  2025-HRC-  +  LOUISVILLE
+= R2-MUNCHIES-2025-HRC-LOUISVILLE</div>
+
+      <p><em>(Lore aside: that's "Round 2 — Munchies — 2025 HRC Louisville." HRC = Hack Red Con, a security conference held in Louisville KY in fall 2025. The challenge encodes a real-world conference reference.)</em></p>
+
+      <h2>The POST</h2>
+
+      <p>The intended UI flow is "fill the textarea, click GHOST UNLOCK." The handler hits the same endpoint Freezer Aisle did:</p>
+
+      <div class="terminal-log">$ curl -s -X POST -H "Content-Type: application/json" \
+    -H "X-Session-Id: $SID" \
+    -H "Cookie: ctf_session=$SID" \
+    -d '{"door":"pantry_poltergeist","keyCandidate":"R2-MUNCHIES-2025-HRC-LOUISVILLE"}' \
+    https://snackspacecon.com/api/s2/web-hex/unlock
+{"ok": true, "flag": <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">"CTF{th3_gh0st_l1v3s_1n_t13rs}"</span></span>}</div>
+
+      <p>"The ghost lives in tiers." Cute. The flag is the joke about the puzzle's framing.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"This challenge wanted you to feel like a forensic detective inspecting three different evidence lockers. The actual evidence was the kitchen-sink JavaScript handed to you for free at <code>/admin/challenge-logic.js</code>. Sometimes the cleverest exploit is reading the documentation. Sometimes the documentation is the exploit."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p><strong>Browser storage APIs are the same trust boundary.</strong> localStorage, sessionStorage, and cookies feel different — different scopes, different lifetimes, different APIs — but they're all <em>client-side</em>. Whatever code <em>writes</em> to them runs in the browser, which means anyone with view-source can read the writers and back-derive the values. The "three places" framing is performative complexity.</p>
+
+      <p><strong>The fix is server-side derivation.</strong> If a value needs to be unguessable, the server needs to be the only entity that ever knew it. The pattern this challenge is satirizing is "developer pre-computes the secret in JS to save a round-trip" — which is functionally <em>publishing</em> the secret.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{th3_gh0st_l1v3s_1n_t13rs}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Recall <code>/admin/challenge-logic.js</code> from the Freezer Aisle recon — same file, all six handlers</li>
+          <li><code>grep -nE 'vault[._]part'</code> &rarr; three setter calls with literal string values</li>
+          <li>Concatenate in declared order &rarr; <code>R2-MUNCHIES-2025-HRC-LOUISVILLE</code></li>
+          <li>POST to <code>/api/s2/web-hex/unlock</code> with door=<code>pantry_poltergeist</code> &rarr; flag in response</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/web-freezer-aisle/" class="post-nav-link prev">Freezer Aisle</a>
+      <a href="/blog/posts/web-loyalty-card/" class="post-nav-link next">Loyalty Card</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

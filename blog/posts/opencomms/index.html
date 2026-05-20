@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The terminal is hidden behind two console function calls; the link is hidden inside the terminal; the contact is hidden inside Discord. snack_con S2R1 entry-point challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Open Comms | Hack the Cube</title>
+
+  <meta property="og:title" content="Open Comms - First Contact - Hack the Cube">
+  <meta property="og:description" content="Find the terminal, open the link, make first contact. A three-step recursive scavenger.">
+  <meta property="og:image" content="/blog/posts/opencomms/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-02-04T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Open Comms</h1>
+
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem; margin: 0.5rem auto 1rem; background: linear-gradient(90deg, rgba(231,29,54,0.15), rgba(255,159,28,0.15)); border: 1px solid var(--terminal-green, #06d6a0); border-radius: 4px; font-family: var(--font-pixel, monospace); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--terminal-green, #06d6a0);">
+        🩸 FIRST BLOOD &middot; her0x0ftime &middot; +100 pts bonus
+      </div>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>February 4, 2026 <em style="color:var(--text-dim);font-size:0.85em">(retroactive log written May 1, 2026)</em></span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>MISC</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~retro</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/opencomms/images/header-800w.webp 800w,
+                 /blog/posts/opencomms/images/header-1200w.webp 1200w,
+                 /blog/posts/opencomms/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/opencomms/images/header.png"
+          alt="Open Comms - Retro DOS-style terminal with snackchat command, Discord invite link spilling out, Wheatley confused"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=misc" class="tag">misc</a>
+        <a href="/blog/tags/tag.html?tag=terminal" class="tag">terminal</a>
+        <a href="/blog/tags/tag.html?tag=snackchat" class="tag">snackchat</a>
+        <a href="/blog/tags/tag.html?tag=discord" class="tag">discord</a>
+        <a href="/blog/tags/tag.html?tag=retro" class="tag">retro</a>
+        <a href="/blog/tags/tag.html?tag=first-blood" class="tag" style="background: linear-gradient(90deg, rgba(231,29,54,0.4), rgba(255,159,28,0.4)); color: white; font-weight: 700;">🩸 first-blood</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=wheatley" class="tag wheatley">wheatley</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-wheatley">Wheatley</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <aside class="attack-path" style="border-color: var(--text-dim); background: rgba(0,0,0,0.2);">
+        <p style="margin:0;font-size:0.9rem;color:var(--text-dim);"><strong>Retro disclaimer:</strong> Pre-season solve, original solve commands not preserved. Path verified by re-recon of the live SNACK_SHELL surface in May 2026.</p>
+      </aside>
+
+      <h2>The Brief That Was Three Riddles In One Sentence</h2>
+
+      <p><em>"Every crew needs comms. The SnackCon relay has a Discord channel waiting for your signal. <strong>Find the terminal, open the link, and make first contact.</strong> Your first transmission is all it takes."</em></p>
+
+      <p>That sentence is the entire challenge:</p>
+
+      <ol>
+        <li><strong>Find the terminal</strong> &mdash; not a generic shell. There is a specific SNACK_SHELL hidden in the platform, and the discord invite is only addressable from inside it.</li>
+        <li><strong>Open the link</strong> &mdash; once in SNACK_SHELL, run the command that prints the Discord invite URL.</li>
+        <li><strong>Make first contact</strong> &mdash; join the Discord, send any message. The server credits the solve via the <code>chat/send</code> endpoint.</li>
+      </ol>
+
+      <p>This challenge has <strong>no <code>CTF{...}</code> flag</strong>. It's credit-only. The "flag" is the act of completion.</p>
+
+      <h2>Step 1 — Find The Terminal</h2>
+
+      <p>SNACK_SHELL is gated behind two DevTools-Console function calls. They aren't documented anywhere visible on the snack_con UI &mdash; you find them by reading the <code>/season2/</code> page's <code>snackSettings()</code> introspection or by sniffing the bundled JS.</p>
+
+      <div class="terminal-log">// in DevTools Console on https://snackspacecon.com/season2/
+&gt; enable1337SnackerMode()
+[1337 mode unlocked. Snackman game and 1337 text now available.]
+
+&gt; enableTelnetMode()
+[Telnet mode active. SNACK_SHELL launching...]</div>
+
+      <p>The shell appears as a tmux-shaped pane overlay with status bar, panes, and a Linux-flavored prompt. It implements the usual coreutils (<code>ls</code>, <code>cd</code>, <code>cat</code>, <code>grep</code>, <code>find</code>) and a number of Season-2-specific commands (<code>register</code>, <code>challenges</code>, <code>submit</code>, <code>stats</code>, <code>scoreboard</code>, <code>token</code>, <code>status</code>) plus chat clients.</p>
+
+      <div class="dialogue wheatley">
+        <div class="dialogue-speaker">Wheatley</div>
+        <div class="dialogue-text">"Right, okay so &mdash; <em>find</em> the terminal. There's already a terminal. Right there. The one I'm looking at. Is it that one? It says 'find,' so probably not. There's another, hidden, secret terminal? In the &mdash; oh. <em>Oh</em>. The browser console counts. That's clever. That's actually clever."</div>
+      </div>
+
+      <h2>Step 2 — Open The Link</h2>
+
+      <p>Inside SNACK_SHELL:</p>
+
+      <div class="terminal-log">$ snackchat --discord
+🍔 EmojiChef Encoding Active
+Your plain text is encoded by EmojiChef before sending — the 🍔 burger appearing in chat
+represents your encoded message, relayed through SnackBot.
+
+→ <a style="color:var(--terminal-green)">discord.gg/[redacted]</a>     (Join the Snack_Con Discord →)</div>
+
+      <p>The shell prints the invite URL as a clickable link inside a system toast. Open it, accept, you're in the Snack_Con Discord server.</p>
+
+      <h2>Step 3 — Make First Contact</h2>
+
+      <p>The challenge is solved when a chat message is sent under your authenticated session. SnackChat auto-encodes outgoing messages with EmojiChef &mdash; your plaintext becomes a sequence of food emoji that SnackBot relays to the channel as a 🍔 burger indicator. (EmojiChef itself is a callback to S1R2, a previous round Chell won; her tooling has retroactively become canon.)</p>
+
+      <p>Sending the message hits <code>POST /api/s2/chat/send</code>. The server marks <code>opencomms</code> solved.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"And that, somehow, was three hundred points. The leaderboard does not distinguish between 'cracked a JWT' and 'said hello in a chat room.' I respect the absurdity. You should too. Most of cybersecurity is logistics, after all."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>One thing, but it generalizes: <strong>read challenge briefs as compound sentences.</strong> "Find the terminal, open the link, make first contact" looks like one task. It's three. Each clause is its own subtask, and each subtask has its own discoverable hint trail in the platform's source. CTF authors compress puzzles into prose all the time &mdash; <em>terminal</em> meant SNACK_SHELL, <em>link</em> meant the Discord invite, <em>first contact</em> meant the chat-send. None of those mappings are obvious until you assume each noun is named in the source somewhere.</p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Open DevTools Console on <code>/season2/</code></li>
+          <li><code>enable1337SnackerMode()</code> &rarr; <code>enableTelnetMode()</code> &rarr; SNACK_SHELL launches</li>
+          <li><code>snackchat --discord</code> &rarr; prints invite <code>discord.gg/[redacted]</code></li>
+          <li>Join the Discord; send any message in-channel via SnackChat</li>
+          <li><code>POST /api/s2/chat/send</code> credits the solve. No <code>CTF{...}</code> awarded — credit-only.</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

