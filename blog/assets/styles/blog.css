@@ -370,10 +370,6 @@ body::before {
   border: 1px solid var(--error-red);
 }
 
-.post-os {
-  color: var(--text-secondary);
-}
-
 .post-card-excerpt {
   color: var(--text-secondary);
   font-size: 0.95rem;
