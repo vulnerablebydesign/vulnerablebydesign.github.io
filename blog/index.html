@@ -24,7 +24,7 @@
 
     <!-- Header -->
     <header class="blog-header">
-      <a href="#posts" onclick="event.preventDefault(); document.getElementById('posts').scrollIntoView({behavior: 'smooth'})">
+      <a href="#nav-anchor" onclick="event.preventDefault(); document.getElementById('nav-anchor').scrollIntoView({behavior: 'smooth'})">
         <img
           src="/blog/assets/images/hack-the-cube-header.png"
           alt="Hack the Cube - Portal characters around a hacked Companion Cube"
@@ -32,10 +32,11 @@
         >
       </a>
       <p class="blog-subtitle">Test Chamber Archives</p>
-      <button class="press-start" onclick="document.getElementById('posts').scrollIntoView({behavior: 'smooth'})">PRESS START</button>
+      <button class="press-start" onclick="document.getElementById('nav-anchor').scrollIntoView({behavior: 'smooth'})">PRESS START</button>
     </header>
 
     <!-- Navigation -->
+    <div id="nav-anchor"></div>
     <nav class="blog-nav" aria-label="Blog navigation">
       <a href="/blog/" class="nav-link active">All Posts</a>
       <a href="/blog/tags/" class="nav-link">Tags</a>
