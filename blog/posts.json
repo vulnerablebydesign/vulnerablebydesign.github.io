@@ -7,7 +7,7 @@
     "difficulty": "Hard",
     "difficultyClass": "hard",
     "os": "N/A (snack_con CTF)",
-    "excerpt": "A 1000-point HARDWARE challenge: a sub-GHz lightwand that listens for the word 'snackattack' encoded in Morse cadence. Last year's .sub captures still work. snack_con S2R1.",
+    "excerpt": "A 1000-point HARDWARE challenge: spell 'snackattack' in Morse by toggling a sub-GHz lightwand on and off, then call the bird over to confirm. Last year's .sub captures still work. snack_con S2R1.",
     "tags": [
       "ctf",
       "snack-con",
