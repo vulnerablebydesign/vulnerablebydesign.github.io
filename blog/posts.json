@@ -67,7 +67,7 @@
     "difficulty": "Medium",
     "difficultyClass": "medium",
     "os": "N/A (snack_con CTF)",
-    "excerpt": "An 800-point ENCODING challenge that turned the conference floor into the test chamber. Three attendees' badge-back emoji strings, fed through EmojiChef, yielded the flag. snack_con S2R1.",
+    "excerpt": "An 800-point ENCODING challenge that turned the conference floor into the test chamber. Four attendees' badge-back emoji strings, fed through EmojiChef, yielded the flag. snack_con S2R1.",
     "tags": [
       "ctf",
       "snack-con",
