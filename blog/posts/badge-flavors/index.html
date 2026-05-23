@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="An 800-point ENCODING challenge that turned the conference floor into the test chamber. Four attendees' badge-back emoji strings, fed through EmojiChef, yielded the flag. snack_con S2R1.">
+  <meta name="description" content="An 800-point ENCODING challenge that turned the conference floor into the test chamber. Attendees' badge-back emoji strings, fed through EmojiChef, yielded the flag. snack_con S2R1.">
   <meta name="theme-color" content="#0a0a0f">
   <title>Four Flavors | Hack the Cube</title>
 
   <meta property="og:title" content="Four Flavors - Hack the Cube">
-  <meta property="og:description" content="Some attendee badges had emoji sequences printed on the back. Find four uniques, run them through EmojiChef, recover the flag.">
+  <meta property="og:description" content="Some attendee badges had emoji sequences printed on the back. Find the carriers, run their sequences through EmojiChef, recover the flag.">
   <meta property="og:image" content="/blog/posts/badge-flavors/images/header.png">
   <meta property="og:type" content="article">
   <meta property="article:published_time" content="2026-05-08T20:00:00Z">
@@ -92,7 +92,7 @@
 
       <p>Conference badges look the same when you wear them. Someone's name on the front, a lanyard around their neck, occasional sponsor stickers. The puzzle of this challenge was hidden in the place no one looks at while the badge is in use: the back.</p>
 
-      <p>Specific attendees' badges had been printed with emoji sequences on the reverse side. Not all attendees &mdash; just a subset, designated as "carriers" by whoever assembled the registration packets. Four of those carriers' sequences, combined and decoded through EmojiChef, would yield the flag. The title &mdash; <em>"Four Flavors"</em> &mdash; told you exactly how many to find.</p>
+      <p>Specific attendees' badges had been printed with emoji sequences on the reverse side. Not all attendees &mdash; just a subset, designated as "carriers" by whoever assembled the registration packets. Those carriers' sequences, combined and decoded through EmojiChef, would yield the flag.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
@@ -110,24 +110,24 @@
         <div class="dialogue-text">"What's that on the back? Is it a thing? Can I see it? What's it for? Is it a code? Is it a recipe? Is it a SECRET RECIPE? I love secrets. I love badges. I love badges WITH secrets. This is the best test chamber I've ever been in."</div>
       </div>
 
-      <h2>Four Unique Sequences</h2>
+      <h2>The Unique Sequences</h2>
 
-      <p>After four positively-identified carrier badges had been photographed (with permission), the encoded payloads were transcribed into a working file. Each carrier's sequence was a string of food emoji &mdash; chicken legs, pizza slices, hot peppers, donuts, and a couple of less common entries from the EmojiChef alphabet. Duplicates between carriers' badges were ignored; the puzzle wanted four distinct payloads, not copies of one.</p>
+      <p>Once the carrier badges had been identified and photographed (with permission), the encoded payloads were transcribed into a working file. Each carrier's sequence was a string of food emoji &mdash; chicken legs, pizza slices, hot peppers, donuts, and a couple of less common entries from the EmojiChef alphabet. Duplicates between carriers' badges were ignored; the puzzle wanted distinct payloads, not copies of one.</p>
 
-      <p>EmojiChef is the season's connective tissue &mdash; an emoji ↔ text codec used in earlier rounds and inside the SNACK_SHELL terminal interface. The local CLI version covers the full alphabet, the in-game shell version covers a subset. Either works for decoding, as long as the input is a clean concatenation of the four sequences in the right order.</p>
+      <p>EmojiChef is the season's connective tissue &mdash; an emoji ↔ text codec used in earlier rounds and inside the SNACK_SHELL terminal interface. The local CLI version covers the full alphabet, the in-game shell version covers a subset. Either works for decoding, as long as the input is a clean concatenation of the sequences in the right order.</p>
 
-      <div class="terminal-log">$ # combined sequence (four carrier strings concatenated)
+      <div class="terminal-log">$ # combined sequence (carrier strings concatenated)
 $ ./emojichef-cli.py decode --input combined_sequence.txt
 [decoded output]
 &rarr; flag string emerges from the codec output</div>
 
-      <p>The order of concatenation mattered &mdash; running the four sequences in different orders produced different decoded fragments, only one of which matched the <code>CTF{...}</code> wrapper. The correct ordering surfaced after a couple of permutations.</p>
+      <p>The order of concatenation mattered &mdash; running the sequences in different orders produced different decoded fragments, only one of which matched the <code>CTF{...}</code> wrapper. The correct ordering surfaced after a couple of permutations.</p>
 
       <h2>The Flag Reads Like an Instruction</h2>
 
       <div class="terminal-log">FLAG: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">CTF{4flavors.1code.digin}</span></span></div>
 
-      <p>The flag's internal structure is the puzzle's lesson reduced to four words: <code>4flavors.1code.digin</code>. Four flavors yielded one code; "digin" reads as a directive &mdash; dig in, ask around, look at parts of the conference no remote player can see. The flag is also the title's key &mdash; "Four Flavors" was the decoded payload all along, not a reference to the carrier count.</p>
+      <p>The flag's internal structure is the puzzle's lesson compressed: <code>4flavors.1code.digin</code>. Four flavors yielded one code; "digin" reads as a directive &mdash; dig in, ask around, look at parts of the conference no remote player can see.</p>
 
       <h2>What I Learned</h2>
 
@@ -144,8 +144,8 @@ $ ./emojichef-cli.py decode --input combined_sequence.txt
         <ol>
           <li>Read challenge brief &mdash; "find badges with emoji sequences on the back"</li>
           <li>Started checking attendee badges on the conference floor for emoji sequences on the back</li>
-          <li>Identified four carrier attendees with distinct emoji-sequence payloads</li>
-          <li>Captured the four sequences (with permission) into a working file</li>
+          <li>Identified carrier attendees with distinct emoji-sequence payloads</li>
+          <li>Captured the sequences (with permission) into a working file</li>
           <li>Ran combined sequence through EmojiChef CLI &mdash; iterated permutations until the decoded text wrapped cleanly in <code>CTF{...}</code></li>
           <li>Submitted <code>CTF{4flavors.1code.digin}</code> to <code>/api/s2/submit-flag</code> &rarr; accepted, +800 pts</li>
         </ol>
