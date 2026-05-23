@@ -92,7 +92,7 @@
 
       <p>The brief was almost a haiku: <em>"Somewhere in the kitchen, a wand listens &mdash; and it only listens for one word: <code>snackattack</code>. Find the wand. Send that word in the wand's native tongue, with the right cadence, or it stays silent. The bird sings back."</em> 1000 points. HARDWARE. Hard.</p>
 
-      <p>Three pieces of language to unpack before any tool comes out of the bag. <strong>Native tongue</strong> &mdash; the wand has a protocol, not a vocabulary. Words are how we describe it; the actual transmission has to match what the device parses. <strong>Right cadence</strong> &mdash; rhythm matters. The protocol is timing-sensitive, not just symbol-sensitive. And <strong>the bird sings back</strong> &mdash; the device is supposed to respond when correctly addressed, which means there's a feedback channel and we'll know when we've got it right.</p>
+      <p>Three pieces of language to unpack before any tool comes out of the bag. <strong>Native tongue</strong> &mdash; the wand has a protocol, not a vocabulary. Words are how we describe it; the actual transmission has to match what the device parses. <strong>Right cadence</strong> &mdash; rhythm matters. The protocol is timing-sensitive, not just symbol-sensitive. And <strong>the bird sings back</strong> &mdash; at first read this sounds like the wand itself will respond. It won't. The "bird" is SpicyChicken, the challenge host. Get the cadence right, and the bird confirms it in person.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
@@ -155,13 +155,9 @@ Morse timing units (PARIS standard):
 
       <h2>The Bird Sings Back</h2>
 
-      <p>First attempt: timing was too fast. The wand stayed dark. Second attempt: dot-unit dialed up to ~120ms; the wand flashed an unrecognized-pattern blink. Third attempt: dot-unit at ~150ms with the inter-letter gap properly enforced &mdash; the wand began to flash a deliberate sequence back at me, mirroring the pattern I'd transmitted. The "bird" of the brief was the wand itself, echoing the decoded word in light.</p>
+      <p>First attempt: timing was too fast. The wand stayed dark. Second attempt: dot-unit dialed up to ~120ms; the wand flashed something, but too quick to read. Third attempt: dot-unit at ~150ms with the inter-letter gap properly enforced &mdash; the wand was blinking a clean, readable Morse cadence. But the wand wasn't going to tell me it worked. That's when the hint clicked: <em>the bird sings back.</em> The bird is SpicyChicken &mdash; the challenge host.</p>
 
-      <p>The host confirmed the solve at the demo table, handed over the flag string in person:</p>
-
-      <div class="terminal-log">FLAG: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">"The flag is a lie"</span><span class="flag-revealed">CTF{the_5p1cy_b1rd_speaks}</span></span></div>
-
-      <p>The "5p1cy b1rd" of the flag is the same SpicyChicken / corvid-courier / "bird" vocabulary cluster that has bracketed the snack_con investigation since the first season. The carrier-creator persona's branding shows up everywhere this RF challenge would touch &mdash; the wand may or may not be canonically that persona's merch, but the framing is unmistakably theirs.</p>
+      <p>I called SpicyChicken over to the demo table to watch the wand blink. Once the transmission was slow enough for him to visually recognize the pattern as <code>snackattack</code>, he confirmed the solve and awarded the flag on the spot.</p>
 
       <div class="dialogue glados">
         <div class="dialogue-speaker">GlaDOS</div>
@@ -174,9 +170,7 @@ Morse timing units (PARIS standard):
 
       <p><strong>Wake-words are protocols, not strings.</strong> A device that "listens for a word" is doing pattern matching on whatever envelope the device's radio + decoder produces. Send the right protocol with the right cadence and the word arrives correctly framed. Ignore the cadence and the wake-word never finishes assembling on the device side.</p>
 
-      <p><strong>Feedback channels make timing work tractable.</strong> The hardest part of Morse-cadence work is calibrating the dot-unit. The wand's "bird sings back" feedback turned three attempts into a tight calibration loop &mdash; you don't have to guess the right tempo, you just iterate until the wand starts mirroring you.</p>
-
-      <p>The flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">CTF{the_5p1cy_b1rd_speaks}</span></span></p>
+      <p><strong>The "feedback channel" might be a person, not a device.</strong> The hardest part of Morse-cadence work is calibrating the dot-unit. The brief said "the bird sings back" &mdash; which reads like the wand will respond. In reality, the bird was the host. The confirmation mechanism was human: get the cadence readable enough that SpicyChicken can see it, and he'll tell you. Not every feedback loop is electronic.</p>
 
       <aside class="attack-path">
         <h3>Attack Path Summary</h3>
@@ -186,9 +180,9 @@ Morse timing units (PARIS standard):
           <li>Verified existing on/off captures still control the wand &mdash; protocol unchanged year-over-year</li>
           <li>Encoded "snackattack" in Morse code: <code>... -. .- -.-. -.- .- - - .- -.-. -.-</code></li>
           <li>Built a transmission script alternating on/off <code>.sub</code> playback with Morse timing units</li>
-          <li>Calibrated dot-unit to ~150ms after the wand started mirroring the input pattern</li>
-          <li>Wand flashed back the decoded word &rarr; host confirmed solve &rarr; flag delivered</li>
-          <li>Submitted <code>CTF{the_5p1cy_b1rd_speaks}</code> to <code>/api/s2/submit-flag</code> &rarr; accepted, +1000 pts</li>
+          <li>Calibrated dot-unit to ~150ms until the wand's blinking was visually readable Morse</li>
+          <li>Realized "the bird sings back" = SpicyChicken (the host) is the confirmation mechanism</li>
+          <li>Called SpicyChicken over &rarr; he recognized the pattern &rarr; flag awarded, +1000 pts</li>
         </ol>
       </aside>
 
