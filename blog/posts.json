@@ -1,5 +1,38 @@
 [
   {
+    "slug": "javascript-deobfuscation",
+    "title": "JavaScript Deobfuscation",
+    "date": "2026-06-05",
+    "dateFormatted": "June 5, 2026",
+    "difficulty": "Easy",
+    "difficultyClass": "easy",
+    "os": "N/A (Academy module)",
+    "excerpt": "Every line of client-side JavaScript ships to your browser in plaintext — even the obfuscated ones. This HTB Academy module walked me through beautifying a packed eval() blob, reading a hidden generateSerial() function, replicating its POST with curl, and decoding the response back into a flag — the whole malware-triage loop.",
+    "tags": [
+      "cert",
+      "defense-operations-analyst",
+      "academy-module",
+      "easy",
+      "javascript",
+      "deobfuscation",
+      "web",
+      "base64",
+      "hex",
+      "glados",
+      "curiosity-core",
+      "fact-sphere"
+    ],
+    "cardTags": [
+      "cert",
+      "defense-operations-analyst",
+      "academy-module",
+      "easy",
+      "javascript",
+      "glados",
+      "curiosity-core"
+    ]
+  },
+  {
     "slug": "spicy-wand",
     "title": "Spicy Wand",
     "date": "2026-05-08",

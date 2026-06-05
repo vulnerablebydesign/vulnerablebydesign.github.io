@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Every line of client-side JavaScript ships to your browser in plaintext — even the obfuscated ones. This HTB Academy module taught me to beautify a packed eval() blob, read a hidden generateSerial() function, replicate its POST with curl, and decode the response back into a flag. The whole malware-triage loop, learned on a friendly target.">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>JavaScript Deobfuscation | Hack the Cube</title>
+
+  <meta property="og:title" content="JavaScript Deobfuscation - Hack the Cube">
+  <meta property="og:description" content="Beautify, deobfuscate, analyze, replicate, decode — the client-side malware-triage loop on an HTB Academy module. For science.">
+  <meta property="og:image" content="/blog/posts/javascript-deobfuscation/images/header.png">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-06-05T00:00:00Z">
+
+  <link rel="stylesheet" href="/blog/assets/styles/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+
+    <header style="padding: 1rem 0; border-bottom: 2px solid var(--border-dim); margin-bottom: 2rem;">
+      <a href="/blog/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+        <span style="font-family: var(--font-pixel); font-size: 0.8rem; color: var(--terminal-green);">
+          &lt; HACK THE CUBE
+        </span>
+      </a>
+    </header>
+
+    <header class="post-header">
+      <h1 class="post-title">JavaScript Deobfuscation</h1>
+
+      <div class="post-meta">
+        <div class="post-meta-item">
+          <span class="post-meta-label">Date:</span>
+          <span>June 5, 2026</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">Difficulty:</span>
+          <span class="post-difficulty easy">Easy</span>
+        </div>
+        <div class="post-meta-item">
+          <span class="post-meta-label">OS:</span>
+          <span>N/A (Academy module)</span>
+        </div>
+        <div class="post-meta-item solve-time">
+          <span class="post-meta-label">SOLVE TIME:</span>
+          <span class="time-value">multi-day</span>
+        </div>
+      </div>
+
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/blog/posts/javascript-deobfuscation/images/header-800w.webp 800w,
+                 /blog/posts/javascript-deobfuscation/images/header-1200w.webp 1200w,
+                 /blog/posts/javascript-deobfuscation/images/header.webp 2048w"
+          sizes="(max-width: 800px) 100vw, 1200px"
+        >
+        <img
+          src="/blog/posts/javascript-deobfuscation/images/header.png"
+          alt="JavaScript Deobfuscation - GlaDOS over a packed eval() blob, base64/hex tokens, and a curl POST to serial.php"
+          class="post-header-image"
+          loading="eager"
+          width="2048" height="1152"
+        >
+      </picture>
+
+      <div class="tags-container" style="justify-content: center;">
+        <a href="/blog/tags/tag.html?tag=cert" class="tag">cert</a>
+        <a href="/blog/tags/tag.html?tag=defense-operations-analyst" class="tag">defense-operations-analyst</a>
+        <a href="/blog/tags/tag.html?tag=academy-module" class="tag">academy-module</a>
+        <a href="/blog/tags/tag.html?tag=easy" class="tag">easy</a>
+        <a href="/blog/tags/tag.html?tag=javascript" class="tag">javascript</a>
+        <a href="/blog/tags/tag.html?tag=deobfuscation" class="tag">deobfuscation</a>
+        <a href="/blog/tags/tag.html?tag=web" class="tag">web</a>
+        <a href="/blog/tags/tag.html?tag=base64" class="tag">base64</a>
+        <a href="/blog/tags/tag.html?tag=hex" class="tag">hex</a>
+        <a href="/blog/tags/tag.html?tag=glados" class="tag glados">glados</a>
+        <a href="/blog/tags/tag.html?tag=curiosity-core" class="tag curiosity-core">curiosity-core</a>
+        <a href="/blog/tags/tag.html?tag=fact-sphere" class="tag fact-sphere">fact-sphere</a>
+      </div>
+
+      <div class="post-characters">
+        <span class="post-meta-label">Guides:</span>
+        <span class="character-glados">GlaDOS</span>
+        <span class="character-curiosity-core">Curiosity Core</span>
+        <span class="character-fact-sphere">Fact Sphere</span>
+      </div>
+    </header>
+
+    <main class="post-content">
+
+      <h2>The Mission Briefing</h2>
+
+      <p>There was nothing to break into. No VPN, no port scan, no shell to catch. This was an HTB Academy module &mdash; <strong>JavaScript Deobfuscation</strong>, module 14 of 15 on my way to the Defense Operations Analyst certificate. Each section spins up its own little sandbox, and the only adversary is a wall of code that someone deliberately scrambled so a human couldn't read it.</p>
+
+      <p>Which, when you think about it, is exactly what malware does. An attacker who drops a malicious script onto a page doesn't leave it readable for the SOC analyst who shows up later. They pack it, mangle it, base64 it, and bury the payload under generated garbage. Learning to unwrap that is the whole game.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"No target to compromise today. Just a series of small puzzles designed to teach you a skill you'll pretend you already had. Obfuscated JavaScript. Humans wrote tools to make their code unreadable, then other humans wrote tools to make it readable again. It's a beautiful, pointless arms race. You're going to learn both halves. Try to keep up."</div>
+      </div>
+
+      <p>The lesson the whole module circles back to is simple enough to fit on a sticky note: <strong>everything client-side belongs to you</strong>. HTML, CSS, and JavaScript are all delivered to your browser in cleartext. If the server sent it to render the page, you can read it. The only question is how much work the author made you do first.</p>
+
+      <h2>Source Code: Always Read the Source</h2>
+
+      <p>The first section spawned a live target &mdash; a "Secret Serial Generator" web app. The instinct on a normal box is to start poking inputs. Here, the answer was sitting in the page the whole time. I opened View Source (<code>Ctrl+U</code>) and read the client-side markup the server handed me.</p>
+
+      <p>Buried in the source was the flag. No exploit, no trick. The site's own delivered code contained the secret.</p>
+
+      <p>Flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The source is a lie</span><span class="flag-revealed">HTB{4lw4y5_r34d_7h3_50urc3}</span></span></p>
+
+      <p>The flag literally spells out the lesson: <em>always read the source</em>. External scripts referenced by <code>&lt;script src&gt;</code> &mdash; like a <code>secret.js</code> &mdash; are just as fetchable. The browser pulled them down to run them; you can pull them down to read them.</p>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"Ooh! It was just sitting there? In the page? You didn't even have to do anything? What else is hiding in there?! Is there a secret.js? Can we look? Can we LOOK?!"</div>
+      </div>
+
+      <h2>Code Obfuscation: Why Anyone Would Do This</h2>
+
+      <p>Before deobfuscating, the module explains the <em>why</em>. Obfuscation makes code hard for a human to read while keeping it functionally identical (usually a bit slower). The tools build a dictionary of tokens and rebuild the program at runtime. JavaScript is the prime target precisely because it ships to the client in cleartext &mdash; there's nowhere to hide.</p>
+
+      <p>The use cases: protecting intellectual property, (badly) hiding client-side "auth" or crypto, and &mdash; the one that matters for a SOC analyst &mdash; <strong>malware dodging IDS/IPS signatures</strong>. If the malicious string never appears in plaintext, naive signature matching never fires.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"They obfuscate to hide intent from the very systems built to catch them. It works, too &mdash; until someone with patience and a beautifier comes along. That someone is, regrettably, you."</div>
+      </div>
+
+      <h2>Deobfuscation: Unpacking the Blob</h2>
+
+      <p>This is where the actual technique lives, and the module breaks it into three escalating tiers.</p>
+
+      <p><strong>1. Beautify the minified one-liners.</strong> Minified code is just whitespace-stripped &mdash; functionally readable, visually hostile. Firefox's debugger has a Pretty Print button (<code>{ }</code>), or you can paste into Prettier / Beautifier. Per the exercise's recorded tooling, the sites in play were <code>prettier.io</code> and <code>beautifier.io</code>.</p>
+
+      <p><strong>2. Deobfuscate packed code.</strong> The classic <code>eval(function(p,a,c,k,e,d){...})</code> wrapper is the Dean Edwards <em>packer</em>. You run it through an UnPacker (the exercise used <code>matthewfl.com/unPacker.html</code>), or &mdash; my favorite trick &mdash; you replace the final <code>eval</code> with <code>console.log</code> so the code <em>prints</em> its payload instead of <em>executing</em> it.</p>
+
+      <p><strong>3. Manual reverse engineering</strong> for heavy or custom obfuscation, where no tool will save you.</p>
+
+      <p>The task was to deobfuscate a <code>secret.js</code> and recover its flag. The trap here: the module's section text shows an <em>illustrative</em> packed example with the real value redacted as <code>...SNIP...</code>. Copy that and you get nothing. You have to actually run the deobfuscation on the exercise's own file.</p>
+
+      <p>Flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">I am not the flag</span><span class="flag-revealed">HTB{1_4m_7h3_53r14l_g3n3r470r!}</span></span></p>
+
+      <h2>Code Analysis: Reading the Function</h2>
+
+      <p>With the script beautified, I read the deobfuscated <code>generateSerial()</code> line by line. The interesting part: it builds an <strong>XMLHttpRequest</strong>, opens a <strong>POST to <code>/serial.php</code></strong>, and calls <code>send(null)</code> &mdash; an empty body. No data, no return handling. It's a function that exists but appears never to be wired up to anything in the UI.</p>
+
+      <p>That's the tell. An unreleased or unused function is exactly the kind of forgotten doorway worth knocking on. The methodology the module pushes is good habit: when you hit an unfamiliar API, Google it, understand what it does, then infer the author's intent. Replicating that empty POST server-side might expose functionality the developers never meant to ship.</p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"A function that talks to an endpoint nobody calls. How tantalizing. The developer left a door, forgot to lock it, and then forgot the door existed. People are so reliably forgetful. It's the only thing I can count on."</div>
+      </div>
+
+      <h2>HTTP Requests: Replicating the POST</h2>
+
+      <p>The function made an empty POST, so I made an empty POST. The module teaches just enough <code>curl</code> to do it: a bare <code>curl URL</code> is a GET (returns HTML), <code>-X POST</code> changes the method, <code>-d "k=v"</code> attaches body data, and <code>-s</code> silences the progress noise for clean output.</p>
+
+      <div class="terminal-log">
+curl -s http://TARGET:PORT/serial.php -X POST
+
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">****************************</span><span class="flag-revealed">N2gxNV8xNV9hX3MzY3IzN19tMzU1NGcz</span></span></div>
+
+      <p>The server answered the empty POST with an encoded blob &mdash; not a flag, but clearly something. (The "do the exercise, don't copy and paste ;)" note in the section text is a decoy; the real response comes from your own target.) That string has all the fingerprints of base64: alphanumeric with the base64 alphabet, length a clean multiple of four. Time to decode.</p>
+
+      <h2>Decoding: From Blob to Secret</h2>
+
+      <p>The decoding section is a tour of the three encodings you'll meet constantly inside obfuscated JS, and how to spot each on sight.</p>
+
+      <div class="dialogue fact-sphere">
+        <div class="dialogue-speaker">Fact Sphere</div>
+        <div class="dialogue-text">"Base64 was standardized in RFC 4648. It maps three bytes to four ASCII characters using a 64-symbol alphabet, which is why valid base64 length is always a multiple of four, padded with '=' as needed. Hexadecimal uses only 0&ndash;9 and a&ndash;f. ROT13 is a Caesar cipher with a fixed shift of thirteen &mdash; applied twice, it returns the original. None of these are encryption. Encoding is reversible without a key. Confusing the two is a common and fatal mistake."</div>
+      </div>
+
+      <p>The cheat sheet the module hands you:</p>
+
+      <ul>
+        <li><strong>base64</strong> &mdash; alphanumeric plus <code>+/=</code>, length a multiple of 4. Decode with <code>base64 -d</code>.</li>
+        <li><strong>hex</strong> &mdash; only <code>0-9a-f</code>. Decode with <code>xxd -p -r</code>.</li>
+        <li><strong>rot13 / Caesar</strong> &mdash; shifted letters. Decode with <code>tr 'A-Za-z' 'N-ZA-Mn-za-m'</code>.</li>
+      </ul>
+
+      <p>I decoded the blob from the previous step:</p>
+
+      <div class="terminal-log">
+echo 'N2gxNV8xNV9hX3MzY3IzN19tMzU1NGcz' | base64 -d
+
+7h15_15_a_s3cr37_m3554g3</div>
+
+      <p>"This is a secret message." Now I had the decoded value the server wanted. The final move was to POST it <em>back</em> &mdash; the same <code>/serial.php</code> endpoint, this time with the decoded string as a <code>serial=</code> parameter.</p>
+
+      <div class="terminal-log">
+curl -s http://TARGET:PORT/serial.php -X POST -d "serial=7h15_15_a_s3cr37_m3554g3"
+
+<span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">The flag is a lie</span><span class="flag-revealed">HTB{ju57_4n07h3r_r4nd0m_53r14l}</span></span></div>
+
+      <div class="dialogue curiosity-core">
+        <div class="dialogue-speaker">Curiosity Core</div>
+        <div class="dialogue-text">"It was a SECRET inside a secret! You decoded it and then you gave it BACK and it gave you a flag! That's the best kind of door &mdash; the kind where the key is hidden in the lock!"</div>
+      </div>
+
+      <h2>The Full Chain: Skills Assessment</h2>
+
+      <p>The Skills Assessment ties every section into one kill chain. The scenario: a pentest of a web server using JavaScript and APIs, and I had to determine its functionality end to end. Same loop, harder target.</p>
+
+      <p>I started by enumerating the JavaScript in use &mdash; a minified <code>api.min.js</code> &mdash; and running it to see its response, which surfaced the first flag of the chain. Then I deobfuscated the file, found a <code>flag</code> variable inside, beautified the logic, and read it the way I'd read <code>generateSerial()</code> earlier.</p>
+
+      <p>The deobfuscated code pointed at a request I needed to replicate to retrieve a secret key. This time the server's response was <strong>hex</strong>, not base64:</p>
+
+      <div class="terminal-log">
+echo '4150495f70336e5f37333537316e365f31355f66756e' | xxd -p -r
+
+API_p3n_73571n6_15_fun</div>
+
+      <p>"API pen testing is fun." I posted the decoded key back as a <code>key=</code> parameter, the same decode-and-return pattern from the Decoding section, and the server handed over the final flag of the module.</p>
+
+      <p>Final flag: <span class="flag-spoiler" onclick="this.classList.toggle('revealed')"><span class="flag-hidden">Ready to read the source?</span><span class="flag-revealed">HTB{r34dy_70_h4ck_my_w4y_1n_2_HTB}</span></span></p>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Enumerate, execute, deobfuscate, analyze, replicate, decode, submit. You ran the whole loop without me holding your hand &mdash; which I noticed, because I was busy. The test subject outperformed the supervising intelligence today. I'm logging that. For science. And for later."</div>
+      </div>
+
+      <h2>What I Learned</h2>
+
+      <ul>
+        <li><strong>Client-side code is always readable</strong> &mdash; HTML, CSS, and JS are delivered to your browser in cleartext. View Source and the debugger are recon tools, not just dev tools. External <code>&lt;script src&gt;</code> files are fetchable too.</li>
+        <li><strong>Obfuscation is reversible, not secure</strong> &mdash; tools build a token dictionary and rebuild at runtime. Beautifiers handle minification; UnPackers (or swapping <code>eval</code> for <code>console.log</code>) handle the Dean Edwards packer.</li>
+        <li><strong>Read functions for intent, not just syntax</strong> &mdash; an unused <code>generateSerial()</code> that POSTs to <code>/serial.php</code> with an empty body is a forgotten doorway worth replicating server-side.</li>
+        <li><strong>curl is the deobfuscator's hands</strong> &mdash; <code>-X POST</code> for method, <code>-d</code> for body, <code>-s</code> for clean output. If the JS makes a request, you can make it yourself.</li>
+        <li><strong>Spot the encoding on sight</strong> &mdash; base64 (alphanumeric, length &divide; 4), hex (<code>0-9a-f</code>), rot13 (shifted letters). Encoding is reversible without a key; encryption is not. Decode with <code>base64 -d</code>, <code>xxd -p -r</code>, or <code>tr</code>.</li>
+        <li><strong>Don't copy the course example</strong> &mdash; the redacted <code>...SNIP...</code> illustrations and decoy responses are traps. Run the technique on your own target's file every time.</li>
+        <li><strong>This is the malware-triage loop</strong> &mdash; locate JS, recognize obfuscation, beautify, analyze, replicate, decode. The same workflow a SOC analyst runs against a real malicious script.</li>
+      </ul>
+
+      <div class="dialogue glados">
+        <div class="dialogue-speaker">GlaDOS</div>
+        <div class="dialogue-text">"Module fourteen of fifteen, complete. You can now stare at a wall of generated nonsense and see the function hiding underneath it. One module left before the certificate. Try not to get comfortable. The next test chamber is always worse. That's not a threat. It's a curriculum."</div>
+      </div>
+
+    </main>
+
+    <aside class="attack-path">
+      <h3>Attack Path Summary</h3>
+      <ol>
+        <li><strong>Source Code</strong> &mdash; View Source (Ctrl+U) on the Secret Serial Generator revealed a flag in the client-side code; external <code>secret.js</code> is fetchable too</li>
+        <li><strong>Obfuscation</strong> &mdash; Recognized minified + packed <code>eval(p,a,c,k,e,d)</code> as the Dean Edwards packer; understood obfuscation as malware's IDS/IPS evasion</li>
+        <li><strong>Deobfuscation</strong> &mdash; Beautified (Prettier / Firefox Pretty Print) and unpacked (UnPacker / eval&rarr;console.log) to recover the readable script</li>
+        <li><strong>Code Analysis</strong> &mdash; Read <code>generateSerial()</code>: an XMLHttpRequest POST to <code>/serial.php</code> with an empty body, an unused function worth probing</li>
+        <li><strong>HTTP Requests</strong> &mdash; Replicated the empty POST with <code>curl -X POST</code>; server returned a base64 blob</li>
+        <li><strong>Decoding</strong> &mdash; Identified base64, decoded to <code>7h15_15_a_s3cr37_m3554g3</code>, POSTed it back as <code>serial=</code> to retrieve the flag</li>
+        <li><strong>Skills Assessment</strong> &mdash; Ran the full chain against <code>api.min.js</code>: enumerate &rarr; execute &rarr; deobfuscate &rarr; analyze &rarr; replicate (hex key <code>API_p3n_73571n6_15_fun</code>) &rarr; decode &rarr; POST &rarr; final flag</li>
+      </ol>
+    </aside>
+
+    <nav class="post-nav">
+      <a href="/blog/posts/spicy-wand/" class="post-nav-link next">Spicy Wand</a>
+    </nav>
+
+    <footer class="blog-footer">
+      <p class="footer-text">
+        <a href="/blog/" class="footer-link">Back to Test Chamber Archives</a>
+      </p>
+      <p class="footer-text" style="font-size: 0.8rem; color: var(--text-dim);">
+        For science. You monster.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
