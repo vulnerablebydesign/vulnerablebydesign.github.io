@@ -92,7 +92,7 @@
 
       <h2>The Mission Briefing</h2>
 
-      <p>There was nothing to break into. No VPN, no port scan, no shell to catch. This was an HTB Academy module &mdash; <strong>JavaScript Deobfuscation</strong>, module 14 of 15 on my way to the Defense Operations Analyst certificate. Each section spins up its own little sandbox, and the only adversary is a wall of code that someone deliberately scrambled so a human couldn't read it.</p>
+      <p>There was nothing to break into. No VPN, no port scan, no shell to catch. This was an HTB Academy module &mdash; <strong>JavaScript Deobfuscation</strong>, one of the modules on my way to the Defense Operations Analyst certification. Each section spins up its own little sandbox, and the only adversary is a wall of code that someone deliberately scrambled so a human couldn't read it.</p>
 
       <p>Which, when you think about it, is exactly what malware does. An attacker who drops a malicious script onto a page doesn't leave it readable for the SOC analyst who shows up later. They pack it, mangle it, base64 it, and bury the payload under generated garbage. Learning to unwrap that is the whole game.</p>
 
@@ -245,13 +245,13 @@ API_p3n_73571n6_15_fun</div>
     <aside class="attack-path">
       <h3>Attack Path Summary</h3>
       <ol>
-        <li><strong>Source Code</strong> &mdash; View Source (Ctrl+U) on the Secret Serial Generator revealed a flag in the client-side code; external <code>secret.js</code> is fetchable too</li>
-        <li><strong>Obfuscation</strong> &mdash; Recognized minified + packed <code>eval(p,a,c,k,e,d)</code> as the Dean Edwards packer; understood obfuscation as malware's IDS/IPS evasion</li>
+        <li><strong>Source Code</strong> &mdash; View Source (Ctrl+U) on the Secret Serial Generator revealed a flag in the client-side code; external <strong>secret.js</strong> is fetchable too</li>
+        <li><strong>Obfuscation</strong> &mdash; Recognized minified + packed <strong>eval(p,a,c,k,e,d)</strong> as the Dean Edwards packer; understood obfuscation as malware's IDS/IPS evasion</li>
         <li><strong>Deobfuscation</strong> &mdash; Beautified (Prettier / Firefox Pretty Print) and unpacked (UnPacker / eval&rarr;console.log) to recover the readable script</li>
-        <li><strong>Code Analysis</strong> &mdash; Read <code>generateSerial()</code>: an XMLHttpRequest POST to <code>/serial.php</code> with an empty body, an unused function worth probing</li>
-        <li><strong>HTTP Requests</strong> &mdash; Replicated the empty POST with <code>curl -X POST</code>; server returned a base64 blob</li>
-        <li><strong>Decoding</strong> &mdash; Identified base64, decoded to <code>7h15_15_a_s3cr37_m3554g3</code>, POSTed it back as <code>serial=</code> to retrieve the flag</li>
-        <li><strong>Skills Assessment</strong> &mdash; Ran the full chain against <code>api.min.js</code>: enumerate &rarr; execute &rarr; deobfuscate &rarr; analyze &rarr; replicate (hex key <code>API_p3n_73571n6_15_fun</code>) &rarr; decode &rarr; POST &rarr; final flag</li>
+        <li><strong>Code Analysis</strong> &mdash; Read <strong>generateSerial()</strong>: an XMLHttpRequest POST to <strong>/serial.php</strong> with an empty body, an unused function worth probing</li>
+        <li><strong>HTTP Requests</strong> &mdash; Replicated the empty POST with <strong>curl -X POST</strong>; server returned a base64 blob</li>
+        <li><strong>Decoding</strong> &mdash; Identified base64, decoded to <strong>7h15_15_a_s3cr37_m3554g3</strong>, POSTed it back as <strong>serial=</strong> to retrieve the flag</li>
+        <li><strong>Skills Assessment</strong> &mdash; Ran the full chain against <strong>api.min.js</strong>: enumerate &rarr; execute &rarr; deobfuscate &rarr; analyze &rarr; replicate (hex key <strong>API_p3n_73571n6_15_fun</strong>) &rarr; decode &rarr; POST &rarr; final flag</li>
       </ol>
     </aside>
 
