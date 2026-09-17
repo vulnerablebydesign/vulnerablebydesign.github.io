@@ -880,7 +880,7 @@ cameron@cameron.local:/secrets$ cat pre_treatment_drive.log</span>
 
                         <!-- Chapter 10 -->
                         <section id="chapter-10" class="chapter">
-                            <h2>Chapter 10: Detection & Response</h2>
+                            <h2>Chapter 10: Detection &amp; Response</h2>
                             <pre><span class="out">Log File: session_log_apt-010.txt
 Alias: theAdversary
 Target: cameron.local</span>
@@ -888,57 +888,57 @@ Target: cameron.local</span>
 [BEGIN LOG]
 
 <span class="cmd">theAdversary@attackerbox:~$ ssh cameron@cameron.local</span>
-<span class="out">> Connection granted
-> Limited shell access: non-root
-> Privilege escalation dependent on user permission and neglect</span>
+<span class="out">&gt; Connection granted
+&gt; Limited shell access: non-root
+&gt; Privilege escalation dependent on user permission and neglect</span>
 
 <span class="cmt"># Root belonged to someone else. Always did.
-# But I had persistence-scripts, shame loops, control by consent.</span>
+# But I had persistence:
+# shame, isolation, control, self-reliance.</span>
 
 <span class="cmd">cameron@cameron.local:/journal$ tail -n 5 signal.log</span>
-<span class="out">> I'm tired. But I don't want to die.
-> I want peace. I just don't know how.
-> I've tried everything I know.
-> God, if You're there... help me.
-> You can have the console.</span>
+<span class="out">&gt; I'm tired. But I don't want to die.
+&gt; I want peace. I just don't know how.
+&gt; I've tried everything I know.
+&gt; God, if You're there... help me.
+&gt; You can have the console.</span>
 
 <span class="cmt"># Uh-oh.</span>
 
 <span class="cmd">cameron@cameron.local:/ports$ netstat -an | grep 7777</span>
 <span class="out">tcp        0      0 127.0.0.1:7777      0.0.0.0:*       LISTEN</span>
 
-<span class="cmt"># Activity spike on privileged channel: /root-access
+<span class="cmt"># Activity detected on privileged channel: /root-access
 # Ownership trace: confirmed → Creator</span>
 
 <span class="cmd">cameron@cameron.local:/processes$ lsof -i :7777</span>
 <span class="out">COMMAND   PID   USER     FD   TYPE DEVICE SIZE/OFF NODE NAME
-creatord  1337  root     3u  IPv4  54321      0t0  TCP *:7777 (LISTEN)</span>
+creatord  1337  root     3u   IPv4  54321      0t0  TCP *:7777 (LISTEN)</span>
 
 <span class="cmt"># The root daemon was always listening.
-# Today... Cameron let Him in.</span>
+# Cameron had spent years trying to become root:
+# fix himself, fix everyone else, control the outcome,
+# carry what was never his to carry.</span>
+
+<span class="cmd">cameron@cameron.local:/journal$ echo "I can't do this alone." &gt;&gt; surrender.log</span>
+
+<span class="out">&gt; No privilege escalation attempted.
+&gt; No exploit executed.
+&gt; No patch deployed.
+&gt; Help requested.</span>
 
 <span class="cmd">theAdversary@attackerbox:~$ sudo whisper.sh</span>
-<span class="out">> Error: insufficient permissions</span>
+<span class="out">&gt; You're still broken.
+&gt; You will always be broken.
+&gt; If this worked, you wouldn't still hear me.</span>
 
-<span class="cmd">theAdversary@attackerbox:~$ su root
-Password: *********</span>
-<span class="out">> Access denied. Root is not yours.</span>
+<span class="cmd">cameron@cameron.local:~$ ps aux | grep whisper</span>
+<span class="out">&gt; Process detected.</span>
 
-<span class="cmd">cameron@cameron.local:/motd$ cat current</span>
-</pre>
-<div class="motd" aria-label="Message of the day">I didn't make a good Cameron or a bad Cameron.
-I made Cameron.
-I knit Cameron in his mother's womb.
-I know Cameron.
-I love Cameron.</div>
-<pre>
-<span class="cmt"># New session detected:</span>
-<span class="creator">creator@cameron.local:~$ sudo systemctl stop whisper.service
-creator@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant</span>
+<span class="cmt"># Not terminated.</span>
 
-<span class="cmt"># The One who designed this system is cleaning house.</span>
+<span class="cmd">cameron@cameron.local:~$ cat /etc/origin.conf.disabled</span>
 
-<span class="creator">creator@cameron.local:~$ cat /etc/origin.conf.disabled</span>
 <span class="cmt"># ORIGIN CONFIGURATION - READ ONLY
 # Created: before time
 # Author: Creator
@@ -947,23 +947,49 @@ creator@cameron.local:~$ rm -rf /scripts/whisper.sh /scripts/compare.sh /implant
 # cameron.local was designed for connection.
 # cameron.local was designed to be loved.
 #
-# This configuration cannot be deleted.
-# Only the owner can modify access permissions.</span>
+# Vulnerability detected:
+# cameron.local cannot sustain itself.
+#
+# Correction:
+# This is not a defect.</span>
 
-<span class="creator">creator@cameron.local:~$ sudo mv /etc/origin.conf.disabled /etc/origin.conf
-creator@cameron.local:~$ sudo systemctl enable creator.service
-creator@cameron.local:~$ sudo systemctl start grace.service shepherd.daemon hope.socket
+<span class="creator">creator@cameron.local:~$ sudo mv /etc/origin.conf.disabled /etc/origin.conf</span>
 
-creator@cameron.local:~$ ufw allow from grace.local
-creator@cameron.local:~$ ufw allow from community.local
-creator@cameron.local:~$ journalctl --sync</span>
-<span class="out">> All records restored. Shame removed from logs.</span>
+<span class="cmd">cameron@cameron.local:/motd$ cat current</span>
+</pre>
+<div class="motd" aria-label="Message of the day">I didn't make a good Cameron or a bad Cameron.
+I made Cameron.
+I know Cameron.
+I love Cameron.</div>
+<pre>
+<span class="cmd">theAdversary@attackerbox:~$ send --payload "Then why do you still need help?"</span>
 
-<span class="cmd">theAdversary@attackerbox:~$ ssh cameron@cameron.local</span>
-<span class="out">> Connection refused. Key revoked.</span>
+<span class="out">&gt; Payload received.</span>
 
-<span class="cmd">theAdversary@attackerbox:~$ ./reinstall_persistence.sh</span>
-<span class="out">> Permission denied. Root session active.</span>
+<span class="cmd">cameron@cameron.local:~$ echo "Because I still need help." &gt;&gt; truth.log</span>
+
+<span class="cmt"># Unexpected response.
+# Dependency no longer classified as failure.</span>
+
+<span class="cmd">cameron@cameron.local:~$ systemctl enable honesty.service</span>
+<span class="out">Created symlink.</span>
+
+<span class="cmd">cameron@cameron.local:~$ systemctl status surrender.service</span>
+
+<span class="out">● surrender.service
+  Loaded: loaded
+  Active: inactive (dead)</span>
+
+<span class="cmt"># Manual start required.
+# Execution remains imperfect.</span>
+
+<span class="cmd">cameron@cameron.local:~$ ufw allow from community.local</span>
+<span class="out">Rule added.</span>
+
+<span class="cmt"># No permanent remediation recorded.
+# Detection improved.
+# Response plan established.
+# theAdversary remains persistent.</span>
 
 [END LOG]</pre>
                         </section>
@@ -972,73 +998,138 @@ creator@cameron.local:~$ journalctl --sync</span>
 
                         <!-- Chapter 11 -->
                         <section id="chapter-11" class="chapter">
-                            <h2>Chapter 11: Foothold Attempts</h2>
+                            <h2>Chapter 11: Persistence</h2>
                             <pre><span class="out">Log File: session_log_apt-011.txt
 Alias: theAdversary
 Target: cameron.local</span>
 
 [BEGIN LOG]
 
-<span class="cmt"># No beacon present. No shell access. No scheduled scripts.
-# Root remains Creator. Active session confirmed.
+<span class="cmt"># Current operating environment.</span>
 
-# Attempt 1 - Identity Spoofing</span>
+<span class="cmd">theAdversary@attackerbox:~$ ping cameron.local</span>
+<span class="out">&gt; Reply received.</span>
 
-<span class="cmd">theAdversary@spoof:~$ send_email --from=cameron.local
-Subject: Just a reminder
-Body: "You're still the guy who fell."</span>
+<span class="cmt"># Target online.
+# Attack surface present.</span>
 
-<span class="out">> Response:
-> Rejected by SPF filter
-> Logged by journaling.local
-> Flagged as legacy shame artifact</span>
+<span class="adversary-log">[06:29:58] theAdversary[c2]: Target waking.
+[06:29:59] theAdversary[c2]: Begin whisper sequence.</span>
 
-<span class="cmt"># Attempt 2 - Whisper Injection</span>
+<span class="out">&gt; You're behind.
+&gt; You're not enough.
+&gt; Fix it.
+&gt; Control it.
+&gt; Don't let anyone see you struggle.</span>
 
-<span class="cmd">theAdversary@spoof:~$ send --method=thoughtloop
-Payload: "You're still not enough for her."
-Vector: sleepless_night.reminder()</span>
+<span class="adversary-log">[06:30:00] cameron.local: outbound connection initiated</span>
+<span class="out">&gt; fellowship.local connected</span>
 
-<span class="out">> Response:
-> community.local active
-> Peer message received: "You're not alone."</span>
+<span class="cmt"># Threat activity continues.
+# So does the connection.</span>
 
-<span class="cmt"># Attempt 3 - Past Replay</span>
+<span class="cmd">theAdversary@spoof:~$ ./inject.sh \
+  --payload="If you don't manage this, everything will fall apart."</span>
 
-<span class="cmd">theAdversary@spoof:~$ open --file=/addiction/archive/deepestfailures.mov</span>
-<span class="out">> Buffering...
-
-> Response:
-> Defender Charles.key intercepted playback
-> Rewritten with overlay: "This was never your identity."</span>
-
-<span class="cmt"># Attempt 4 - Bypass via Busyness</span>
-
-<span class="cmd">theAdversary@spoof:~$ start_loop --task="Do everything. Prove your worth."</span>
-<span class="out">> Loop initialized
-
-> Response:
-> System auto-reply:
-> "I'm not trying to earn rest. I'm living from it."
-> Process auto-killed by rest.daemon</span>
-
-<span class="cmt"># Attempt 5 - Dark Link Reboot</span>
-
-<span class="cmd">theAdversary@spoof:~$ echo "You're just the shadow version."</span>
-<span class="out">> Reflection attempt failed
-> Response from cameron.local:/truth/charles.log
-> "You showed me light. You were never the dark."
-> "If there is a God, he can't be as bad as I thought."
-> "Because he gave us this friendship."
-> Connection status: persistent. Belief alignment: irrelevant.</span>
-
-<span class="adversary-log"># [2025-04-14 03:47:12] adversary[c2]: FAILURE - All persistence denied.
-# [2025-04-14 03:47:19] adversary[c2]: FAILURE - All credentials revoked.
-# [2025-04-14 03:47:27] adversary[c2]: CRITICAL FAILURE - All shame injections exposed. Session terminated.</span>
+<span class="out">&gt; Payload received.
+&gt; Execution started.</span>
 
 <span class="cmd">cameron@cameron.local:/identity$ cat status.txt</span>
-<span class="out">> Not bulletproof. Not alone.
-> Still running.</span>
+<span class="out">&gt; afraid
+&gt; defensive
+&gt; proving
+&gt; controlling</span>
+
+<span class="cmt"># Detection delayed.</span>
+
+<span class="cmd">cameron@cameron.local:~$ tail -f /var/log/internal.log</span>
+<span class="out">&gt; Why am I trying to control this?
+&gt; Why don't I want anyone to know?
+&gt; Why does this feel familiar?</span>
+
+<span class="cmt"># Signature match found.</span>
+
+<span class="cmd">cameron@cameron.local:~$ contacts --recent</span>
+<span class="out">&gt; sponsor.thread
+&gt; fellowship.local
+&gt; friends.local
+&gt; family.local</span>
+
+<span class="cmd">cameron@cameron.local:~$ connect --honest</span>
+<span class="out">&gt; Connection established.
+&gt; User disclosed current state.</span>
+
+<span class="cmd">cameron@cameron.local:/prayer$ ./morning_request.sh</span>
+<span class="out">&gt; What would You have me do today?
+&gt; Give me the power to carry that out.</span>
+
+<span class="cmt"># No roadmap returned.
+# Today's instruction pending.</span>
+
+<span class="cmd">theAdversary@spoof:~$ start_loop --task="Do everything. Prove your worth."</span>
+<span class="out">&gt; Loop initialized.
+
+&gt; CPU: 97%
+&gt; prayer.net connection degraded
+&gt; community.local packets delayed
+&gt; self-awareness monitoring suspended</span>
+
+<span class="cmt"># Attack successful.</span>
+
+<span class="cmd">cameron@cameron.local:~$ killall control</span>
+<span class="out">&gt; Operation not permitted.</span>
+
+<span class="cmd">cameron@cameron.local:~$ echo "I need help."</span>
+<span class="out">&gt; Local output only.</span>
+
+<span class="cmd">cameron@cameron.local:~$ echo "I need help." | send community.local</span>
+<span class="out">&gt; Delivered.</span>
+
+<span class="cmd">cameron@cameron.local:~$ ./surrender.sh</span>
+<span class="out">&gt; User relinquished control of current process.
+&gt; CPU load decreasing.</span>
+
+<span class="cmt"># Pattern recognized:
+# Red Horse.
+# Rope Maze.
+# Today.
+
+# Same lesson.
+# Still learning it.</span>
+
+<span class="cmd">cameron@cameron.local:/maintenance$ cat daily.conf</span>
+
+<span class="cmt"># become still
+# seek Creator
+# ask for direction
+# ask for power to follow it
+# stay connected
+# watch for fear, dishonesty, and self-reliance
+# admit quickly
+# ask for help
+# be useful
+# review
+# begin again
+
+# Configuration status:
+# IMPLEMENTATION INCOMPLETE</span>
+
+<span class="cmd">theAdversary@attackerbox:~$ cat /recon_notes.txt | tail</span>
+
+<span class="out">- Target remains vulnerable to shame and exhaustion.
+- Target still attempts privilege escalation through control.
+- Target still isolates under load.
+- Target has learned to ask for help.
+- Target has learned to come back.</span>
+
+<span class="cmt"># This complicates things.</span>
+
+<span class="cmd">cameron@cameron.local:/identity$ cat status.txt</span>
+
+<span class="out">&gt; Not bulletproof.
+&gt; Not self-sufficient.
+&gt; Not finished.
+&gt; Not alone.</span>
 
 [END LOG]</pre>
                         </section>
@@ -1051,45 +1142,137 @@ Vector: sleepless_night.reminder()</span>
                             <pre>[BEGIN EPILOGUE]
 
 <span class="cmd">cameron@cameron.local:/life$ uptime</span>
-<span class="out">> System uptime: <span id="system-uptime">calculating...</span>
-> Recovery process: continuous
-> Firewall status: grace.service enforced
-> Active connections: Creator, family, fellowship, purpose</span>
+<span class="out">&gt; System uptime: today</span>
 
-<span class="cmd">cameron@cameron.local:/relationships$ uptime charles.connection</span>
-<span class="out">> Duration: 30+ years (with 8-year interruption)
-> Current status: healing together
-> Protocol: unconditional</span>
+<span class="cmd">cameron@cameron.local:~$ systemctl status recovery.service</span>
 
-<span class="cmd">cameron@cameron.local:~$ systemctl status --all | grep active</span>
-<span class="out">● grace.service      active (running) since restoration
-● hope.socket        active (connected) persistent
-● love.service       active (running) - cannot be stopped
-● light.daemon       active (background) since before time</span>
+<span class="out">● recovery.service
+  Loaded: enabled
+  Active: active
+  State: continuous
+  Requires: connection.target
+  Restart: daily</span>
 
-<span class="cmd">cameron@cameron.local:~$ cat /etc/origin.conf | head -1</span>
-<span class="cmt"># System restored to original design. Vulnerable by design.</span>
+<span class="cmd">cameron@cameron.local:~$ systemctl status surrender.service</span>
 
-<span class="cmt"># No shame script running.</span>
+<span class="out">● surrender.service
+  Loaded: loaded
+  Active: inactive (dead)</span>
 
-<span class="cmd">cameron@cameron.local:~$ tail -3 /etc/origin.conf</span>
-<span class="cmt"># You are mine.
-# You are loved.
-# You are not alone.</span>
+<span class="cmt"># Manual start required.
+# Execution remains imperfect.</span>
 
-<span class="cmt"># theAdversary still attempts pings.
-# But no one answers anymore.</span>
+<span class="cmd">cameron@cameron.local:~$ cat /etc/origin.conf | head</span>
+
+<span class="cmt"># ORIGINAL DESIGN
+#
+# cameron.local was not designed to be root.
+# cameron.local was not designed to run alone.
+# cameron.local was designed for connection.
+# cameron.local was designed to give and receive love.
+# cameron.local was designed to need others.
+#
+# Vulnerability is not always a defect.</span>
+
+<span class="cmd">theAdversary@attackerbox:~$ send --payload "You should have this figured out by now."</span>
+
+<span class="out">&gt; Payload delivered.</span>
+
+<span class="cmd">cameron@cameron.local:~$ cat /var/log/internal.log | tail -1</span>
+<span class="out">&gt; Maybe I should.</span>
+
+<span class="cmt"># Process spawned.</span>
+
+<span class="cmd">cameron@cameron.local:~$ ps aux | grep shame</span>
+<span class="out">&gt; shame_loop        RUNNING</span>
+
+<span class="cmt"># Detection delayed.</span>
+
+<span class="cmd">cameron@cameron.local:~$ echo "God, help me."</span>
+
+<span class="cmd">cameron@cameron.local:~$ connect community.local</span>
+<span class="out">&gt; Connected.</span>
+
+<span class="cmd">cameron@cameron.local:~$ echo "Here's what's actually going on..."</span>
+<span class="out">&gt; Transmission started.</span>
+
+<span class="cmt"># theAdversary has not been eliminated.
+# cameron.local has not been perfected.
+# No final patch has been deployed.
+
+# Something else changed.
+
+# For most of his life,
+# vulnerability meant attack surface.
+#
+# A place something could get in.
+#
+# He spent years trying to close every port.
+# Hide every weakness.
+# Carry every burden.
+# Become strong enough that he would never need anyone.
+
+# It nearly killed him.
+
+# Now the same open ports carry different traffic.</span>
+
+<span class="out">&gt; prayer.net
+&gt; community.local
+&gt; confession.socket
+&gt; love.service</span>
+
+<span class="cmt"># Vulnerability is still an attack surface.
+
+# It is also how help gets in.</span>
 
 <span class="cmd">cameron@cameron.local:/mission$ cat legacy.txt</span></pre>
-<div class="legacy">If you're reading this, I hope you find the courage to say: "I need help."
-That's where everything began to heal. That's when the maze lost its grip.
-You are never too broken to be restored.
-You are never too far to be found.</div>
-<pre>
-<span class="creator">creator@cameron.local:~$ last_word
-> "I've got this one. You just keep walking."</span>
+<div class="legacy">If you're reading this, I can't tell you that I found the way out of the maze.
 
-[END EPILOGUE]</pre>
+I can tell you what happened when I stopped pretending I could.
+
+I asked for help.
+
+I still do.
+
+Some days I recognize theAdversary immediately.
+Sometimes I discover I've been listening for hours.
+Sometimes I try to take the console back and run everything myself.
+
+Then I come back.
+
+I tell the truth.
+I ask for help.
+I seek God.
+I listen.
+I try to do the next thing He puts in front of me.
+I try to help someone else along the way.
+
+And tomorrow, if I'm given tomorrow, I'll do it again.</div>
+<pre>
+<span class="cmd">cameron@cameron.local:~$ whoami</span>
+<span class="out">cameron</span>
+
+<span class="cmd">cameron@cameron.local:~$ id</span>
+<span class="out">uid=1000(cameron) gid=1000(human) groups=family,community,fellowship</span>
+
+<span class="cmd">cameron@cameron.local:~$ sudo su</span>
+<span class="out">&gt; Access denied.</span>
+
+<span class="cmd">cameron@cameron.local:~$ echo $?</span>
+<span class="out">1</span>
+
+<span class="cmd">cameron@cameron.local:~$ echo "Good."</span>
+
+<span class="cmt"># STATUS: ONLINE
+# UPTIME: TODAY
+# VULNERABILITIES: PRESENT
+# DEPENDENCIES: ACTIVE
+# ROOT: CREATOR
+# MAINTENANCE: DAILY
+# RESTORATION: IN PROGRESS</span>
+
+<span class="cmd">cameron@cameron.local:~$ _</span>
+</pre>
                         </section>
 
                         <!-- Crisis resources (repeated) -->
@@ -1147,7 +1330,7 @@ SAMHSA Helpline — 1-800-662-4357
                         <li><a href="#chapter-8" role="menuitem">Ch 8: The Collapse</a></li>
                         <li><a href="#chapter-9" role="menuitem">Ch 9: The Rope</a></li>
                         <li><a href="#chapter-10" role="menuitem">Ch 10: Detection</a></li>
-                        <li><a href="#chapter-11" role="menuitem">Ch 11: Foothold Attempts</a></li>
+                        <li><a href="#chapter-11" role="menuitem">Ch 11: Persistence</a></li>
                         <li><a href="#epilogue" role="menuitem">Epilogue</a></li>
                     </ul>
                 </nav>
@@ -1168,9 +1351,9 @@ SAMHSA Helpline — 1-800-662-4357
             'chapter-7':  { load: 70,  mem: 70,  conn: 2,  fw: 'flickering',     color: '#ff8833', state: 'VOLATILE'   },
             'chapter-8':  { load: 98,  mem: 95,  conn: 0,  fw: 'DOWN',           color: '#ff3333', state: 'CRASH'      },
             'chapter-9':  { load: 45,  mem: 40,  conn: 3,  fw: 'rebuilding',     color: '#ccaa33', state: 'RECOVERING' },
-            'chapter-10': { load: 20,  mem: 25,  conn: 5,  fw: 'grace.enforced', color: '#ffffcc', state: 'OVERRIDE'   },
-            'chapter-11': { load: 12,  mem: 15,  conn: 6,  fw: 'grace.enforced', color: '#33ff33', state: 'SECURED'    },
-            'epilogue':   { load: 8,   mem: 10,  conn: 7,  fw: 'grace.enforced', color: '#33ff33', state: 'RESTORED'   },
+            'chapter-10': { load: 20,  mem: 25,  conn: 5,  fw: 'grace.enforced', color: '#ffffcc', state: 'RESPONSE'   },
+            'chapter-11': { load: 12,  mem: 15,  conn: 6,  fw: 'grace.enforced', color: '#33ff33', state: 'PERSISTENT' },
+            'epilogue':   { load: 8,   mem: 10,  conn: 7,  fw: 'grace.enforced', color: '#33ff33', state: 'ONLINE'     },
         };
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1286,14 +1469,29 @@ SAMHSA Helpline — 1-800-662-4357
 
         // === Enhanced boot sequence (Phase 8) ===
         const bootMessages = [
-            { text: "BIOS: cameron.local — VT323 Terminal Emulator", delay: 80 },
-            { text: "Memory check: 640K OK .......... 32768K Extended", delay: 120 },
-            { text: "Mounting /identity ... OK", delay: 100 },
-            { text: "Mounting /beliefs ... OK", delay: 100 },
-            { text: "Mounting /relationships ... OK", delay: 100 },
+            { text: "CAMERON SYSTEM BIOS v1.0", delay: 80 },
+            { text: "Copyright (c) 1987-present", delay: 100 },
+            { text: "", delay: 80 },
+            { text: "Memory check ........................ OK", delay: 120 },
+            { text: "Mounting /identity .................. OK", delay: 100 },
+            { text: "Mounting /beliefs ................... OK", delay: 100 },
+            { text: "Mounting /relationships ............. OK", delay: 100 },
+            { text: "", delay: 80 },
             { text: "cameron.local login: cameron", delay: 100 },
+            { text: "Password: ********", delay: 100 },
+            { text: "", delay: 80 },
             { text: "Last login: Mon Apr 14 03:47:12", delay: 150 },
-            { text: "[WARNING] Unauthorized access detected — Multiple SSH sessions active", delay: 200 },
+            { text: "", delay: 80 },
+            { text: "Checking privileges ................. OK", delay: 120 },
+            { text: "Current user: cameron", delay: 80 },
+            { text: "Privilege level: non-root", delay: 150 },
+            { text: "", delay: 80 },
+            { text: "Checking active sessions ............ WARNING", delay: 180 },
+            { text: "2 sessions detected", delay: 100 },
+            { text: "1 session unrecognized", delay: 180 },
+            { text: "", delay: 80 },
+            { text: "[WARNING] Persistent session detected", delay: 220 },
+            { text: "", delay: 100 },
             { text: "Loading session logs...", delay: 300 },
             { text: "", delay: 200 }
         ];
